@@ -20,18 +20,10 @@ export function list_servers(ns) {
 
 /** @param {NS} ns **/
 export async function main(ns) {
-	const args = ns.flags([["help", false]]);
-    if (args.help) {
-        ns.tprint("This script lists all servers on which you can run scripts.");
-        ns.tprint(`Usage: run ${ns.getScriptName()}`);
-        ns.tprint("Example:");
-        ns.tprint(`> run ${ns.getScriptName()}`);
-        return;
-    }
 
-	const servers = list_servers(ns).filter(s => ns.hasRootAccess(s)).concat(['home']);
-
+    const servers = list_servers(ns).filter(s => ns.hasRootAccess(s)).concat(['home']);
     const mhl = ns.getHackingLevel() ;
+
     ns.tprint(`My Hacking levl is ${mhl}`);
 
     ns.tprint(`Servers that are hackable`);
