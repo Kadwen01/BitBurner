@@ -1,3 +1,5 @@
+// requires formulas
+
 import { getPotentialTargets, getStrategy } from "./find_targets.js";
 import {
 	getNetworkNodes,
@@ -7,11 +9,11 @@ import {
 	getThresholds
 } from "./utils.js";
 
-/** 
+/**
  * Launches a coordinated attack on the network to
  * maximise the usage of our resources
  * (pirate themed)
- * 
+ *
  * @param {NS} ns
  **/
 export async function main(ns) {
@@ -295,7 +297,7 @@ export async function main(ns) {
 						await ns.sleep(tick)
 					}
 					logShipAction(ship, action, targetNode);
-					
+
 				}
 			}
 			// Delete assigned from list of fleets
