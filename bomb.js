@@ -13,6 +13,7 @@ function breakIn(ns, server)
     try {ns.sqlinject(server)} catch{}
     try {ns.httpworm(server)} catch{}
     try {ns.nuke(server)} catch{}
+    try {ns.installBackdoor(server)} catch{}
 }
 
 function mapNetwork(ns, func){

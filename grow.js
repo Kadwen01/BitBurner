@@ -21,7 +21,7 @@ export async function main(ns) {
 
 	const servers = list_servers(ns).filter(s => ns.hasRootAccess(s)).concat(['home']);
 	const mhl = ns.getHackingLevel() ;
-    const script = "/hacks/selfhack.script"; 
+    const script = "selfhack.js"; 
 
     for(const server of servers) {
         const minhl = ns.getServerRequiredHackingLevel(server);

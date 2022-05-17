@@ -1,7 +1,11 @@
-/** @param {NS} ns **/
-export async function main(ns) {
+/**
+ * Auto purchase server (lite version)
+ * Only cares about purchasing the server
+ * Does not deploy scripts
+ * @param {NS} ns 
+ * **/
+ export async function main(ns) {
 	ns.disableLog("ALL");
-	var target = ns.args[0];
 	var homeServ = "home";
 	var pRam = 8; // purchased ram
 	var servPrefix = "pserv-";
@@ -9,30 +13,8 @@ export async function main(ns) {
 	var maxRam = ns.getPurchasedServerMaxRam();
 	var maxServers = ns.getPurchasedServerLimit();
 
-	var virus = "hack_target.js";
-	var virusRam = ns.getScriptRam(virus);
-
 	function canPurchaseServer() {
 		return ns.getServerMoneyAvailable(homeServ) > ns.getPurchasedServerCost(pRam);
-	}
-
-	//function killVirus(server) {
-	//	if (ns.scriptRunning(virus, server)) {
-	//		ns.scriptKill(virus, server);
-	//	}
-	//}
-
-	//async function copyAndRunVirus(server) {
-	//	await ns.scp(virus, server);
-	//	killVirus(server);
-	//	var maxThreads = Math.floor(pRam / virusRam);
-	//	ns.exec(virus, server, maxThreads, target);
-	//}
-
-	function shutdownServer(server) {
-		//killVirus(server);
-		ns.killall(server)
-		ns.deleteServer(server);
 	}
 
 	async function waitForMoney() {
@@ -45,18 +27,18 @@ export async function main(ns) {
 		var sRam = ns.getServerMaxRam(server);
 		if (sRam < pRam) {
 			await waitForMoney();
-			shutdownServer(server);
+			ns.killall(server);
+			ns.deleteServer(server);
 			ns.purchaseServer(server, pRam);
 			ns.print(`WARN ⬆️ UPGRADE ${server} @ ${pRam}GB`);
 		}
-		//await copyAndRunVirus(server);
 	}
 
 	async function purchaseServer(server) {
 		await waitForMoney();
 		ns.purchaseServer(server, pRam);
 		ns.print(`WARN 💰 PURCHASE ${server} @ ${pRam}GB`);
-		//await copyAndRunVirus(server);
+		await copyAndRunVirus(server);
 	}
 
 	async function autoUpgradeServers() {
@@ -76,7 +58,7 @@ export async function main(ns) {
 	while (true) {
 		ns.print(`INFO Upgrading all servers to ${pRam}GB`);
 		await autoUpgradeServers();
-		ns.print("SUCCESS Upgraded all servers to " + pRam + "GB");
+		ns.tprintf("SUCCESS Upgraded all servers to " + pRam + "GB");
 		if (pRam === maxRam) {
 			break;
 		}

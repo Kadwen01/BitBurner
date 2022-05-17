@@ -11,7 +11,13 @@ export async function main(ns) {
 
 	const host = args._[0];
 	const script = args._[1];
-	const script_args = args._.slice(2);
+	const target = args._[2];
+	
+
+	ns.tprint (`Host: ${host}`);
+	ns.tprint (`Script: ${script}`);
+	ns.tprint (`Target: ${target}`);
+	
 
 	if (!ns.serverExists(host)) {
 		ns.tprint(`Server '${host}' does not exist. Aborting.`);
@@ -22,8 +28,17 @@ export async function main(ns) {
 		return;
 	}
 
-	const threads = Math.floor((ns.getServerMaxRam(host) - ns.getServerUsedRam(host)) / ns.getScriptRam(script));
-	ns.tprint(`Launching script '${script}' on server '${host}' with ${threads} threads and the following arguments: ${script_args}`);
-	await ns.scp(script, ns.getHostname(), host);
-	ns.exec(script, host, threads, ...script_args);
+	ns.killall (host)
+
+	function killVirus(server) {
+		if (ns.scriptRunning(script, target)) {
+			ns.scriptKill(script, target);
+		}
+	}
+	
+	killVirus(target)
+    const threads = Math.floor((ns.getServerMaxRam(host) - ns.getServerUsedRam(host)) / ns.getScriptRam(script));	
+	ns.tprint(`Launching script '${script}' on server '${host}' with ${threads} threads and the following arguments: ${target}`);
+	await ns.scp(script, host);
+	ns.exec(script, host, threads, target);
 }

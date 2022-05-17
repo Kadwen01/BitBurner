@@ -21,7 +21,7 @@ export function list_servers(ns) {
 /** @param {NS} ns **/
 export async function main(ns) {
 
-    const servers = list_servers(ns).filter(s => ns.hasRootAccess(s)).concat(['home']);
+	const servers = list_servers(ns).filter(s => ns.hasRootAccess(s)).concat(['home']);
     const mhl = ns.getHackingLevel() ;
 
     ns.tprint(`My Hacking levl is ${mhl}`);
