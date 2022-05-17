@@ -17,19 +17,6 @@ export async function main(ns){
 //    animals.push('bird');
 //    ns.tprint(animals);
 
-
-    const car = {type:"Fiat", model:"500", color:"white"};
-    const truck = {type:"Ford", model:"F-150", color:"black"};
-    var offer = [car, truck];
-    ns.tprint(offer); // initial offer before pop
-
-    for ( i of offer ) {
-        
-        var i = offer.pop();
-        
-        ns.tprint (i);   
-        ns.tprint("The car is a " ,i.color + " " + i.type + " model " + i.model);
-        ns.tprint (offer);
     
+
     }
-}
