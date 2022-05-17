@@ -18,7 +18,7 @@ export function list_servers(ns) {
 
 
 export function vals(ns, nserver, used, max, minhl, fcash, fmcash) {
-    const servers = list_servers(ns).filter((x) => !ns.getPurchasedServers().includes(x) && x != 'home'.length);
+    const servers = list_servers(ns).filter((x) => !ns.getPurchasedServers().includes(x) && x != 'home'.length && x != `darkweb`);
 
     for(const server of servers) {       
         const nserver = server.padEnd(18, ' '); 
@@ -36,7 +36,7 @@ export function vals(ns, nserver, used, max, minhl, fcash, fmcash) {
 /** @param {NS} ns **/
 export async function main(ns) {
     
-    const servers = list_servers(ns).filter((x) => !ns.getPurchasedServers().includes(x) && x != 'home'.length);
+    const servers = list_servers(ns).filter((x) => !ns.getPurchasedServers().includes(x) && x != 'home'.length && x != 'darkweb');
     const phl = ns.getHackingLevel() ;
 
     ns.tprint(`My Hacking levl is ${phl}`);

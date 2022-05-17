@@ -28,7 +28,7 @@ export async function main(ns) {
 
     ns.tprint(`Servers that are hackable`);
     for(const server of servers) {        
-	const used = ns.getServerUsedRam(server);
+	    const used = ns.getServerUsedRam(server);
         const max = ns.getServerMaxRam(server);
         const minhl = ns.getServerRequiredHackingLevel(server);
         const cash = ns.getServerMoneyAvailable(server);

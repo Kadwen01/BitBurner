@@ -30,14 +30,14 @@ export async function main(ns) {
         const myStocks = allStocks.filter((stock) => stock.shares > 0).sort(function (a, b) { return a.prob - b.prob });
         const holdingPrice = allStocks.reduce((prev, stock) => prev += (stock.price * stock.shares), 0);
         const boughtPrice = allStocks.reduce((prev, stock) => prev += (stock.avgBuyPrice * stock.shares), 0);
-        const homeMoney = ns.nFormat(ns.getServerMoneyAvailable("home"), '0.00a' );
-        ns.clearLog();
-        ns.print(`Stock Value: ${format(holdingPrice)} for current gain of ${format(holdingPrice - boughtPrice)}`);
-        let corpus = ns.getServerMoneyAvailable("home") + holdingPrice;
-        ns.print(`Total Assest: ${format(corpus)}`);
-        ns.print(`Liquid Assest: ${homeMoney}`);
-        ns.print(`Actual Profit: ${format(rollingProfit)}`);
+        const homeMoney = ns.getServerMoneyAvailable("home");
+        //ns.clearLog();
         ns.print(`________________________`);
+        ns.print(`INFO Stock Value: ${format(holdingPrice)} for current gain of ${format(holdingPrice - boughtPrice)}`);
+        let corpus = ns.getServerMoneyAvailable("home") + holdingPrice;
+        ns.print(`INFO Total Assest: ${format(corpus)}`);
+        ns.print(`INFO Liquid Assest: ${format(homeMoney)}`);
+        ns.print(`INFO Actual Profit: ${format(rollingProfit)}`);
         //Sell underperforming shares
         myStocks.forEach((stock) => {
             if (stock.prob < THRESHOLD_SELL) {
@@ -50,7 +50,7 @@ export async function main(ns) {
         myStocks.forEach((stock) => {
             const homeMoney = ns.getServerMoneyAvailable("home");
             if (homeMoney < (THRESHOLD_CASH_LOW * corpus)) {
-                ns.print(`need money, selling stocks`);
+                ns.print(`WARN need money, selling stocks`);
                 let cashNeeded = (corpus * THRESHOLD_CASH_GOAL - homeMoney + COMMISSION);
                 let numShares = Math.floor(cashNeeded / stock.price);
                 rollingProfit += sell(ns, stock, numShares);
@@ -94,7 +94,7 @@ function refreshStocks(ns) {
 /** @param {NS} ns **/
 function buy(ns, stock, numShares) {
     const price = ns.stock.buy(stock.sym, numShares);
-    ns.print(`Bought ${stock.sym} for ${format(numShares * stock.price)}`);
+    ns.print(`SUCCSESS Bought ${stock.sym} for ${format(numShares * stock.price)}`);
     //ns.alert(`Bought ${stock.sym} for ${format(numShares * stock.price)}`);
     return price * numShares + COMMISSION;
 }
@@ -103,10 +103,10 @@ function buy(ns, stock, numShares) {
 function sell(ns, stock, numShares, isSellAll) {
     let profit = numShares * (stock.price - stock.avgBuyPrice) - 2 * COMMISSION;
     if (!isSellAll) {
-        ns.print(`Sold ${stock.sym} for profit of ${format(profit)}`);
+        ns.print(`WARN Sold ${stock.sym} for profit of ${format(profit)}`);
         //ns.alert(`Sold ${stock.sym} for profit of ${format(profit)}`);
     } else {
-        ns.tprint(`Sold ${stock.sym} for profit of ${format(profit)}`);
+        ns.tprint(`WARN Sold ${stock.sym} for profit of ${format(profit)}`);
         //ns.alert(`Sold ${stock.sym} for profit of ${format(profit)}`);
     }
     ns.stock.sell(stock.sym, numShares);
