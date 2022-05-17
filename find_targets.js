@@ -1,3 +1,5 @@
+// requires formulas
+
 import {
 	getNetworkNodes,
 	canHack,
