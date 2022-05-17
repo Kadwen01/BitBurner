@@ -2,7 +2,7 @@
  * Auto purchase server (lite version)
  * Only cares about purchasing the server
  * Does not deploy scripts
- * @param {NS} ns 
+ * @param {NS} ns
  * **/
  export async function main(ns) {
 	ns.disableLog("ALL");
@@ -38,7 +38,6 @@
 		await waitForMoney();
 		ns.purchaseServer(server, pRam);
 		ns.print(`WARN 💰 PURCHASE ${server} @ ${pRam}GB`);
-		await copyAndRunVirus(server);
 	}
 
 	async function autoUpgradeServers() {
