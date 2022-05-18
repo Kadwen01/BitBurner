@@ -21,7 +21,7 @@ export async function main(ns) {
 		'white', padCenter('RAM', 19) + ' │',
 		'white', padCenter('MONEY', 21) + ' │',
 		'white', padCenter('SEC', 7) + '│', // 99/99 100%
-		'white', padCenter('SYM', 5) + ' │',
+		'white', padCenter('MHL', 5) + ' │',
 	);
 	ColorPrint(
 		'white',
@@ -91,6 +91,10 @@ export async function main(ns) {
 		let secPct = (sec - minSec) / (99 - minSec);
 		let secColor = pctColor(1 - secPct);
 
+		let mhl = ns.getServerRequiredHackingLevel(server.name).toString();
+		let mhlColor = mhl > 0 ? `white` : '#555555';
+		mhlColor = hackColor(mhl); 
+		
 		const output = [
 			'white',
 			'│ ',
@@ -121,7 +125,7 @@ export async function main(ns) {
 			'white',
 			' │',
 			'white',
-			server.sym ? server.sym.padStart(5) : ''.padStart(5),
+			mhl.padStart(5),  //server.sym ? server.sym.padStart(5) : ''.padStart(5),
 			'white',
 			' │',
 		];
@@ -153,6 +157,15 @@ function pctColor(pct) {
 	else if (pct != 0) return 'DarkOrange';
 	return 'Red';
 }
+
+function hackColor(ns, mhl) {
+	var phl = ns.getHackingLevel;
+	if (mhl > phl) return 'Red';
+	else if (phl >= mhl) return 'Green';
+	return 'White';
+}
+
+
 
 // Centers text in a padded string of "length" long
 function padCenter(str, length) {

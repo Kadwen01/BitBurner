@@ -1,4 +1,4 @@
-import {solvers} from "./solvers.js";
+import {solvers} from "solvers.js";
 
 export async function main(ns) {
     ns.disableLog("scan");

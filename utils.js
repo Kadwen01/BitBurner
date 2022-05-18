@@ -1,5 +1,6 @@
 var homeServer = "home";
 
+
 /** @param {NS} ns **/
 export function getNetworkNodes(ns) {
 	var visited = {};
@@ -36,7 +37,7 @@ export function penetrate(ns, server, cracks) {
 }
 
 /** @param {NS} ns **/
-function getNumCracks(ns, cracks) {
+export function getNumCracks(ns, cracks) {
 	return Object.keys(cracks).filter(function (file) {
 		return ns.fileExists(file, homeServer);
 	}).length;

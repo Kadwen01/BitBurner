@@ -16,21 +16,22 @@ export async function main(ns) {
 		return ns.getServerMoneyAvailable(homeServ) > ns.getPurchasedServerCost(pRam);
 	}
 
-	//function killVirus(server) {
-	//	if (ns.scriptRunning(virus, server)) {
-	//		ns.scriptKill(virus, server);
-	//	}
-	//}
+	function killVirus(server) {
+		if (ns.scriptRunning(virus, server)) {
+			ns.scriptKill(virus, server);
+		}
+	}
 
-	//async function copyAndRunVirus(server) {
-	//	await ns.scp(virus, server);
-	//	killVirus(server);
-	//	var maxThreads = Math.floor(pRam / virusRam);
-	//	ns.exec(virus, server, maxThreads, target);
-	//}
+	async function copyAndRunVirus(server) {
+		await ns.scp('share-max.js', server);
+		await ns.scp('share.js', server);
+		killVirus(server);
+		var maxThreads = Math.floor(pRam / virusRam);
+		//ns.exec(virus, server, maxThreads, target);
+		ns.exec('share-max.js', server, 1);
+	}
 
 	function shutdownServer(server) {
-		//killVirus(server);
 		ns.killall(server)
 		ns.deleteServer(server);
 	}
@@ -49,14 +50,14 @@ export async function main(ns) {
 			ns.purchaseServer(server, pRam);
 			ns.print(`WARN ⬆️ UPGRADE ${server} @ ${pRam}GB`);
 		}
-		//await copyAndRunVirus(server);
+		await copyAndRunVirus(server);
 	}
 
 	async function purchaseServer(server) {
 		await waitForMoney();
 		ns.purchaseServer(server, pRam);
 		ns.print(`WARN 💰 PURCHASE ${server} @ ${pRam}GB`);
-		//await copyAndRunVirus(server);
+		await copyAndRunVirus(server);
 	}
 
 	async function autoUpgradeServers() {

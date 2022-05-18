@@ -16,21 +16,41 @@ export function list_servers(ns) {
     return list;
 } 
 
-
-
+export function getNumCracks(ns, cracks) {
+	return Object.keys(cracks).filter(function (file) {
+		return ns.fileExists(file, 'home');
+	}).length;
+}
 
 export async function main(ns) {
-	const servers = list_servers(ns).filter((x) => !ns.getPurchasedServers().includes(x) && x != 'home'.length);
-	for (var serv of servers) {
-    	if (ns.getServerMaxMoney(serv) > 0) {
-            if (ns.getRunningScript('nfHack.js', 'home', serv)) {
-            ns.tprint(`INFO Already Hacking ` + serv );
-            continue;
-            } else {
-			    ns.exec ("nfHack.js", 'home', 1, serv);
-			    ns.tprint (`WARN Initilizing Hack on ` + serv);
-            }
-		}
+    
+    var cracks = {
+		"BruteSSH.exe": ns.brutessh,
+		"FTPCrack.exe": ns.ftpcrack,
+		"relaySMTP.exe": ns.relaysmtp,
+		"HTTPWorm.exe": ns.httpworm,
+		"SQLInject.exe": ns.sqlinject
+	};
+    
+    const ncracks = getNumCracks(ns, cracks);
+	const servers = list_servers(ns).filter((x) => !ns.getPurchasedServers().includes(x) && x != 'home'.length && ns.getServerNumPortsRequired(x) <= ncracks );
+	
+    for (var serv of servers) {
+        const maxMoney = ns.getServerMaxMoney(serv);
+        const minSecLv = ns.getServerMinSecurityLevel(serv);
+        const hackLv = ns.getHackingLevel();
+        
+    	if (maxMoney > 0) {
+            if ( minSecLv < hackLv ) {
+                if (ns.getRunningScript('nfHack.js', 'home', serv)) {
+                ns.tprint(`INFO Already Hacking ` + serv );
+                continue;
+                } else {
+                    ns.exec ("nfHack.js", 'home', 1, serv);
+			        ns.tprint (`WARN Initilizing Hack on ` + serv);
+                }
+            } else { ns.tprint ("Hacking level is to low. Try agian later.")}   
+        }
 	}
 	await ns.sleep(1000);
 }
