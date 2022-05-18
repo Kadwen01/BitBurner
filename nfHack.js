@@ -22,30 +22,30 @@ export async function main(ns) {
 	await Exploit(ns, target, pct);
 }
 
-async function Exploit(ns, server) {
+async function Exploit(ns, server, pct) {
 	while (true) {
 		// Security
 		const minSec = ns.getServerMinSecurityLevel(server);
 		const sec = ns.getServerSecurityLevel(server);
-		const tsec = Math.ceil((sec - minSec) * 20);
+		const tsec = Math.ceil((sec - minSec) / 0.05 /* security decrease per thread */);
 
 		// Money
-		var money = ns.getServerMoneyAvailable(server);
+		let money = ns.getServerMoneyAvailable(server);
 		if (money <= 0) money = 1; // division by zero safety
 		const maxMoney = ns.getServerMaxMoney(server);
-		const tmoney = Math.ceil(ns.growthAnalyze(server, maxMoney / money) * 0.25);
+		const tmoney = Math.ceil(ns.growthAnalyze(server, maxMoney / money));
 
 		// Hacking
-		const thack = Math.floor(ns.hackAnalyzeThreads(server, money));
+		const thack = Math.floor(ns.hackAnalyzeThreads(server, money) * pct);
 
 		// Report
 		ns.print('');
 		ns.print(server);
 		ns.print('INFO: Money    : ' + ns.nFormat(money, "$0.000a") + ' / ' + ns.nFormat(maxMoney, "$0.000a") + ' (' + (money / maxMoney * 100).toFixed(2) + '%)');
 		ns.print('INFO: Security : ' + (sec - minSec).toFixed(2));
-		ns.print('INFO: Weaken   : ' + ns.tFormat(ns.getWeakenTime(server)) + ' (t=' + Math.ceil((sec - minSec) * 20) + ')');
-		ns.print('INFO: Grow     : ' + ns.tFormat(ns.getGrowTime(server)) + ' (t=' + Math.ceil(ns.growthAnalyze(server, maxMoney / money)) + ')');
-		ns.print('INFO: Hack     : ' + ns.tFormat(ns.getHackTime(server)) + ' (t=' + Math.ceil(ns.hackAnalyzeThreads(server, money)) + ')');
+		ns.print('INFO: Weaken   : ' + ns.tFormat(ns.getWeakenTime(server)) + ' (t=' + tsec + ')');
+		ns.print('INFO: Grow     : ' + ns.tFormat(ns.getGrowTime(server)) + ' (t=' + tmoney + ')');
+		ns.print('INFO: Hack     : ' + ns.tFormat(ns.getHackTime(server)) + ' (t=' + thack + ')');
 		ns.print('');
 
 		// Check if security is above minimum
@@ -80,7 +80,7 @@ export async function WaitPids(ns, pids) {
 	if (!Array.isArray(pids)) pids = [pids];
 	for (; ;) {
 		let stillRunning = false;
-		for (var pid of pids) {
+		for (const pid of pids) {
 			const process = ns.getRunningScript(pid);
 			if (process != undefined) {
 				stillRunning = true;
@@ -95,25 +95,25 @@ export async function WaitPids(ns, pids) {
 
 async function RunScript(ns, scriptName, target, threads) {
 	// Find all servers
-	var allServers = RecursiveScan(ns);
+	const allServers = RecursiveScan(ns);
 
 	// Sort by maximum memory
-	allServers = allServers.sort((a, b) => ns.getServerMaxRam(b) - ns.getServerMaxRam(a));
+	allServers.sort((a, b) => ns.getServerMaxRam(b) - ns.getServerMaxRam(a));
 
 	// Find script RAM usage
-	var ramPerThread = ns.getScriptRam(scriptName);
+	const ramPerThread = ns.getScriptRam(scriptName);
 
 	// Find usable servers
-	var usableServers = allServers.filter(p => ns.hasRootAccess(p) && ns.getServerMaxRam(p) > 0);
+	const usableServers = allServers.filter(p => ns.hasRootAccess(p) && ns.getServerMaxRam(p) > 0);
 
 	// Fired threads counter
-	var fired = 0;
-	var pids = [];
+	let fired = 0;
+	const pids = [];
 
 	for (const server of usableServers) {
 		// Determin how many threads we can run on target server for the given script
-		var availableRam = ns.getServerMaxRam(server) - ns.getServerUsedRam(server);
-		var possibleThreads = Math.floor(availableRam / ramPerThread);
+		const availableRam = ns.getServerMaxRam(server) - ns.getServerUsedRam(server);
+		let possibleThreads = Math.floor(availableRam / ramPerThread);
 
 		// Check if server is already at max capacity
 		if (possibleThreads <= 0)
