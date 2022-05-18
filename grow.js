@@ -32,7 +32,6 @@ export async function main(ns) {
                 ns.tprint(`Launching script '${script}' on server '${server}' with ${threads} threads`);
 	            await ns.scp(script, ns.getHostname(), server);
 	            ns.exec(script, server, threads);
-                ns.sleep(0);
             } else {
                 ns.tprint(`Server '${server}' is at capacity`);
             }

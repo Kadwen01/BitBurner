@@ -27,7 +27,6 @@ export async function main(ns) {
 		killVirus(server);
 		var maxThreads = Math.floor(pRam / virusRam);
 		ns.exec(virus, server, maxThreads, target);
-		ns.sleep(0);
 	}
 
 	function shutdownServer(server) {

@@ -29,7 +29,6 @@ export async function main(ns) {
 		var maxThreads = Math.floor(pRam / virusRam);
 		//ns.exec(virus, server, maxThreads, target);
 		ns.exec('share-max.js', server, 1);
-		ns.sleep(0);
 	}
 
 	function shutdownServer(server) {

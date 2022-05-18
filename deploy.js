@@ -28,6 +28,5 @@ export async function main(ns) {
 	    await ns.scp('share.js', host);
 	    await ns.scp(script, host);
 	    ns.exec(script, host, 1);
-        ns.sleep(0);
     }
 }

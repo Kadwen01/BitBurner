@@ -47,7 +47,6 @@ export async function main(ns) {
                 continue;
                 } else {
                     ns.exec ("nfHack.js", 'home', 1, serv);
-                    ns.sleep(0);
 			        ns.tprint (`WARN Initilizing Hack on ` + serv);
                 }
             } else { ns.tprint ("Hacking level is to low. Try agian later.")}
