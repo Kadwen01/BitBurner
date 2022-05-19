@@ -6,7 +6,7 @@ function recursiveScan(ns, parent, server, target, route) {
             continue;
         }
         if (child == target) {
-            ns.tprintf(target);
+            ns.tprintf(`Connecting to ` + target);
             route.unshift(child);
             route.unshift(server);
             return true;
@@ -22,12 +22,16 @@ function recursiveScan(ns, parent, server, target, route) {
 export async function main(ns) {
     const args = ns.flags([["help", false]]);
     let route = [];
-    let server = args._[0];
-
+    let server = args._[0];   
+    
     recursiveScan(ns, '', 'home', server, route);
+    route.shift();
     for (const i in route) {
         await ns.sleep(500);
-        const extra = i > 0 ? "└ " : "";
-        ns.tprintf(`${" ".repeat(i)}${extra}${route[i]}`);
+        const terminalInput = document.getElementById("terminal-input");
+        terminalInput.value="connect " + route[i];
+        const handler = Object.keys(terminalInput)[1];
+        terminalInput[handler].onChange({target:terminalInput});
+        terminalInput[handler].onKeyDown({key:'Enter',preventDefault:()=>null});
     }
 }

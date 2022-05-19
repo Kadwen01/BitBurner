@@ -93,7 +93,7 @@ export async function main(ns) {
 		takeTendies(stocks);
 		yolo(stocks);
 		ns.print("Stock value: " + ns.nFormat(overallValue, '$0.00a'));
-		ns.print("");
+		ns.print(" ");
 		overallValue = 0;
 		// @TODO - Extend for market manipulation
 		// - hack -> makes stock more likely to go down

@@ -33,36 +33,64 @@ export function vals(ns, nserver, used, max, minhl, fcash, fmcash) {
 }
 
 
+export function ColorPrint() {
+    let findProp = propName => {
+       for (let div of eval("document").querySelectorAll("div")) {
+          let propKey = Object.keys(div)[1];
+          if (!propKey) continue;
+          let props = div[propKey];
+          if (props.children?.props && props.children.props[propName]) return props.children.props[propName];
+          if (props.children instanceof Array) for (let child of props.children) if (child?.props && child.props[propName]) return child.props[propName];
+       }
+    };
+    let term = findProp("terminal");
+ 
+    let out = [];
+    for (let i = 0; i < arguments.length; i += 2) {
+       out.push(React.createElement("span", { style: { color: `${arguments[i]}` } }, arguments[i + 1]))
+    }
+    try {
+       term.printRaw(out);
+    }
+    catch { }
+ }
+
+
+
 /** @param {NS} ns **/
 export async function main(ns) {
     
     const servers = list_servers(ns).filter((x) => !ns.getPurchasedServers().includes(x) && x != 'home'.length && x != 'darkweb');
     const phl = ns.getHackingLevel() ;
 
-    ns.tprint(`My Hacking levl is ${phl}`);
-    ns.tprint("");
-    ns.tprint(`Servers that are hackable`);
+    ns.tprintf(` `); 
+    ns.tprintf(`My Hacking levl is ${phl}`);
+    ns.tprintf(` `);
+    ns.tprintf(`Servers that are hackable`);
 
     for(const server of servers) {       
         const nserver = server.padEnd(18, ' '); 
-	    const used = ns.getServerUsedRam(server).toString().padStart(3, ' ');
+	    const used = ns.getServerUsedRam(server).toString().padStart(6, ' ');
         const max = ns.getServerMaxRam(server).toString().padStart(3, ' ');
         const minhl = ns.getServerRequiredHackingLevel(server).toString().padEnd(4, ' ');
         const cash = ns.getServerMoneyAvailable(server);
         const fcash = ns.nFormat(cash, '0.00a').toString().padStart(7, ' ');
         const mcash = ns.getServerMaxMoney(server);
-        const fmcash = ns.nFormat(mcash, '0.00a').toString().padStart(7, ' '); 
+        const fmcash = ns.nFormat(mcash, '0.00a').toString().padStart(7, ' ');
+        const growime = ns.tFormat(ns.getGrowTime(server));
+        //ns.tprintf(growime); 
         
         if ( phl > minhl ) {
-            ns.tprint(`${nserver} ${used} GB/${max} GB  MHL: ${minhl} Cash: ${fcash}/${fmcash}`);
+            ColorPrint('white', nserver , 'yellow', used + 'GB/' + max + 'GB ', 'lime', 'MHL: '+ minhl, 'orange', ' Cash:' + fcash + '/' + fmcash , 'lime' , + '   ' + growime);
         }
     }
-    ns.tprint(``);
-    ns.tprint(`Severs not yet hackable`);
-
+    ns.tprintf(` `);
+    ColorPrint('red', `Severs not yet hackable`);
+    var serversi = servers;
+    //ns.tprintf(serversi);
     for(const server of servers) {
         const nserver = server.padEnd(18, ' '); 
-	    const used = ns.getServerUsedRam(server).toString().padStart(3, ' ');
+	    const used = ns.getServerUsedRam(server).toString().padStart(6, ' ');
         const max = ns.getServerMaxRam(server).toString().padStart(3, ' ');
         const minhl = ns.getServerRequiredHackingLevel(server).toString().padEnd(4, ' ');
         const cash = ns.getServerMoneyAvailable(server);
@@ -71,7 +99,7 @@ export async function main(ns) {
         const fmcash = ns.nFormat(mcash, '0.00a').toString().padStart(7, ' '); 
         
         if ( phl < minhl ) {
-            ns.tprint(`${nserver} ${used} GB/${max} GB  MHL: ${minhl} Cash: ${fcash}/${fmcash}`);
+            ColorPrint('gray', nserver , 'yellow', used + 'GB/' + max + 'GB ', 'lime', 'MHL: '+ minhl, 'orange', ' Cash:' + fcash + '/' + fmcash);
         }
     }
 }

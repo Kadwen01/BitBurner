@@ -42,14 +42,14 @@ export function attemptContract(ns, contract) {
         const solution = solver(ns.codingcontract.getData(contract.file, contract.host));
         const reward = ns.codingcontract.attempt(solution, contract.file, contract.host, {returnReward:true});
         if (reward) {
-            ns.tprint(`${reward} for solving "${contract.type}" on ${contract.host}`);
+            ns.tprintf(`${reward} for solving "${contract.type}" on ${contract.host}`);
         }
         else {
-            ns.tprint(`ERROR: Failed to solve "${contract.type}" on ${contract.host}`);
+            ns.tprintf(`ERROR: Failed to solve "${contract.type}" on ${contract.host}`);
         }
     }
     else {
-        ns.tprint(`WARNING: No solver for "${contract.type}" on ${contract.host}`);
+        ns.tprintf(`WARNING: No solver for "${contract.type}" on ${contract.host}`);
     }
 }
 

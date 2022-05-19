@@ -1,6 +1,5 @@
 var homeServer = "home";
 
-
 /** @param {NS} ns **/
 export function getNetworkNodes(ns) {
 	var visited = {};
@@ -37,7 +36,7 @@ export function penetrate(ns, server, cracks) {
 }
 
 /** @param {NS} ns **/
-export function getNumCracks(ns, cracks) {
+function getNumCracks(ns, cracks) {
 	return Object.keys(cracks).filter(function (file) {
 		return ns.fileExists(file, homeServer);
 	}).length;
@@ -91,7 +90,6 @@ export function getThresholds(ns, node) {
 	var moneyThresh = ns.getServerMaxMoney(node) * 0.75;
 	var secThresh = ns.getServerMinSecurityLevel(node) + 5;
 	return {
-		node,
 		moneyThresh,
 		secThresh
 	}

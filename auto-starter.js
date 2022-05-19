@@ -10,10 +10,11 @@ export async function main(ns) {
 	const port = 18;
 
 	// Auto starter fields
-	const autoDeployScript = "auto-deploy.js";
-	const autoPurchaseServerScript = "auto-purchase-server.js";
+	const autoDeployScript = "nfHack.js";
+	const autoPurchaseServerScript = "auto_purchase_server.js";
 	const apsLiteScript = "aps-lite.js"
 	const launchFleetsScript = "launch-fleets.js";
+	const stockTraderScript = "diamond-hands.js";
 	const homeServ = "home";
 	const tick = 10000; // 10s
 	let curTarget = "n00dles";
@@ -92,6 +93,7 @@ export async function main(ns) {
 			ns.scriptKill(autoPurchaseServerScript, homeServ);
 			ns.exec(autoDeployScript, homeServ, 1, newTarget);
 			ns.exec(autoPurchaseServerScript, homeServ, 1, newTarget);
+			ns.exec(stockTraderScript);
 			curTarget = newTarget;
 		}
 	}

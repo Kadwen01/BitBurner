@@ -69,11 +69,11 @@ export async function main(ns) {
 		let freeRam = ns.getServerMaxRam(server.name) - ns.getServerUsedRam(server.name);
 		let freeRamColor = freeRam > 0 ? 'white' : '#555555';
 		let freeRamString = maxRam > 0 ? ns.nFormat(freeRam * 1000000000, '0.0b') : '';
-
+		
 		let ramPct = maxRam > 0 ? (freeRam / maxRam * 100).toFixed(0) + '%' : '';
 
 		freeRamColor = pctColor(freeRam / maxRam);
-
+		
 		let money = ns.getServerMoneyAvailable(server.name);
 		let moneyMax = ns.getServerMaxMoney(server.name);
 
@@ -91,43 +91,30 @@ export async function main(ns) {
 		let secPct = (sec - minSec) / (99 - minSec);
 		let secColor = pctColor(1 - secPct);
 
+		let phl = ns.getHackingLevel();	
 		let mhl = ns.getServerRequiredHackingLevel(server.name).toString();
-		let mhlColor = mhl > 0 ? `white` : '#555555';
-		mhlColor = hackColor(mhl); 
-		
+		let mhlColor = mhl < phl ? `lime` : 'red';
+
 		const output = [
-			'white',
-			'│ ',
+			'white','│ ',
 			'gray', prefix,
-			'white', server.name,
+			mhlColor, server.name,
 			lineColor, ''.padEnd(47 - len, '─'),
-			'white',
-			'│',
+			'white','│',
 			freeRamColor, freeRamString.padStart(7),
 			'white', maxRam == 0 ? ' ' : '/',
 			ramColor, ramString.padStart(7),
-			freeRamColor,
-			ramPct.padStart(5),
-			'white',
-			'│',
-			moneyColor,
-			moneyString,
-			'white',
-			moneyMax > 0 ? '/' : ' ',
-			maxMoneyColor,
-			maxMoneyString,
-			moneyColor,
-			moneyPct.padStart(5),
-			'white',
-			'│',
-			secColor,
-			moneyMax > 0 ? (sec - minSec).toFixed(2).padStart(6) : ''.padEnd(6),
-			'white',
-			' │',
-			'white',
-			mhl.padStart(5),  //server.sym ? server.sym.padStart(5) : ''.padStart(5),
-			'white',
-			' │',
+			freeRamColor, ramPct.padStart(5),
+			'white','│',
+			moneyColor, moneyString,
+			'white', moneyMax > 0 ? '/' : ' ',
+			maxMoneyColor, maxMoneyString,
+			moneyColor, moneyPct.padStart(5),
+			'white','│',
+			secColor, moneyMax > 0 ? (sec - minSec).toFixed(2).padStart(6) : ''.padEnd(6),
+			'white', ' │',
+			mhlColor, mhl.padStart(5),  //server.sym ? server.sym.padStart(5) : ''.padStart(5),
+			'white', ' │',
 		];
 
 		ColorPrint(...output);
@@ -157,15 +144,6 @@ function pctColor(pct) {
 	else if (pct != 0) return 'DarkOrange';
 	return 'Red';
 }
-
-function hackColor(ns, mhl) {
-	var phl = ns.getHackingLevel;
-	if (mhl > phl) return 'Red';
-	else if (phl >= mhl) return 'Green';
-	return 'White';
-}
-
-
 
 // Centers text in a padded string of "length" long
 function padCenter(str, length) {

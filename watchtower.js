@@ -1,4 +1,6 @@
-import { getPotentialTargets } from "./find_targets.js";
+import { 
+	getPotentialTargets
+} from "./find_targets.js";
 
 /** @param {NS} ns **/
 export async function main(ns) {
