@@ -1,12 +1,12 @@
 /** @param {NS} ns */
-function scan(ns, parent, server, list) {
+
+export function scan(ns, parent, server, list) {
     const children = ns.scan(server);
     for (let child of children) {
-        if (parent == child) {
-            continue;
+        if (parent != child) {
+            list.push(child);
+            scan(ns, server, child, list);
         }
-        list.push(child);
-        scan(ns, server, child, list);
     }
 }
 
