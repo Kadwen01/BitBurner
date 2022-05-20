@@ -22,8 +22,8 @@ export function vals(ns, nserver, used, max, minhl, fcash, fmcash) {
 
     for(const server of servers) {       
         const nserver = server.padEnd(18, ' '); 
-	    const used = ns.getServerUsedRam(server).toString().padStart(3, ' ');
-        const max = ns.getServerMaxRam(server).toString().padStart(3, ' ');
+	    const used = ns.getServerUsedRam(server).toString().padStart(4, ' ');
+        const max = ns.getServerMaxRam(server).toString().padStart(4, ' ');
         const minhl = ns.getServerRequiredHackingLevel(server).toString().padEnd(4, ' ');
         const cash = ns.getServerMoneyAvailable(server);
         const fcash = ns.nFormat(cash, '0.00a').toString().padStart(7, ' ');
@@ -68,30 +68,38 @@ export async function main(ns) {
     ns.tprintf(` `);
     ns.tprintf(`Servers that are hackable`);
 
+
+    ColorPrint('white','___________________________________________________________________');
+
     for(const server of servers) {       
         const nserver = server.padEnd(18, ' '); 
-	    const used = ns.getServerUsedRam(server).toString().padStart(6, ' ');
-        const max = ns.getServerMaxRam(server).toString().padStart(3, ' ');
+	    const used = ns.getServerUsedRam(server).toString().padStart(5, ' ');
+        const max = ns.getServerMaxRam(server).toString().padStart(4, ' ');
         const minhl = ns.getServerRequiredHackingLevel(server).toString().padEnd(4, ' ');
         const cash = ns.getServerMoneyAvailable(server);
         const fcash = ns.nFormat(cash, '0.00a').toString().padStart(7, ' ');
         const mcash = ns.getServerMaxMoney(server);
         const fmcash = ns.nFormat(mcash, '0.00a').toString().padStart(7, ' ');
-        const growime = ns.tFormat(ns.getGrowTime(server));
-        //ns.tprintf(growime); 
+        //const growime = ns.tFormat(ns.getGrowTime(server)).padEnd(23, ' ');
+        //const potExp = (ns.getHackingLevel() - ns.getServerRequiredHackingLevel(server)) / ns.getHackingLevel();
         
         if ( phl > minhl ) {
-            ColorPrint('white', nserver , 'yellow', used + 'GB/' + max + 'GB ', 'lime', 'MHL: '+ minhl, 'orange', ' Cash:' + fcash + '/' + fmcash , 'lime' , + '   ' + growime);
+            ColorPrint('white', '| ', 'white', nserver , 'yellow' , used + 'GB/' + max + 'GB ' , 'lime' , 'MHL: '+ minhl , 'orange' , ' Cash:' + fcash + '/' + fmcash,'white',' |');
         }
     }
+
+    ColorPrint('white','___________________________________________________________________');
+
     ns.tprintf(` `);
     ColorPrint('red', `Severs not yet hackable`);
     var serversi = servers;
-    //ns.tprintf(serversi);
+    
+    ColorPrint('white','___________________________________________________________________');
+   
     for(const server of servers) {
         const nserver = server.padEnd(18, ' '); 
-	    const used = ns.getServerUsedRam(server).toString().padStart(6, ' ');
-        const max = ns.getServerMaxRam(server).toString().padStart(3, ' ');
+	    const used = ns.getServerUsedRam(server).toString().padStart(4, ' ');
+        const max = ns.getServerMaxRam(server).toString().padStart(4, ' ');
         const minhl = ns.getServerRequiredHackingLevel(server).toString().padEnd(4, ' ');
         const cash = ns.getServerMoneyAvailable(server);
         const fcash = ns.nFormat(cash, '0.00a').toString().padStart(7, ' ');
@@ -99,7 +107,10 @@ export async function main(ns) {
         const fmcash = ns.nFormat(mcash, '0.00a').toString().padStart(7, ' '); 
         
         if ( phl < minhl ) {
-            ColorPrint('gray', nserver , 'yellow', used + 'GB/' + max + 'GB ', 'lime', 'MHL: '+ minhl, 'orange', ' Cash:' + fcash + '/' + fmcash);
+            ColorPrint('white', '| ', 'gray', nserver , 'yellow' , used + 'GB/' + max + 'GB ' , 'lime' , 'MHL: '+ minhl , 'orange' , ' Cash:' + fcash + '/' + fmcash,'white',' |');
+           
         }
     }
+    ColorPrint('white','___________________________________________________________________');
+
 }

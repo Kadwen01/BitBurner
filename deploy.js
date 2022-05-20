@@ -3,11 +3,10 @@
 export function scan(ns, parent, server, list) {
     const children = ns.scan(server);
     for (let child of children) {
-        if (parent == child) {
-            continue;
+        if (parent != child) {
+            list.push(child);
+            scan(ns, server, child, list);
         }
-        list.push(child);
-        scan(ns, server, child, list);
     }
 }
 
@@ -20,7 +19,8 @@ export function list_servers(ns) {
 export async function main(ns) {
 	
     const servers = list_servers(ns);
-	const script = 'share-max.js';
+	const script = 'selfhack.js';
+    //const script = 'share-max.js';
 	
 	for (var host of servers) {
     	ns.killall(host);

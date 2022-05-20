@@ -2,11 +2,10 @@
 export function scan(ns, parent, server, list) {
     const children = ns.scan(server);
     for (let child of children) {
-        if (parent == child) {
-            continue;
+        if (parent != child) {
+            list.push(child);
+            scan(ns, server, child, list);
         }
-        list.push(child);
-        scan(ns, server, child, list);
     }
 }
 
@@ -33,7 +32,7 @@ export async function main(ns) {
 	};
     
     const ncracks = getNumCracks(ns, cracks);
-	const servers = list_servers(ns).filter((x) => !ns.getPurchasedServers().includes(x) && x != 'home'.length && ns.getServerNumPortsRequired(x) <= ncracks );
+	const servers = list_servers(ns).filter((x) => !ns.getPurchasedServers().includes(x) && x != 'home' && ns.getServerNumPortsRequired(x) <= ncracks );
 	
     for (var serv of servers) {
         const maxMoney = ns.getServerMaxMoney(serv);
