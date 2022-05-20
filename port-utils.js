@@ -13,7 +13,7 @@ function isInputPort(port) {
 /** @param {NS} ns **/
 export function pushToInputPort(ns, eventType, reqId, data, port) {
 	if (!isInputPort(port)) {
-		ns.tprint(`ERROR\t Input ports must be between ${minInputPort} and ${maxInputPort}!`);
+		ns.tprintf(`ERROR\t Input ports must be between ${minInputPort} and ${maxInputPort}!`);
 		return;
 	}
 	const handle = ns.getPortHandle(port);

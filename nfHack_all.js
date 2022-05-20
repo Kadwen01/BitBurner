@@ -42,13 +42,12 @@ export async function main(ns) {
     	if (maxMoney > 0) {
             if ( minSecLv < hackLv ) {
                 if (ns.getRunningScript('nfHack.js', 'home', serv)) {
-                ns.tprint(`INFO Already Hacking ` + serv );
-                continue;
+                    ns.tprint(`INFO Already Hacking ` + serv );
                 } else {
                     ns.exec ("nfHack.js", 'home', 1, serv);
-			        ns.tprint (`WARN Initilizing Hack on ` + serv);
+			        ns.tprintf(`WARN Initilizing Hack on ` + serv);
                 }
-            } else { ns.tprint (serv + ": Hacking level is to low. Try agian later.")}   
+            } else { ns.tprintf(serv + ": Hacking level is to low. Try agian later.")}   
         }
 	}
 	await ns.sleep(1000);

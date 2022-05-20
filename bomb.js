@@ -5,7 +5,7 @@ export async function main(ns) {
 
 function breakIn(ns, server)
 {
-    ns.tprint(server)
+    ns.print(server)
 
     try {ns.brutessh(server)} catch{}
     try {ns.ftpcrack(server)} catch{}
