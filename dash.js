@@ -5,35 +5,28 @@ export async function main(ns) {
 	await GetSymbolAssociations(ns, servers);
 
 	ColorPrint(
-		'white',
-		'┌'.padEnd(49, '─') + '┬',
-		'white',
-		''.padEnd(20, '─') + '┬',
-		'white',
-		''.padEnd(22, '─') + '┬',
-		'white',
-		''.padEnd(7, '─') + '┬',
-		'white',
-		''.padEnd(6, '─') + '┬',
+		'white','┌'.padEnd(48, '─') + '┬',
+		'white',''.padEnd(15, '─') + '┬',
+		'white',''.padEnd(17, '─') + '┬',
+		'white',''.padEnd(7, '─') + '┬',
+		'white',''.padEnd(5, '─') + '┬',
+		'white',''.padEnd(5,'─') + '┬',
 	);
 	ColorPrint(
-		'white', '│ SERVERS'.padEnd(47) + '  │',
-		'white', padCenter('RAM', 19) + ' │',
-		'white', padCenter('MONEY', 21) + ' │',
+		'white', '│ SERVERS'.padEnd(48) + '│',
+		'white', padCenter('RAM', 15) + '│',
+		'white', padCenter('MONEY', 17) + '│',
 		'white', padCenter('SEC', 7) + '│', // 99/99 100%
-		'white', padCenter('MHL', 5) + ' │',
+		'white', padCenter('MHL', 5) + '│',
+		'white', padCenter('SYM', 5) + '|',
 	);
 	ColorPrint(
-		'white',
-		'├'.padEnd(49, '─') + '┼',
-		'white',
-		''.padEnd(20, '─') + '┼',
-		'white',
-		''.padEnd(22, '─') + '┼',
-		'white',
-		''.padEnd(7, '─') + '┼',
-		'white',
-		''.padEnd(6, '─') + '┼',
+		'white','├'.padEnd(48, '─') + '┼',
+		'white',''.padEnd(15, '─') + '┼',
+		'white',''.padEnd(17, '─') + '┼',
+		'white',''.padEnd(7, '─') + '┼',
+		'white',''.padEnd(5, '─') + '┼',
+		'white',''.padEnd(5, '─') + '┼',
 	);
 
 	// ┼
@@ -46,6 +39,10 @@ export async function main(ns) {
 		let nextDepth = i >= servers.length - 1 ? -1 : servers[i + 1].route.length - 1;
 		let lastRootChild = lastChildAtDepth(servers, i, depth);
 		let prefix = '';
+		let factions = ["CSEC","avmnite-02h","I.I.I.I","run4theh111z"];
+		let endGame = ["The-Cave","w0r1d_d43m0n"];
+
+		
 
 		for (let j = 1; j <= depth; j++) {
 			if (nextDepth >= depth && j == depth) {
@@ -65,23 +62,17 @@ export async function main(ns) {
 		let maxRam = ns.getServerMaxRam(server.name);
 		let ramColor = maxRam > 0 ? 'white' : '#555555';
 		let ramString = maxRam > 0 ? ns.nFormat(maxRam * 1000000000, '0.0b') : 'N/A';
-
 		let freeRam = ns.getServerMaxRam(server.name) - ns.getServerUsedRam(server.name);
 		let freeRamColor = freeRam > 0 ? 'white' : '#555555';
 		let freeRamString = maxRam > 0 ? ns.nFormat(freeRam * 1000000000, '0.0b') : '';
-		
-		let ramPct = maxRam > 0 ? (freeRam / maxRam * 100).toFixed(0) + '%' : '';
-
+		//let ramPct = maxRam > 0 ? (freeRam / maxRam * 100).toFixed(0) + '%' : '';
 		freeRamColor = pctColor(freeRam / maxRam);
 		
 		let money = ns.getServerMoneyAvailable(server.name);
 		let moneyMax = ns.getServerMaxMoney(server.name);
-
-		let moneyPct = moneyMax > 0 ? (money / moneyMax * 100).toFixed(0) + '%' : '';
-
+		//let moneyPct = moneyMax > 0 ? (money / moneyMax * 100).toFixed(0) + '%' : '';
 		let moneyString = moneyMax > 0 ? ns.nFormat(money, '0.00a').padStart(8) : ''.padStart(8);
 		let moneyColor = pctColor(money / moneyMax);
-
 		let maxMoneyString = moneyMax > 0 ? ns.nFormat(moneyMax, '0.00a').padStart(8) : 'N/A'.padStart(8);
 		let maxMoneyColor = moneyMax > 0 ? 'white' : '#555555';
 
@@ -93,45 +84,31 @@ export async function main(ns) {
 
 		let phl = ns.getHackingLevel();	
 		let mhl = ns.getServerRequiredHackingLevel(server.name).toString();
-		let mhlColor = mhl < phl ? `lime` : 'red';
+		let mhlColor = mhl <= phl ? `lime` : 'red';
 
-		const output = [
-			'white','│ ',
-			'gray', prefix,
-			mhlColor, server.name,
-			lineColor, ''.padEnd(47 - len, '─'),
-			'white','│',
-			freeRamColor, freeRamString.padStart(7),
-			'white', maxRam == 0 ? ' ' : '/',
-			ramColor, ramString.padStart(7),
-			freeRamColor, ramPct.padStart(5),
-			'white','│',
-			moneyColor, moneyString,
-			'white', moneyMax > 0 ? '/' : ' ',
-			maxMoneyColor, maxMoneyString,
-			moneyColor, moneyPct.padStart(5),
-			'white','│',
-			secColor, moneyMax > 0 ? (sec - minSec).toFixed(2).padStart(6) : ''.padEnd(6),
-			'white', ' │',
-			mhlColor, mhl.padStart(5),  //server.sym ? server.sym.padStart(5) : ''.padStart(5),
-			'white', ' │',
-		];
+		let factionColor = factions.includes(server.name) ? "yellow" : mhlColor;
+		let thePill = endGame.includes(server.name) ? "orange" : factionColor;
 
-		ColorPrint(...output);
+		ColorPrint(
+			'white','│','gray',prefix, thePill ,server.name, lineColor, ''.padEnd(47 - len, '─'),
+			'white','│', freeRamColor, freeRamString.padStart(7), 'white', maxRam == 0 ? ' ' : '/', ramColor, ramString.padStart(7), //freeRamColor, ramPct.padStart(5),
+			'white','│', moneyColor, moneyString, 'white', moneyMax > 0 ? '/' : ' ', maxMoneyColor, maxMoneyString, //moneyColor, moneyPct.padStart(5),
+			'white','│', secColor, moneyMax > 0 ? (sec - minSec).toFixed(2).padStart(7) : ''.padEnd(7),
+			'white','│', mhlColor, mhl.padStart(5),  
+			'white','|', 'white', (server.sym.length != 0) ? server.sym.padStart(5) : ''.padStart(5),
+			'white','|', 
+		);
 	}
 
 	ColorPrint(
-		'white',
-		'└'.padEnd(49, '─') + '┴',
-		'white',
-		''.padEnd(20, '─') + '┴',
-		'white',
-		''.padEnd(22, '─') + '┴',
-		'white',
-		''.padEnd(7, '─') + '┴',
-		'white',
-		''.padEnd(6, '─') + '┴',
+		'white','└'.padEnd(48, '─') + '┴',
+		'white',''.padEnd(15, '─') + '┴',
+		'white',''.padEnd(17, '─') + '┴',
+		'white',''.padEnd(7, '─') + '┴',
+		'white',''.padEnd(5, '─') + '┴',
+		'white',''.padEnd(5, '─') + '┴',
 	);
+	
 }
 
 // Selects a color based on a 1-based percentage

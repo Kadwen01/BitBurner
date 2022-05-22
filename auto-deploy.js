@@ -20,7 +20,7 @@ export async function main(ns) {
 	var virusRam = ns.getScriptRam(virus);
 
 	async function copyAndRunVirus(server) {
-		ns.print("Copying virus " + virus + " to server: " + server);
+		ns.print("Copying virus " + virus +  " to server: " + server);
 		await ns.scp(virus, server);
 		ns.killall(server);
 		var maxThreads = Math.floor(ns.getServerMaxRam(server) / virusRam);

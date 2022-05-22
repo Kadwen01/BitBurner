@@ -47,7 +47,7 @@ export async function main(ns) {
 			// HOLD
 			const curValue = stock.cost + stock.profit
 			const roi = ns.nFormat(100 * (stock.profit / stock.cost), "0.00");
-			ns.print(`INFO\t ${stock.summary} LONG ${ns.nFormat(curValue, '0a')} ${roi}%`);
+			ns.print(`INFO\t${stock.summary} LONG ${ns.nFormat(curValue, '0a')} ${roi}%`);
 			overallValue += curValue;
 		} else {
 			// Take tendies!

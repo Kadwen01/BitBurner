@@ -59,10 +59,9 @@ export async function main(ns) {
 		// Add purchased server
 		var i = 0;
 		var servPrefix = "pserv-";
-		while (ns.serverExists(servPrefix + i)) {
+		while(ns.serverExists(servPrefix + i)) {
 			servers.push(servPrefix + i);
 			++i;
-			await ns.sleep(100);
 		}
 
 		return servers.reduce((acc, node) => {
@@ -292,10 +291,8 @@ export async function main(ns) {
 					var pid = 0;
 					while (ns.exec(virus, ship.serv, ship.threads, action, targetNode, ship.delay, pid) === 0) {
 						pid++;
-						await ns.sleep(tick)
 					}
 					logShipAction(ship, action, targetNode);
-					
 				}
 			}
 			// Delete assigned from list of fleets

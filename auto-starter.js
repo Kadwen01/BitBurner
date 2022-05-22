@@ -8,12 +8,15 @@ export async function main(ns) {
 	const reqDuration = 250;
 	const maxTicks = 5;
 	const port = 18;
+	const player = ns.getPlayer();
 
 	// Auto starter fields
 	const autoDeployScript = "auto-deploy.js";
 	const autoPurchaseServerScript = "auto-purchase-server.js";
 	const apsLiteScript = "aps-lite.js"
 	const launchFleetsScript = "launch-fleets.js";
+	const contactSolverScript = "contract-solver.js";
+	const stockmarketScript = "diamond-hands.js"; 
 	const homeServ = "home";
 	const tick = 10000; // 10s
 	let curTarget = "n00dles";
@@ -46,6 +49,15 @@ export async function main(ns) {
 		}
 	}
 
+	function stonks() {
+		if (player.hasWseAccount && player.hasTixApiAccess && player.has4SData && player.has4SDataTixApi === true){
+			if (ns.isRunning(stockmarketScript, homeServ) != true){
+				ns.tprintf(`WARN Stonks can be automated`);
+				ns.exec(stockmarketScript, homeServ);
+			} else {ns.tprintf("not yet")}
+        }
+	}
+
 	function killDependencies() {
 		for (const service of Object.keys(dependencies)) {
 			if (ns.scriptRunning(service, homeServ)) {
@@ -74,12 +86,13 @@ export async function main(ns) {
 	}
 
 	function launchFleetsAndExit() {
-		ns.tprint(`WARN Formulas.exe purchased! Swapping to launch-fleets!`);
+		ns.tprintf(`WARN Formulas.exe purchased! Swapping to launch-fleets!`);
 		killDependencies();
 		ns.scriptKill(autoDeployScript, homeServ);
 		ns.scriptKill(autoPurchaseServerScript, homeServ);
 		ns.exec(launchFleetsScript, homeServ);
 		ns.exec(apsLiteScript, homeServ);
+		ns.exec(contactSolverScript, homeServ);
 		ns.exit();
 	}
 
