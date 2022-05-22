@@ -13,7 +13,8 @@ export async function main(ns) {
         'kill-network-scripts.js',
         'hack-pirate.js',
         'grow-pirate.js',
-        'launch-fleets.js'
+        'launch-fleets.js',
+        'ap-hacknet-node.js'
     ];
 
     for (const script of list){

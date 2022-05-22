@@ -558,6 +558,49 @@ solvers["Proper 2-Coloring of a Graph"] = ([N, edges]) => {
     return coloring;
 };
 
+solvers["Compression II: LZ Decompression"] = (_data) => {
+  let plain = "";
+
+  for (let i = 0; i < _data.length; ) {
+    const literal_length = _data.charCodeAt(i) - 0x30;
+
+    if (literal_length < 0 || literal_length > 9 || i + 1 + literal_length > _data.length) {
+      return null;
+    }
+
+    plain += _data.substring(i + 1, i + 1 + literal_length);
+    i += 1 + literal_length;
+
+    if (i >= _data.length) {
+      break;
+    }
+    const backref_length = _data.charCodeAt(i) - 0x30;
+
+    if (backref_length < 0 || backref_length > 9) {
+      return null;
+    } else if (backref_length === 0) {
+      ++i;
+    } else {
+      if (i + 1 >= _data.length) {
+        return null;
+      }
+
+      const backref_offset = _data.charCodeAt(i + 1) - 0x30;
+      if ((backref_length > 0 && (backref_offset < 1 || backref_offset > 9)) || backref_offset > plain.length) {
+        return null;
+      }
+
+      for (let j = 0; j < backref_length; ++j) {
+        plain += plain[plain.length - backref_offset];
+      }
+
+      i += 2;
+    }
+  }
+
+  return plain;
+}
+
 
 
 function convert2DArrayToString(arr){
