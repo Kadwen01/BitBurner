@@ -41,7 +41,7 @@ async function Exploit(ns, server, pct) {
 		// Report
 		ns.print('');
 		ns.print(server);
-		ns.print('INFO: Money    : ' + ns.nFormat(money, "$0.000a") + ' / ' + ns.nFormat(maxMoney, "$0.000a") + ' (' + (money / maxMoney * 100).toFixed(2) + '%)');
+		ns.print('INFO: Money    : ' + ns.nFormat(money, "$0.00a") + ' / ' + ns.nFormat(maxMoney, "$0.00a") + ' (' + (money / maxMoney * 100).toFixed(2) + '%)');
 		ns.print('INFO: Security : ' + (sec - minSec).toFixed(2));
 		ns.print('INFO: Weaken   : ' + ns.tFormat(ns.getWeakenTime(server)) + ' (t=' + tsec + ')');
 		ns.print('INFO: Grow     : ' + ns.tFormat(ns.getGrowTime(server)) + ' (t=' + tmoney + ')');
@@ -73,6 +73,7 @@ async function Exploit(ns, server, pct) {
 			ns.print('WARN: Waiting for script completion (' + ns.tFormat(ns.getHackTime(server)) + ')');
 			await WaitPids(ns, pid);
 		}
+		await ns.sleep(1000);
 	}
 }
 

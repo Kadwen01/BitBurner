@@ -31,6 +31,6 @@ export async function main(ns) {
     }
 }
 
-export function autocomplete(data, args) {
+export function autocomplete(data) {
     return data.servers;
 }

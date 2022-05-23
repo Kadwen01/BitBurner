@@ -3,7 +3,7 @@ export async function main(ns) {
     const host = ns.getHostname();
 	const availableRam = ns.getServerMaxRam(host) - ns.getServerUsedRam(host); 
 	const scriptRam = ns.getScriptRam("share.js");
-	var maxThreads = Math.floor(availableRam / scriptRam);	 
+	var maxThreads = Math.floor(availableRam / scriptRam) - 3;	 
 
     while (true) {
         ns.exec("share.js", host, maxThreads);

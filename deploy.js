@@ -26,8 +26,8 @@ export async function main(ns) {
 	for (var host of servers) {
     	ns.killall(host);
     	ns.tprint(`Launching script '${script}' on server '${host}'`);
-	    await ns.scp('exp-hack.js', host);
 	    await ns.scp('exp-max.js', host);
+	    await ns.scp(script, host);
 	    ns.exec("exp-max.js", host, 1);
     }
 }
