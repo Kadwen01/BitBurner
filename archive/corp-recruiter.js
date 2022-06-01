@@ -75,31 +75,48 @@ export async function main(ns) {
 		for (const [job, amount] of ascEmployeeDistrib) {
 			const success = await corp.setAutoJobAssignment(divisionName, cityName, job, amount);
 			if (success) {
-				ns.tprint(`Successfully allocated ${amount} employees to ${job}`);
+				ns.print(`Successfully allocated ${amount} employees to ${job} in ${divisionName}: ${cityName}`);
 			}
 		}
 	}
 
 	const hireEmployees = (numToHire) => {
 		let numHired = 0;
-		ns.tprint(`Hiring ${numHired} employees...`);
+		ns.print(`Hiring ${numHired} employees...`);
 		while (numHired < numToHire) {
 			corp.hireEmployee(divisionName, cityName);
 			numHired++;
 		}
-		ns.tprint(`Done`);
+		ns.print(`Done`);
 	}
 
 	const upgradeOffice = async () => {
 		const business = corp.getCorporation();
 		const sizeToBuy = reqEmployees - office.size;
-		ns.tprint(`Opening ${sizeToBuy} employee positions...`);
+		ns.print(`Opening ${sizeToBuy} employee positions...`);
 		const upgradeCost = corp.getOfficeSizeUpgradeCost(divisionName, cityName, sizeToBuy);
-		while (business.funds < upgradeCost) {
-			await ns.sleep(1000); // wait until we have enough money
+
+		if (business.funds < upgradeCost) {
+			let moneyTillUpgrade = (upgradeCost - business.funds);
+			let fmoneyTillUpgrade = ns.nFormat(moneyTillUpgrade, "0a"); 
+			ns.print(ns.nFormat(business.funds, '0a'));
+			ns.print(ns.nFormat(upgradeCost, '0a'));
+			ns.print(`Money needed to hire new employees: ${fmoneyTillUpgrade}`);
+			//ns.exit;
+		} else {
+			corp.upgradeOfficeSize(divisionName, cityName, sizeToBuy);
+			hireEmployees(reqEmployees);
 		}
-        corp.upgradeOfficeSize(divisionName, cityName, sizeToBuy);
-		hireEmployees(reqEmployees);
+
+//		while (business.funds < upgradeCost) {
+//			let moneyTillUpgrade = (business.funds - upgradeCost);
+//			let fmoneyTillUpgrade = ns.nFormat(moneyTillUpgrade, "0a"); 
+//			ns.print(ns.nFormat(business.funds, '0a'));
+//			ns.print(ns.nFormat(upgradeCost, '0a'));
+//			ns.print(`Money till able to upgrade: ${fmoneyTillUpgrade}`);
+//			await ns.sleep(1000); // wait until we have enough money
+//		}
+
 	}
 
 	if (office.size != reqSize) {

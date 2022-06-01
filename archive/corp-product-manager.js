@@ -32,6 +32,13 @@ export async function main(ns) {
 
 	const getProducts = (division) => {
 		const divisionName = division.name;
+
+		const makeStuff = corp.getDivision(divisionName).makesProducts;
+
+		if (!makeStuff) {
+			ns.exit
+		} 
+
 		return division.products.map(prodId => {
 			const rawProd = corp.getProduct(divisionName, prodId);
 			return {

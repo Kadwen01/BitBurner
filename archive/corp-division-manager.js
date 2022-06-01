@@ -22,11 +22,18 @@ const JOB_TYPE = {
 
 const researchNames = {
 	lab: 'Hi-Tech R&D Laboratory',
+	bluk: 'Bulk Purchasing',
 	marketTA1: 'Market-TA.I',
 	marketTA2: 'Market-TA.II',
 	fulcrum: 'uPgrade: Fulcrum',
 	capacity1: 'uPgrade: Capacity.I',
-	capacity2: 'uPgrade: Capacity.II'
+	capacity2: 'uPgrade: Capacity.II',
+	dashboard: 'uPgrade: Dashboard',
+	overclock: 'Overclock',
+	scassemb: "Self-Correcting Assemblers",
+	drones: "Drones",
+	dronesa: "Drones - Assembly",
+	dronest: "Drones - Transport"
 }
 
 const corpScripts = {
@@ -139,21 +146,21 @@ export async function main(ns) {
 	const enableSmartSupply = (divisionName, cityName) => {
 		if (corp.hasUnlockUpgrade("Smart Supply") && corp.hasWarehouse(divisionName, cityName)) {
 			corp.setSmartSupply(divisionName, cityName, true);
-			for (const material of MATERIALS) {
-				corp.setSmartSupplyUseLeftovers(divisionName, cityName, material, true);
-			}
+			//for (const material of MATERIALS) {
+			//	corp.setSmartSupplyUseLeftovers(divisionName, cityName, material, true);
+			//}
 		}
 	}
 
 	const ensureMarketTAEnabled = (divisionName, cityName) => {
 		const division = corp.getDivision(divisionName);
 
-		if (corp.hasWarehouse(divisionName, cityName)) {
+		//if (corp.hasWarehouse(divisionName, cityName)) {
 			// Make sure that we're selling all materials so we don't fill warehouse
-			for (const material of MATERIALS) {
-				corp.sellMaterial(divisionName, cityName, material, 'MAX', 'MP');
-			}
-		}
+		//	for (const material of MATERIALS) {
+		//		corp.sellMaterial(divisionName, cityName, material, 'MAX', 'MP');
+		//	}
+		//}
 
 		if (corp.hasResearched(divisionName, researchNames.marketTA1)) {
 			for (const material of MATERIALS) {
@@ -201,11 +208,39 @@ export async function main(ns) {
 
 	while (true) {
 		const division = corp.getDivision(divisionName);
-        
-        ns.run(corpScripts.researcher, 1, divisionName); // for auto research
 
+		const researchOrder = [
+			researchNames.lab,
+			researchNames.bluk,
+			researchNames.marketTA1,
+			researchNames.marketTA2,
+			researchNames.fulcrum,
+			researchNames.capacity1,
+			researchNames.capacity2,
+			researchNames.dashboard,
+			researchNames.overclock,
+			researchNames.scassemb,
+			researchNames.drones,
+			researchNames.dronesa,
+			researchNames.dronest
+		]
+
+        const getResearchLeft = () => 
+			researchOrder.filter(researchName => !corp.hasResearched(divisionName, researchName));
+		const researchLeft = getResearchLeft();
+		
+		if (researchLeft.length < 1) {
+			ns.print("There is not more critical research left");
+		} else {
+			if (!ns.scriptRunning(corpScripts.researcher, "home")) {
+			ns.run(corpScripts.researcher, 1, divisionName); // for auto research
+			}
+		}
+		
 		if (!ns.scriptRunning(corpScripts.productManager, "home")) {
             ns.run(corpScripts.productManager, 1, prodBudget); // for product management
+		} else {
+			ns.print("Production Manager is working");
 		}
         
 		for (const city of division.cities) {
@@ -225,10 +260,15 @@ export async function main(ns) {
 		}
 
 		const maxProducts = getMaxProducts(divisionName);
-		if (division.products.length === maxProducts && unownedCities.length === 0) {
-			ns.run(corpScripts.marketer, 1, divisionName);
+		
+		if (!ns.scriptRunning(corpScripts.marketer, "home")){
+			if (division.products.length === maxProducts && unownedCities.length === 0) {
+				ns.run(corpScripts.marketer, 1, divisionName);
+			}	
+		} else {
+			ns.print("Marketing already working");
 		}
-
+			
 		await ns.sleep(5000); // wait 5s
 	}
 }

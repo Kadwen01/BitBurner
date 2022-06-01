@@ -461,6 +461,66 @@ solvers["HammingCodes: Integer to encoded Binary"] = (value) => {
     return _build.join(""); // return the _build as string
 };
 
+solvers["HammingCodes: Integer to Encoded Binary"] = (_data) => {
+    var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+        if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+            if (ar || !(i in from)) {
+                if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+                ar[i] = from[i];
+            }
+        }
+        return to.concat(ar || Array.prototype.slice.call(from));
+    };
+    // encoding following Hammings rule
+    function HammingSumOfParity(_lengthOfDBits) {
+        // will calculate the needed amount of parityBits 'without' the "overall"-Parity (that math took me 4 Days to get it working)
+        return _lengthOfDBits < 3 || _lengthOfDBits == 0 // oh and of course using ternary operators, it's a pretty neat function
+            ? _lengthOfDBits == 0
+                ? 0
+                : _lengthOfDBits + 1
+            : // the following math will only work, if the length is greater equal 3, otherwise it's "kind of" broken :D
+                Math.ceil(Math.log2(_lengthOfDBits * 2)) <=
+                    Math.ceil(Math.log2(1 + _lengthOfDBits + Math.ceil(Math.log2(_lengthOfDBits))))
+                    ? Math.ceil(Math.log2(_lengthOfDBits) + 1)
+                    : Math.ceil(Math.log2(_lengthOfDBits));
+    }
+    var _data = _data.toString(2).split(""); // first, change into binary string, then create array with 1 bit per index
+    var _sumParity = HammingSumOfParity(_data.length); // get the sum of needed parity bits (for later use in encoding)
+    var count = function (arr, val) {
+        return arr.reduce(function (a, v) { return (v === val ? a + 1 : a); }, 0);
+    };
+    // function count for specific entries in the array, for later use
+    var _build = __spreadArray(["x", "x"], _data.splice(0, 1), true); // init the "pre-build"
+    for (var i = 2; i < _sumParity; i++) {
+        // add new paritybits and the corresponding data bits (pre-building array)
+        _build.push.apply(_build, __spreadArray(["x"], _data.splice(0, Math.pow(2, i) - 1), false));
+    }
+    // now the "calculation"... get the paritybits ('x') working
+    for (var _i = 0, _a = _build.reduce(function (a, e, i) {
+        if (e == "x")
+            a.push(i);
+        return a;
+    }, []); _i < _a.length; _i++) {
+        var index = _a[_i];
+        // that reduce will result in an array of index numbers where the "x" is placed
+        var _tempcount = index + 1; // set the "stepsize" for the parityBit
+        var _temparray = []; // temporary array to store the extracted bits
+        var _tempdata = __spreadArray([], _build, true); // only work with a copy of the _build
+        while (_tempdata[index] !== undefined) {
+            // as long as there are bits on the starting index, do "cut"
+            var _temp = _tempdata.splice(index, _tempcount * 2); // cut stepsize*2 bits, then...
+            _temparray.push.apply(// cut stepsize*2 bits, then...
+            _temparray, _temp.splice(0, _tempcount)); // ... cut the result again and keep the first half
+        }
+        _temparray.splice(0, 1); // remove first bit, which is the parity one
+        _build[index] = (count(_temparray, "1") % 2).toString(); // count with remainder of 2 and"toString" to store the parityBit
+    } // parity done, now the "overall"-parity is set
+    _build.unshift((count(_build, "1") % 2).toString()); // has to be done as last element
+    return _build.join(""); // return the _build as string
+}
+
+
+
 solvers["HammingCodes: Encoded Binary to Integer"] = (_data) => {
     //check for altered bit and decode
     const _build = _data.split(""); // ye, an array for working, again
@@ -599,6 +659,133 @@ solvers["Compression II: LZ Decompression"] = (_data) => {
   }
 
   return plain;
+};
+
+
+solvers["Compression III: LZ Compression"] = (plain) => {
+    // for state[i][j]:
+    //      if i is 0, we're adding a literal of length j
+    //      else, we're adding a backreference of offset i and length j
+    var cur_state = Array.from(Array(10), function () { return Array(10).fill(null); });
+    var new_state = Array.from(Array(10), function () { return Array(10); });
+    function set(state, i, j, str) {
+        var current = state[i][j];
+        if (current == null || str.length < current.length) {
+            state[i][j] = str;
+        }
+        else if (str.length === current.length && Math.random() < 0.5) {
+            // if two strings are the same length, pick randomly so that
+            // we generate more possible inputs to Compression II
+            state[i][j] = str;
+        }
+    }
+    // initial state is a literal of length 1
+    cur_state[0][1] = "";
+    for (var i = 1; i < plain.length; ++i) {
+        for (var _i = 0, new_state_1 = new_state; _i < new_state_1.length; _i++) {
+            var row = new_state_1[_i];
+            row.fill(null);
+        }
+        var c = plain[i];
+        // handle literals
+        for (var length = 1; length <= 9; ++length) {
+            var string = cur_state[0][length];
+            if (string == null) {
+                continue;
+            }
+            if (length < 9) {
+                // extend current literal
+                set(new_state, 0, length + 1, string);
+            } else {
+                // start new literal
+                set(new_state, 0, 1, string + "9" + plain.substring(i - 9, i) + "0");
+            }
+            for (var offset = 1; offset <= Math.min(9, i); ++offset) {
+                if (plain[i - offset] === c) {
+                    // start new backreference
+                    set(new_state, offset, 1, string + length + plain.substring(i - length, i));
+                }
+            }
+        }
+        // handle backreferences
+        for (var offset = 1; offset <= 9; ++offset) {
+            for (var length = 1; length <= 9; ++length) {
+                var string = cur_state[offset][length];
+                if (string == null) {
+                    continue;
+                }
+                if (plain[i - offset] === c) {
+                    if (length < 9) {
+                        // extend current backreference
+                        set(new_state, offset, length + 1, string);
+                    } else {
+                        // start new backreference
+                        set(new_state, offset, 1, string + "9" + offset + "0");
+                    }
+                }
+                // start new literal
+                set(new_state, 0, 1, string + length + offset);
+                // end current backreference and start new backreference
+                for (var new_offset = 1; new_offset <= Math.min(9, i); ++new_offset) {
+                    if (plain[i - new_offset] === c) {
+                        set(new_state, new_offset, 1, string + length + offset + "0");
+                    }
+                }
+            }
+        }
+        var tmp_state = new_state;
+        new_state = cur_state;
+        cur_state = tmp_state;
+    }
+    var result = null;
+    for (var len = 1; len <= 9; ++len) {
+        var string = cur_state[0][len];
+        if (string == null) {
+            continue;
+        }
+        string += len + plain.substring(plain.length - len, plain.length);
+        if (result == null || string.length < result.length) {
+            result = string;
+        }
+        else if (string.length == result.length && Math.random() < 0.5) {
+            result = string;
+        }
+    }
+    for (var offset = 1; offset <= 9; ++offset) {
+        for (var len = 1; len <= 9; ++len) {
+            var string = cur_state[offset][len];
+            if (string == null) {
+                continue;
+            }
+            string += len + "" + offset;
+            if (result == null || string.length < result.length) {
+                result = string;
+            } else if (string.length == result.length && Math.random() < 0.5) {
+                result = string;
+            }
+        }
+    }
+    return result !== null && result !== void 0 ? result : "";
+}
+
+solvers["Compression I: RLE Compression"]  = (_data) => {
+   	var result = '';
+   	if (_data.length > 0) {
+       	var count = 1;
+       	var value = _data[0];
+        for (var i = 1; i < _data.length; ++i) {
+			var entry = _data[ i ];
+		    if (entry == value && count < 9) {
+                count += 1;
+   	        } else {
+       	  	    result += count + '' + value;
+       		    count = 1;
+			    value = entry;
+            }
+       	}
+      	result += count + '' + entry;
+   	}
+   	return result;
 }
 
 

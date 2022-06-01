@@ -23,7 +23,8 @@ export async function main(ns) {
     const args = ns.flags([["help", false]]);
     let route = [];
     let server = args._[0];   
-    
+    let phl = ns.getHackingLevel();	
+	
     recursiveScan(ns, '', 'home', server, route);
     route.shift();
     for (const i in route) {
@@ -34,4 +35,11 @@ export async function main(ns) {
         terminalInput[handler].onChange({target:terminalInput});
         terminalInput[handler].onKeyDown({key:'Enter',preventDefault:()=>null});
     }
+
+    var hasBackdoor = ns.getServer(server).backdoorInstalled;
+    var mhl = ns.getServerRequiredHackingLevel(ns.getHostname()).toString();
+    if (!hasBackdoor && phl >= mhl ){  
+        await ns.singularity.installBackdoor();
+    }
+
 }
