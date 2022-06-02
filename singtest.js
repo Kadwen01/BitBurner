@@ -2,6 +2,10 @@
 
 export async function main(ns) {
 
+	const flags = ns.flags([
+		['install', false]
+	]);
+
 	const sing = ns.singularity;
 	const corp = eval("ns.corporation");
 	const factionInvites = sing.checkFactionInvitations();
@@ -23,31 +27,57 @@ export async function main(ns) {
 		"Daedalus"
 	]
 
+	const PROGRAMS = [
+	"BruteSSH.exe",
+	"FTPCrack.exe",
+	"relaySMTP.exe",
+	"HTTPWorm.exe",
+	"SQLInject.exe",
+	"ServerProfiler.exe",
+	"DeepscanV1.exe",
+	"DeepscanV2.exe",
+	"AutoLink.exe",
+	"Formulas.exe"
+	]
+
+
+
+
 	ns.tprintf(" ");
 
-	if (!ns.getPlayer().tor && playerMoney > 200000 ){ 
+	if (!ns.getPlayer().tor && ns.getPlayer().money > 200000 ){ 
 		ns.tprintf("Purchasing TOR browser")
 		sing.purchaseTor();
 	};
 
-	if (!ns.getPlayer().hasWseAccount && playerMoney > 200000){
+	for ( let prog of PROGRAMS){
+		if (!ns.fileExists(prog, 'home')) {
+		sing.purchaseProgram(prog);
+		ns.tprintf("Purchasing " + prog);
+		}
+	}
+
+
+
+
+	if (!ns.getPlayer().hasWseAccount && ns.getPlayer().money > 200000000){
 		ns.tprintf("Purchasing WSE Account");
-		ns.purchaseWseAccount;
-	}
+		ns.stock.purchaseWseAccount();
+	}	
 
-	if (!ns.getPlayer().hasTixApiAccess){
+	if (!ns.getPlayer().hasTixApiAccess && ns.getPlayer().money > 5e9){
 		ns.tprintf("Purchasing Tix Api");
-		ns.purchaseTixApi;
+		ns.stock.purchaseTixApi();
 	}
 
-	if (!ns.getPlayer().has4SData){
+	if (!ns.getPlayer().has4SData && ns.getPlayer().money > 1e9){
 		ns.tprintf("Purchasing 4SData");
-		ns.purchase4SMarketData;
+		ns.stock.purchase4SMarketData();
 	}
 
-	if (!ns.getPlayer().has4SDataTixApi){
+	if (!ns.getPlayer().has4SDataTixApi && ns.getPlayer().money > 25e9){
 		ns.tprintf("Purchasing 4SDataTix Api");
-		ns.purchase4SMarketDataTixApi;
+		ns.stock.purchase4SMarketDataTixApi();
 	}
 
 	ns.tprintf(" ");
@@ -64,23 +94,20 @@ export async function main(ns) {
 
 
 	if (homeRam < 1073741824) {
-
-		ns.tprintf('Current Available Funds: ' +playerMoneyFormated);
+	
 		ns.tprintf('Currnet home ram: ' + homeRamFormated);
-		ns.tprintf('Cost to upgrade home ram: ' + ramUpCostFormated);
 
-		while (ns.getPlayer().money > sing.getUpgradeHomeRamCost() && ns.getServerMaxRam("home") <= 1073741824){
+		while (ns.getPlayer().money > sing.getUpgradeHomeRamCost() && ns.getServerMaxRam("home") < 1073741824){
 			sing.upgradeHomeRam();
-			ns.tprintf('Upgrading ram to' + ns.nFormat(ns.getServerMaxRam("home") * 1e9, "0.00b"));			
+			ns.tprintf('Upgrading ram to: ' + ns.nFormat(ns.getServerMaxRam("home") * 1e9, "0.00b"));			
 			await ns.sleep(100);
 		}
-		ns.tprintf(" ");
+
 	} else {
 		ns.tprintf("Home ram at max");
-		ns.tprintf(" ");
 	}
 
-	
+	ns.tprintf(" ");
 
 	if (ns.getServer('home').cpuCores < 8) {
 		
@@ -145,16 +172,12 @@ export async function main(ns) {
 		ns.tprintf(" ");
 	}
 
+	if (flags.install) { 
+		sing.installAugmentations();
+	}
 
+	//sing.destroyW0r1dD43m0n("5.2");	
 	
-
-	//sing.installAugmentations();
-
-	//sing.destroyW0r1dD43m0n("");	
-
 	//sing.workForFaction("Tian Di Hui", "Hacking Contracts", false);
-
-
-	
 
 }

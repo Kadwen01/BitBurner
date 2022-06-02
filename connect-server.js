@@ -36,10 +36,20 @@ export async function main(ns) {
         terminalInput[handler].onKeyDown({key:'Enter',preventDefault:()=>null});
     }
 
+    if (server == "w0r1d_d43m0n"){
+        try {ns.brutessh(server)} catch{}
+        try {ns.ftpcrack(server)} catch{}
+        try {ns.relaysmtp(server)} catch{}
+        try {ns.sqlinject(server)} catch{}
+        try {ns.httpworm(server)} catch{}
+        try {ns.nuke(server)} catch{}
+    }
+
     var hasBackdoor = ns.getServer(server).backdoorInstalled;
-    var mhl = ns.getServerRequiredHackingLevel(ns.getHostname()).toString();
+    var mhl = ns.getServerRequiredHackingLevel(ns.getHostname());
     if (!hasBackdoor && phl >= mhl ){  
         await ns.singularity.installBackdoor();
     }
+
 
 }
