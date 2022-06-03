@@ -40,6 +40,48 @@ export async function main(ns) {
 	"Formulas.exe"
 	]
 
+	const hackingAugs = [
+    	"nickofolas Congruity Implant",
+        "QLink",
+        "ECorp HVMind Implant",
+        "BitRunners Neurolink",
+        "Neuroreceptor Management Implant",
+        "Neuregen Gene Modification",
+        "OmniTek InfoLoad",
+        "Neural Accelerator",
+        "Neuronal Densification",
+        "Xanipher",
+        "nextSENS Gene Modification",
+        "SPTN-97 Gene Modification",
+        "Artificial Bio-neural Network Implant",
+        "Enhanced Myelin Sheathing",
+        "Embedded Netburner Module",
+        "Embedded Netburner Module Core Implant",
+        "Embedded Netburner Module Core V2 Upgrade",
+        "Embedded Netburner Module Core V3 Upgrade",
+        "PC Direct-Neural Interface",
+        "PC Direct-Neural Interface Optimization Submodule",
+        "PC Direct-Neural Interface NeuroNet Injector",
+        "The Black Hand",
+        "Cranial Signal Processors - Gen I",
+        "Cranial Signal Processors - Gen II",
+        "Cranial Signal Processors - Gen III",
+        "Cranial Signal Processors - Gen IV",
+        "Cranial Signal Processors - Gen V",
+        "CRTX42-AA Gene Modification",
+        "Power Recirculation Core",                
+        "Embedded Netburner Module Analyze Engine",
+        "Embedded Netburner Module Direct Memory Access Upgrade",
+        "SmartJaw",
+        "PCMatrix",
+        "ADR-V2 Pheromone Gene",
+        "The Shadow's Simulacrum",
+        "Social Negotiation Assistant (S.N.A)",
+        "ADR-V1 Pheromone Gene",
+        "Neurotrainer III",
+        "Neurotrainer II",
+        "Neurotrainer I"
+        ];
 
 
 
@@ -94,15 +136,12 @@ export async function main(ns) {
 
 
 	if (homeRam < 1073741824) {
-	
 		ns.tprintf('Currnet home ram: ' + homeRamFormated);
-
 		while (ns.getPlayer().money > sing.getUpgradeHomeRamCost() && ns.getServerMaxRam("home") < 1073741824){
 			sing.upgradeHomeRam();
 			ns.tprintf('Upgrading ram to: ' + ns.nFormat(ns.getServerMaxRam("home") * 1e9, "0.00b"));			
 			await ns.sleep(100);
 		}
-
 	} else {
 		ns.tprintf("Home ram at max");
 	}
@@ -110,21 +149,14 @@ export async function main(ns) {
 	ns.tprintf(" ");
 
 	if (ns.getServer('home').cpuCores < 8) {
-		
 		ns.tprintf('Current home Cores: ' + ns.getServer('home').cpuCores);
-
 		while  (ns.getServer('home').cpuCores < 8 && ns.getPlayer().money > sing.getUpgradeHomeCoresCost() ){
 			sing.upgradeHomeCores();
 			ns.tprintf('Upgrading home cores to: ' + ns.getServer('home').cpuCores);
 		}
 	} else {
 		ns.tprintf("Home cores at max");
-		ns.tprintf(" ");
 	}
-	
-
-
-
 
 	ns.tprintf(" ");
 
@@ -165,8 +197,10 @@ export async function main(ns) {
 			if (ownedAugs.includes(augs) || playerMoney < augCost || factionRep < augRep){
 				continue;
 			} else {
-				sing.purchaseAugmentation(fact, augs)
-				ns.tprintf('Aquireing: ' + augs);
+//				if (!augs.includes(hackingAugs)){
+					sing.purchaseAugmentation(fact, augs)
+					ns.tprintf('Aquireing: ' + augs);
+//				}
 			}
 		}
 		ns.tprintf(" ");

@@ -30,23 +30,36 @@ export async function main(ns) {
 		"Forest"
 	]
 
+	
 
 while (true){	
 	
+	while (ns.getPlayer().hacking < ns.getServer('avmnite-02h').requiredHackingSkill){
+		ns.clearLog();
+		ns.print('Hacking level to low for avmnite-02h');
+		ns.print(ns.getPlayer().hacking + '/' + ns.getServer('avmnite-02h').requiredHackingSkill)
+		await ns.sleep(60000);
+	}
+
 	if (!ns.getServer("avmnite-02h").backdoorInstalled){
-		ns.tprintf("Not in a Gang yet");
-		if (ns.getPlayer().hacking > 218) {
+		if (ns.getPlayer().hacking > ns.getServer('avmnite-02h').requiredHackingSkill) {
 			ns.exec('connect-server.js', 'home', 1, 'avmnite-02h');
 			await ns.sleep (5000);
 			ns.singularity.connect('home');
 		}		
 	}
 
+	if (!ns.gang.inGang()){
+		while (!ns.singularity.checkFactionInvitations().includes("NiteSec")){
+			await ns.sleep(5000);
+		}
+	}
+
 	if (ns.singularity.checkFactionInvitations().includes("NiteSec")){
 		ns.singularity.joinFaction("NiteSec");
 	}
 
-	ns.tprint(!ns.gang.inGang());
+
 	if (!ns.gang.inGang()){
 		ns.gang.createGang("NiteSec");
 	}
