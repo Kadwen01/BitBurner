@@ -52,6 +52,7 @@ export async function main(ns) {
 		while (ns.serverExists(servPrefix + i)) {
 			servers.push(servPrefix + i);
 			++i;
+			await ns.sleep(5);
 		}
 
 		const serversWithRamLeft = servers.filter(node => {

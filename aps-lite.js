@@ -51,6 +51,7 @@
 				await purchaseServer(server);
 				++i;
 			}
+			await ns.sleep(5);
 		}
 	}
 
@@ -68,5 +69,6 @@
 		} else {
 			pRam = newRam;
 		}
+		await ns.sleep(5);
 	}
 }

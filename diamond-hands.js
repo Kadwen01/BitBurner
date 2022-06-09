@@ -86,8 +86,6 @@ export async function main(ns) {
 		}
 	}
 
-	const tickDuration = 5 * 1000; // ~4s offline, ~6s online (5s compromise)
-
 	while (true) {
 		const stocks = getStonks();
 		takeTendies(stocks);
@@ -98,7 +96,7 @@ export async function main(ns) {
 		// @TODO - Extend for market manipulation
 		// - hack -> makes stock more likely to go down
 		// - grow -> makes stock more likely to go up
-		await ns.sleep(tickDuration);
+		await ns.sleep(5000); // ~4s offline, ~6s online (5s compromise)
 	}
 
 }

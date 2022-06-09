@@ -10,6 +10,7 @@ export async function main(ns) {
 		'white',''.padEnd(17, '─') + '┬',
 		'white',''.padEnd(7, '─') + '┬',
 		'white',''.padEnd(5, '─') + '┬',
+		'white',''.padEnd(5, '─') + '┬',
 		'white',''.padEnd(5,'─') + '┬',
 	);
 	ColorPrint(
@@ -18,6 +19,7 @@ export async function main(ns) {
 		'white', padCenter('MONEY', 17) + '│',
 		'white', padCenter('SEC', 7) + '│', // 99/99 100%
 		'white', padCenter('MHL', 5) + '│',
+		'white', padCenter('BD', 5) + '│',
 		'white', padCenter('SYM', 5) + '|',
 	);
 	ColorPrint(
@@ -25,6 +27,7 @@ export async function main(ns) {
 		'white',''.padEnd(15, '─') + '┼',
 		'white',''.padEnd(17, '─') + '┼',
 		'white',''.padEnd(7, '─') + '┼',
+		'white',''.padEnd(5, '─') + '┼',
 		'white',''.padEnd(5, '─') + '┼',
 		'white',''.padEnd(5, '─') + '┼',
 	);
@@ -84,17 +87,24 @@ export async function main(ns) {
 
 		let phl = ns.getHackingLevel();	
 		let mhl = ns.getServerRequiredHackingLevel(server.name).toString();
-		let mhlColor = mhl <= phl ? `lime` : 'red';
+		let mhlColor = mhl <= phl ? 'lime' : 'red';
+		let factionColor = factions.includes(server.name) ? 'yellow' : mhlColor;
+		let thePill = endGame.includes(server.name) ? 'orange' : factionColor;
 
-		let factionColor = factions.includes(server.name) ? "yellow" : mhlColor;
-		let thePill = endGame.includes(server.name) ? "orange" : factionColor;
+		let bd = so.backdoorInstalled;
+		let bdc = bd ? 'lime' : 'red';
+		let bdo = bd ? 'Yes' : 'No';
+
+
+	
 
 		ColorPrint(
 			'white','│','gray',prefix, thePill ,server.name, lineColor, ''.padEnd(47 - len, '─'),
 			'white','│', freeRamColor, freeRamString.padStart(7), 'white', maxRam == 0 ? ' ' : '/', ramColor, ramString.padStart(7), //freeRamColor, ramPct.padStart(5),
 			'white','│', moneyColor, moneyString, 'white', moneyMax > 0 ? '/' : ' ', maxMoneyColor, maxMoneyString, //moneyColor, moneyPct.padStart(5),
 			'white','│', secColor, moneyMax > 0 ? (sec - minSec).toFixed(2).padStart(7) : ''.padEnd(7),
-			'white','│', mhlColor, mhl.padStart(5),  
+			'white','│', mhlColor, mhl.padStart(5), 
+			'white','|', bdc, bdo.padStart(5),
 			'white','|', 'white', (server.sym.length != 0) ? server.sym.padStart(5) : ''.padStart(5),
 			'white','|', 
 		);
@@ -105,6 +115,7 @@ export async function main(ns) {
 		'white',''.padEnd(15, '─') + '┴',
 		'white',''.padEnd(17, '─') + '┴',
 		'white',''.padEnd(7, '─') + '┴',
+		'white',''.padEnd(5, '─') + '┴',
 		'white',''.padEnd(5, '─') + '┴',
 		'white',''.padEnd(5, '─') + '┴',
 	);

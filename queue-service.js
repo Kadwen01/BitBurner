@@ -26,6 +26,7 @@ export async function main(ns) {
 				queue.push(handle.read());
 				collected++;
 				totalCollected++;
+				await ns.sleep(5);
 			}
 		}
 	}
@@ -39,6 +40,7 @@ export async function main(ns) {
 			} else {
 				break; // output queue full
 			}
+			await ns.sleep(5);
 		}
 	}
 

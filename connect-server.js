@@ -20,7 +20,7 @@ function recursiveScan(ns, parent, server, target, route) {
 }
 
 export async function main(ns) {
-    const args = ns.flags([["help", false]]);
+   
     let route = [];
     let server = args._[0];   
     let phl = ns.getHackingLevel();	
