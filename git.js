@@ -2,7 +2,11 @@
 export async function main(ns) {
 	const args = ns.flags([["help", false]]);
 	let script = args._[0]; 
-	
+
+    await ns.wget('https://raw.githubusercontent.com/chrisrabe/bitburner-automation/main/_stable/gimme-more-money.js', 'gimme-more-money.js');
+
+    ns.exit();
+
 	var list =[
         'corp-division-manager.js',
         'corp-marketer.js',

@@ -20,7 +20,7 @@ function recursiveScan(ns, parent, server, target, route) {
 }
 
 export async function main(ns) {
-   
+    const args = ns.flags([["help", false]]);
     let route = [];
     let server = args._[0];   
     let phl = ns.getHackingLevel();	
@@ -28,12 +28,14 @@ export async function main(ns) {
     recursiveScan(ns, '', 'home', server, route);
     route.shift();
     for (const i in route) {
+
+        ns.singularity.connect(route[i]);
         await ns.sleep(500);
-        const terminalInput = document.getElementById("terminal-input");
-        terminalInput.value="connect " + route[i];
-        const handler = Object.keys(terminalInput)[1];
-        terminalInput[handler].onChange({target:terminalInput});
-        terminalInput[handler].onKeyDown({key:'Enter',preventDefault:()=>null});
+        //const terminalInput = document.getElementById("terminal-input");
+        //terminalInput.value="connect " + route[i];
+        //const handler = Object.keys(terminalInput)[1];
+        //terminalInput[handler].onChange({target:terminalInput});
+        //terminalInput[handler].onKeyDown({key:'Enter',preventDefault:()=>null});
     }
 
     if (server == "w0r1d_d43m0n"){
@@ -42,13 +44,15 @@ export async function main(ns) {
         try {ns.relaysmtp(server)} catch{}
         try {ns.sqlinject(server)} catch{}
         try {ns.httpworm(server)} catch{}
-        try {ns.nuke(server)} catch{}
+        try {ns.nuke(server)} catch{} 
     }
+
 
     var hasBackdoor = ns.getServer(server).backdoorInstalled;
     var mhl = ns.getServerRequiredHackingLevel(ns.getHostname());
     if (!hasBackdoor && phl >= mhl ){  
         await ns.singularity.installBackdoor();
+        ns.tprintf("Backdoor installed on " + server);
     }
 
 

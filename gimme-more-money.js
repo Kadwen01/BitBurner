@@ -1,6 +1,6 @@
 // flag -> default value
 const supportedFlags = {
-	homeRam: 0, // preferred used memory on home server
+	homeRam: null, // preferred used memory on home server
 	sortField: 'revYield'
 }
 
@@ -18,7 +18,7 @@ export async function main(ns) {
 
 	const homeServ = "home";
 	const pServPrefix = "pserv-"; // purchased servers
-	const hNetServer = "hacknet-node-"; //hacknet servers
+	const hServPrefix = "hacknet"; // hacknet servers
 
 	const attackDelay = 50; // time between attacks (ms)
 
@@ -51,9 +51,23 @@ export async function main(ns) {
 	//   	    Validation
 	// ==============================
 
-	if (flagData.homeRam < 0 || flagData.homeRam > 1) {
-		ns.tprint("ERROR Invalid value for homeRam. Needs to be a value between 0 - 1");
-		return;
+	if (isNaN(flagData.homeRam)) {
+		if (!flagData.homeRam.endsWith('%')) {
+			ns.tprint('ERROR Invalid syntax for homeRam value. Must end with percent symbol (e.g. 90%)');
+			return;
+		}
+		// Allow support for percentage (e.g. --homeRam 90%)
+		const inputPercent = parseFloat(flagData.homeRam);
+		if (0 < inputPercent && inputPercent > 100) {
+			ns.tprint('ERROR Invalid value for homeRam. Percent must be between 0 and 100');
+			return;
+		}
+	} else {
+		const maxHomeRam = ns.getServerMaxRam(homeServ);
+		if (flagData.homeRam > maxHomeRam) {
+			ns.tprint(`ERROR Invalid value for homeRam. homeRam must not be greater than ${maxHomeRam}`);
+			return;
+		}
 	}
 
 	if (!['revYield', 'maxMoney'].includes(flagData.sortField)) {
@@ -122,8 +136,8 @@ export async function main(ns) {
 	const getCrackableNetworkServers = () => {
 		const networkNodes = getNetworkNodes();
 		const hackableServers = networkNodes.filter(node => {
-			if (node == homeServ || node.includes(pServPrefix) || node.includes(hNetServer)) {
-				return false; // ignore home or purchased server
+			if (node == homeServ || node.includes(pServPrefix) || node.includes(hServPrefix)) {
+				return false; // ignore home, hacknet or purchased server
 			}
 			return canPenetrate(node);
 		});
@@ -140,11 +154,20 @@ export async function main(ns) {
 		return servers.map(node => createShip(node, true));
 	};
 
+	const getHomeServerMaxRam = () => {
+		if (isNaN(flagData.homeRam)) {
+			const inputPercent = parseFloat(flagData.homeRam) / 100;
+			return Math.floor(ns.getServerMaxRam(homeServ) * inputPercent);
+		} else {
+			return Math.floor(ns.getServerMaxRam(homeServ) - flagData.homeRam);
+		}
+	}
+
 	const getHomeServer = () => {
-		if (flagData.homeRam === 0) {
+		if (flagData.homeRam === null) {
 			return createShip(homeServ, true, 0);
 		}
-		const servMaxRam = Math.floor(ns.getServerMaxRam(homeServ) * flagData.homeRam);
+		const servMaxRam = getHomeServerMaxRam();
 		const usedRam = Math.ceil(ns.getServerUsedRam(homeServ));
 		if (usedRam >= servMaxRam) {
 			return createShip(homeServ, true, 0);
@@ -342,8 +365,9 @@ export async function main(ns) {
 			}
 		}
 		// Weaken calculation
-		var weakenEffect = ns.weakenAnalyze(1);
-		var weakenThreads = weakenEffect > 0 ? Math.round(secThresh / weakenEffect) : 0;
+		const weakenEffect = ns.weakenAnalyze(1);
+		const secToDecrease = Math.abs(ns.getServerSecurityLevel(node) - secThresh);
+		const weakenThreads = weakenEffect > 0 ? Math.round(secToDecrease / weakenEffect) : 0;
 		// Hack calculation
 		var hackEffect = ns.hackAnalyze(node);
 		var hackTaken = hackEffect * curMoney;

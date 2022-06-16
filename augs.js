@@ -1,4 +1,5 @@
 import { PrintTable, DefaultStyle, ColorPrint } from 'tables.js'
+import { formatMoney } from './helper.js'
 
 const FactionNames = {
 	CyberSec: "CyberSec",
@@ -45,7 +46,7 @@ export async function main(ns) {
 	const columns = [
 		{ header: ' Augmentation', width: 56 },
 		{ header: ' Factions', width: 30 },
-		{ header: ' Price', width: 8 },
+		{ header: ' Price', width: 9 },
 		{ header: ' Req.Rep', width: 9 },
 		{ header: ' Pre.Req', width: 40 },
 		{ header: ' Type', width: 13 }
@@ -73,7 +74,7 @@ export async function main(ns) {
 		//masterlist = masterlist.filter(s => !s.factions[0].startsWith('Netburn'));
 		if (!ns.getPlayer().factions.includes('Church of the Machine God'))
 			masterlist = masterlist.filter(s => !s.factions[0].startsWith('Church'));
-		masterlist = masterlist.filter(s => !s.factions[0].startsWith('Bladeburner'));
+		//masterlist = masterlist.filter(s => !s.factions[0].startsWith('Bladeburners'));
 	}
 
 	let desired = masterlist.filter(s => FilterDesiredAugs(ns, s));
@@ -132,7 +133,7 @@ function ToColumnData(ns, list, emptyDesc) {
 	let ret = list.map(s => [
 		{ color: AugColor(ns, s), text: ' ' + s.name },
 		{ color: s.factions.length == 1 ? 'red' : 'white', text: s.factions.join(', ').slice(0, 30) },
-		{ color: s.price > playerMoney ? 'red' : 'white', text: ' ' + ns.nFormat(s.price, '0.0a').padStart(6) },
+		{ color: s.price > playerMoney ? 'red' : 'white', text: ' ' + formatMoney(s.price).padStart(8) },
 		{ color: MeetsRepRequirement(ns, s) ? 'white' : 'red', text: ' ' + ns.nFormat(s.rep, '0.00a').toString().padStart(7) },
 		{ color: MeetsPreReq(ns, s) ? 'white' : 'red', text: ' ' + s.prereq.toString().slice(0, 38) },
 		{ color: TypeColor(s.type), text: ' ' + s.type }
@@ -160,7 +161,7 @@ function FilterDesiredAugs(ns, s) {
 	if (ns.singularity.getOwnedAugmentations(true).includes(s.name) && !s.name.startsWith('NeuroFlux')) { return false; }
 
 	// Remove BladeBurner
-	if (s.factions.length == 1 && s.factions.includes('Bladeburners')) { return false; }
+	//if (s.factions.length == 1 && s.factions.includes('Bladeburners')) { return false; }
 
 	// Remove Physical, charisma, company, shit
 	if (s.type == 'Physical') { return false; }

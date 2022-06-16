@@ -2,7 +2,9 @@
 export async function main(ns) {
     const host = ns.getHostname();
 	const availableRam = ns.getServerMaxRam(host) - ns.getServerUsedRam(host); 
-    const scriptRam = ns.getScriptRam("exp-hack.js");
-	var maxThreads = Math.floor(availableRam / scriptRam) - 3;	 
-    ns.exec("exp-hack.js", host, maxThreads, "joesguns");
+    const script = "test.js";
+    const scriptRam = ns.getScriptRam(script);
+	var maxThreads = Math.floor(availableRam / scriptRam);	 
+    ns.exec("test.js", host, maxThreads);
+    //ns.exec("exp-hack.js", host, maxThreads, "joesguns");
 }

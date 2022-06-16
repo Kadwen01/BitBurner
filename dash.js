@@ -5,13 +5,15 @@ export async function main(ns) {
 	await GetSymbolAssociations(ns, servers);
 
 	ColorPrint(
-		'white','┌'.padEnd(48, '─') + '┬',
-		'white',''.padEnd(15, '─') + '┬',
-		'white',''.padEnd(17, '─') + '┬',
-		'white',''.padEnd(7, '─') + '┬',
-		'white',''.padEnd(5, '─') + '┬',
-		'white',''.padEnd(5, '─') + '┬',
-		'white',''.padEnd(5,'─') + '┬',
+		'white', '┌'.padEnd(48, '─') + '┬',
+		'white', ''.padEnd(15, '─') + '┬',
+		'white', ''.padEnd(17, '─') + '┬',
+		'white', ''.padEnd(7, '─') + '┬',
+		'white', ''.padEnd(5, '─') + '┬',
+		'white', ''.padEnd(5, '─') + '┬',
+		'white', ''.padEnd(5, '─') + '┬',
+		'white', ''.padEnd(7, '─') + '┬',
+
 	);
 	ColorPrint(
 		'white', '│ SERVERS'.padEnd(48) + '│',
@@ -21,15 +23,19 @@ export async function main(ns) {
 		'white', padCenter('MHL', 5) + '│',
 		'white', padCenter('BD', 5) + '│',
 		'white', padCenter('SYM', 5) + '|',
+		'white', padCenter('PREP', 7) + '|',
+
 	);
 	ColorPrint(
-		'white','├'.padEnd(48, '─') + '┼',
-		'white',''.padEnd(15, '─') + '┼',
-		'white',''.padEnd(17, '─') + '┼',
-		'white',''.padEnd(7, '─') + '┼',
-		'white',''.padEnd(5, '─') + '┼',
-		'white',''.padEnd(5, '─') + '┼',
-		'white',''.padEnd(5, '─') + '┼',
+		'white', '├'.padEnd(48, '─') + '┼',
+		'white', ''.padEnd(15, '─') + '┼',
+		'white', ''.padEnd(17, '─') + '┼',
+		'white', ''.padEnd(7, '─') + '┼',
+		'white', ''.padEnd(5, '─') + '┼',
+		'white', ''.padEnd(5, '─') + '┼',
+		'white', ''.padEnd(5, '─') + '┼',
+		'white', ''.padEnd(7, '─') + '┼',
+
 	);
 
 	// ┼
@@ -42,10 +48,10 @@ export async function main(ns) {
 		let nextDepth = i >= servers.length - 1 ? -1 : servers[i + 1].route.length - 1;
 		let lastRootChild = lastChildAtDepth(servers, i, depth);
 		let prefix = '';
-		let factions = ["CSEC","avmnite-02h","I.I.I.I","run4theh111z"];
-		let endGame = ["The-Cave","w0r1d_d43m0n"];
+		let factions = ["CSEC", "avmnite-02h", "I.I.I.I", "run4theh111z"];
+		let endGame = ["The-Cave", "w0r1d_d43m0n"];
 
-		
+
 
 		for (let j = 1; j <= depth; j++) {
 			if (nextDepth >= depth && j == depth) {
@@ -64,19 +70,19 @@ export async function main(ns) {
 
 		let maxRam = ns.getServerMaxRam(server.name);
 		let ramColor = maxRam > 0 ? 'white' : '#555555';
-		let ramString = maxRam > 0 ? ns.nFormat(maxRam * 1000000000, '0.0b') : 'N/A';
+		let ramString = maxRam > 0 ? ns.nFormat(maxRam * 1000000000, '0.0b') : '';
 		let freeRam = ns.getServerMaxRam(server.name) - ns.getServerUsedRam(server.name);
 		let freeRamColor = freeRam > 0 ? 'white' : '#555555';
 		let freeRamString = maxRam > 0 ? ns.nFormat(freeRam * 1000000000, '0.0b') : '';
 		//let ramPct = maxRam > 0 ? (freeRam / maxRam * 100).toFixed(0) + '%' : '';
 		freeRamColor = pctColor(freeRam / maxRam);
-		
+
 		let money = ns.getServerMoneyAvailable(server.name);
 		let moneyMax = ns.getServerMaxMoney(server.name);
 		//let moneyPct = moneyMax > 0 ? (money / moneyMax * 100).toFixed(0) + '%' : '';
 		let moneyString = moneyMax > 0 ? ns.nFormat(money, '0.00a').padStart(8) : ''.padStart(8);
 		let moneyColor = pctColor(money / moneyMax);
-		let maxMoneyString = moneyMax > 0 ? ns.nFormat(moneyMax, '0.00a').padStart(8) : 'N/A'.padStart(8);
+		let maxMoneyString = moneyMax > 0 ? ns.nFormat(moneyMax, '0.00a').padStart(8) : ''.padStart(8);
 		let maxMoneyColor = moneyMax > 0 ? 'white' : '#555555';
 
 		let so = ns.getServer(server.name);
@@ -85,7 +91,7 @@ export async function main(ns) {
 		let secPct = (sec - minSec) / (99 - minSec);
 		let secColor = pctColor(1 - secPct);
 
-		let phl = ns.getHackingLevel();	
+		let phl = ns.getHackingLevel();
 		let mhl = ns.getServerRequiredHackingLevel(server.name).toString();
 		let mhlColor = mhl <= phl ? 'lime' : 'red';
 		let factionColor = factions.includes(server.name) ? 'yellow' : mhlColor;
@@ -95,31 +101,41 @@ export async function main(ns) {
 		let bdc = bd ? 'lime' : 'red';
 		let bdo = bd ? 'Yes' : 'No';
 
+		let isMoney = money === moneyMax;
+		let isSec = sec === minSec;
+		let prepped = isMoney && isSec ? 'Preped' : 'Preping';
+		let canPrep = mhl <= phl ? prepped : ''
+		let skipPrep = server.name.includes('pserv') || server.name.includes('hacknet') || server.name.includes('darkweb') || server.name.includes('home') || moneyMax < 1;
+		let myServ = skipPrep ? '' : canPrep;
+		let prepColor = isMoney && isSec ? 'lime' : 'red';
+		let canPrepColor = skipPrep ? '#555555' : prepColor;
 
-	
 
 		ColorPrint(
-			'white','│','gray',prefix, thePill ,server.name, lineColor, ''.padEnd(47 - len, '─'),
-			'white','│', freeRamColor, freeRamString.padStart(7), 'white', maxRam == 0 ? ' ' : '/', ramColor, ramString.padStart(7), //freeRamColor, ramPct.padStart(5),
-			'white','│', moneyColor, moneyString, 'white', moneyMax > 0 ? '/' : ' ', maxMoneyColor, maxMoneyString, //moneyColor, moneyPct.padStart(5),
-			'white','│', secColor, moneyMax > 0 ? (sec - minSec).toFixed(2).padStart(7) : ''.padEnd(7),
-			'white','│', mhlColor, mhl.padStart(5), 
-			'white','|', bdc, bdo.padStart(5),
-			'white','|', 'white', (server.sym.length != 0) ? server.sym.padStart(5) : ''.padStart(5),
-			'white','|', 
+			'white', '│', 'gray', prefix, thePill, server.name, lineColor, ''.padEnd(47 - len, '─'),
+			'white', '│', freeRamColor, freeRamString.padStart(7), 'white', maxRam == 0 ? ' ' : '/', ramColor, ramString.padStart(7), //freeRamColor, ramPct.padStart(5),
+			'white', '│', moneyColor, moneyString, 'white', moneyMax > 0 ? '/' : ' ', maxMoneyColor, maxMoneyString, //moneyColor, moneyPct.padStart(5),
+			'white', '│', secColor, moneyMax > 0 ? (sec - minSec).toFixed(2).padStart(7) : ''.padEnd(7),
+			'white', '│', mhlColor, mhl.padStart(5),
+			'white', '|', bdc, bdo.padStart(5),
+			'white', '|', 'white', (server.sym.length != 0) ? server.sym.padStart(5) : ''.padStart(5),
+			'white', '|', canPrepColor, myServ.padStart(7),
+			'white', '|',
 		);
 	}
 
 	ColorPrint(
-		'white','└'.padEnd(48, '─') + '┴',
-		'white',''.padEnd(15, '─') + '┴',
-		'white',''.padEnd(17, '─') + '┴',
-		'white',''.padEnd(7, '─') + '┴',
-		'white',''.padEnd(5, '─') + '┴',
-		'white',''.padEnd(5, '─') + '┴',
-		'white',''.padEnd(5, '─') + '┴',
+		'white', '└'.padEnd(48, '─') + '┴',
+		'white', ''.padEnd(15, '─') + '┴',
+		'white', ''.padEnd(17, '─') + '┴',
+		'white', ''.padEnd(7, '─') + '┴',
+		'white', ''.padEnd(5, '─') + '┴',
+		'white', ''.padEnd(5, '─') + '┴',
+		'white', ''.padEnd(5, '─') + '┴',
+		'white', ''.padEnd(7, '─') + '┴',
+
 	);
-	
+
 }
 
 // Selects a color based on a 1-based percentage
@@ -267,7 +283,7 @@ export async function GetSymbolAssociations(ns, servers) {
 		if (match != undefined)
 			server.sym = match.sym;
 		else
-			server.sym= '';
+			server.sym = '';
 	}
 
 	// Future use maybe?

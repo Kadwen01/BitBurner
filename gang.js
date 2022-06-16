@@ -77,7 +77,7 @@ export async function main(ns) {
 		"Obi-Wan",
 		"Stoogie",
 		"Forest"
-	]
+	];
 
 	while (true) {
 
@@ -92,25 +92,35 @@ export async function main(ns) {
 
 		if (!ns.gang.inGang() && !ns.getServer("avmnite-02h").backdoorInstalled) {
 			if (ns.getPlayer().hacking >= ns.getServer('avmnite-02h').requiredHackingSkill) {
+				ns.clearLog();
 				ns.exec('connect-server.js', 'home', 1, 'avmnite-02h');
-				await ns.sleep(5000);
+				ns.sleep(5000);
 				ns.singularity.connect('home');
 			}
 		}
 
 		if (!ns.gang.inGang()) {
-			while (!ns.singularity.checkFactionInvitations().includes("NiteSec")) {
-				await ns.sleep(5000);
+			if (!ns.getPlayer().factions.includes('NiteSec')) {
+				while (!ns.singularity.checkFactionInvitations().includes("NiteSec")) {
+					ns.clearLog();
+					ns.print('Waiting on NitSec invite');
+					await ns.sleep(5000);
+				}
 			}
 		}
 
 		if (!ns.gang.inGang() && ns.singularity.checkFactionInvitations().includes("NiteSec")) {
+			ns.clearLog();
 			ns.singularity.joinFaction("NiteSec");
+			ns.print('Joining NiteSec');
 		}
 
-		while (Math.floor(ns.heart.break()) > -54000) {
+		while (Math.floor(ns.heart.break()) > -54000 && !ns.gang.inGang()) {
 			if (!ns.gang.inGang()) {
+				ns.clearLog();
+				ns.print(Math.floor(ns.heart.break()));	
 				ns.gang.createGang("NiteSec");
+				ns.print('Need more Karam to create the gang with NiteSec');
 			}
 			await ns.sleep(1000);
 		}
@@ -122,9 +132,7 @@ export async function main(ns) {
 		const { augList, availEquip, rj, cj, tj } = LISTS(gangType);
 
 		if (ns.gang.canRecruitMember()) {
-
 			for (let gmName in nameList) {
-
 				if (ns.gang.getMemberNames().includes(nameList[gmName])) {
 					continue;
 				} else if (ns.gang.canRecruitMember()) {
@@ -142,7 +150,6 @@ export async function main(ns) {
 			var otherGangs = ns.gang.getOtherGangInformation();
 
 			for (let gangName in otherGangs) {
-
 				if (gangName === fact || otherGangs[gangName].territory === 0) {
 					continue
 				} else {
@@ -151,20 +158,30 @@ export async function main(ns) {
 			}
 
 			for (let key in memberList) {
-
 				if (ns.gang.getMemberInformation(memberList[key]).task === "Territory Warfare") {
 					continue;
 				} else {
 					ns.gang.setMemberTask(memberList[key], "Territory Warfare");
 				}
 			}
-			ns.gang.setTerritoryWarfare(true);
-			
+
+			let slumSnakes = ns.gang.getChanceToWinClash("Slum Snakes");
+			let tetrads = ns.gang.getChanceToWinClash("Tetrads");
+			let theSyndicate = ns.gang.getChanceToWinClash("The Syndicate");
+			let theDarkArmy = ns.gang.getChanceToWinClash("The Dark Army");
+			let speakersfortheDead = ns.gang.getChanceToWinClash("Speakers for the Dead");
+			let theBlackHand = ns.gang.getChanceToWinClash("The Black Hand");
+
+			let gangWarChance = slumSnakes > .85 && tetrads > .85 && theSyndicate > .85 && theDarkArmy > .85 && speakersfortheDead > .85 && theBlackHand > .85;
+
+			if (gangWarChance) {
+				ns.print("Gearing Up...")
+				ns.gang.setTerritoryWarfare(true);
+			}
 
 		} else {
 			ns.gang.setTerritoryWarfare(false);
 			for (let key in memberList) {
-
 				if (ns.gang.getMemberInformation(memberList[key]).task === "Territory Warfare" || ns.gang.getMemberInformation(memberList[key]).task === "Train Hacking" || ns.gang.getMemberInformation(memberList[key]).task === "Train Combat" || ns.gang.getMemberInformation(memberList[key]).task === "Unassigned") {
 					if (ns.gang.getMemberInformation(memberList[key]).name === "Wedge") {
 						if (ns.gang.getMemberInformation(memberList[key]).hack > 4000 || ns.gang.getMemberInformation(memberList[key]).str > 4000) {
@@ -184,15 +201,9 @@ export async function main(ns) {
 				let currentUpgrades = ns.gang.getMemberInformation(memberList[key]).upgrades;
 				let currentAugments = ns.gang.getMemberInformation(memberList[key]).augmentations;
 
-				ns.print(memberList[key] + ': Task: ' + ns.gang.getMemberInformation(memberList[key]).task + ' | CHL: ' + ns.nFormat(ns.gang.getMemberInformation(memberList[key]).hack, "0.00a") + ' | CCL: ' + ns.nFormat(ns.gang.getMemberInformation(memberList[key]).str, "0.00a"));
+				let curCCL = (ns.gang.getMemberInformation(memberList[key]).str + ns.gang.getMemberInformation(memberList[key]).agi + ns.gang.getMemberInformation(memberList[key]).dex + ns.gang.getMemberInformation(memberList[key]).dex) / 4;
 
-				if (ns.gang.getMemberInformation(memberList[key])?.hack > 100) {
-					ns.print('AHack: ' + ns.nFormat(ns.gang.getAscensionResult(memberList[key]).hack, "0.00a"));
-				}
-
-				if (ns.gang.getMemberInformation(memberList[key])?.str > 100) {
-					ns.print('AStr: ' + ns.nFormat(ns.gang.getAscensionResult(memberList[key]).str, "0.00a"));
-				}
+				ns.print(memberList[key] + ': Task: ' + ns.gang.getMemberInformation(memberList[key]).task + ' | CHL: ' + ns.nFormat(ns.gang.getMemberInformation(memberList[key]).hack, "0.00a") + ' | CCL: ' + ns.nFormat(curCCL, "0.00a"));
 
 				if (ns.getPlayer().money > 3e8 && currentUpgrades.length < 16) {
 					for (let gear in availEquip) {
@@ -210,14 +221,48 @@ export async function main(ns) {
 					}
 
 				if (ns.gang.getMemberInformation(memberList[key])?.hack > 100 || ns.gang.getMemberInformation(memberList[key])?.str > 100) {
-					if (ns.gang.getAscensionResult(memberList[key]).hack > 2 || ns.gang.getAscensionResult(memberList[key]).str > 2) {
-						ns.gang.ascendMember(memberList[key]);
-						await ns.sleep(5000);
+
+					function CalculateAscendTreshold(ns, member) {
+						let metric = gangType ? 'hack_asc_mult' : 'str_asc_mult';
+						let mult = ns.gang.getMemberInformation(member)[metric];
+						if (mult < 1.632) return 1.6326;
+						if (mult < 2.336) return 1.4315;
+						if (mult < 2.999) return 1.284;
+						if (mult < 3.363) return 1.2125;
+						if (mult < 4.253) return 1.1698;
+						if (mult < 4.860) return 1.1428;
+						if (mult < 5.455) return 1.1225;
+						if (mult < 5.977) return 1.0957;
+						if (mult < 6.496) return 1.0869;
+						if (mult < 7.008) return 1.0789;
+						if (mult < 7.519) return 1.073;
+						if (mult < 8.025) return 1.0673;
+						if (mult < 8.513) return 1.0631;
+						return 1.0591;
+					}
+
+					const ascensionResult = ns.gang.getAscensionResult(memberList[key]);
+
+					if (memberList.length > 11) {
+						let threshold = CalculateAscendTreshold(ns, memberList[key]);
+						ns.print(ascensionResult?.hack + '/' + threshold);
+						if (gangType && ascensionResult?.hack >= threshold ||
+							(!gangType && (ascensionResult?.agi >= threshold || ascensionResult?.str >= threshold || ascensionResult?.def >= threshold || ascensionResult?.dex >= threshold))) {
+							ns.gang.ascendMember(memberList[key]);
+							ns.print(`Ascending ${memberList[key]}!`);
+						}
+					} else {
+						ns.print(ascensionResult?.hack + '/2');
+
+						if (ascensionResult?.hack > 2 || ascensionResult?.str > 2) {
+							ns.gang.ascendMember(memberList[key]);
+							await ns.sleep(50);
+						}
 					}
 				}
 				ns.print(" ");
 			}
 		}
-		await ns.sleep(5000)
+		await ns.sleep(500)
 	}
 }
