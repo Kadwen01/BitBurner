@@ -1,1 +1,1 @@
-{"Blade's Intuition":11,"Cloak":14,"Short-Circuit":11,"Digital Observer":11,"Tracer":6,"Overclock":21,"Reaper":9,"Evasive System":11,"Datamancer":10,"Cyber's Edge":2,"Hands of Midas":11,"Hyperdrive":11}
+{"Blade's Intuition":21,"Cloak":27,"Short-Circuit":22,"Digital Observer":22,"Tracer":11,"Overclock":39,"Reaper":18,"Evasive System":22,"Datamancer":21,"Cyber's Edge":3,"Hands of Midas":20,"Hyperdrive":21}

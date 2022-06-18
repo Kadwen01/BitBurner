@@ -161,7 +161,7 @@ function FilterDesiredAugs(ns, s) {
 	if (ns.singularity.getOwnedAugmentations(true).includes(s.name) && !s.name.startsWith('NeuroFlux')) { return false; }
 
 	// Remove BladeBurner
-	//if (s.factions.length == 1 && s.factions.includes('Bladeburners')) { return false; }
+	if (s.factions.length == 1 && s.factions.includes('Bladeburners')) { return false; }
 
 	// Remove Physical, charisma, company, shit
 	if (s.type == 'Physical') { return false; }

@@ -7,7 +7,7 @@ export async function main(ns) {
 	const slvNo = ns.args[0];
 	const bb = ns.bladeburner;
 
-	while (gsle.getSleeveStats(slvNo).shock > 20) {
+	while (gsle.getSleeveStats(slvNo).shock > 20 && ns.sleeve.getTask(slvNo) === "Idle") {
 		ns.clearLog();
 		gsle.setToShockRecovery(slvNo);
 		ns.print('Sleeve ' + slvNo + ' still in recovery');
@@ -33,54 +33,54 @@ export async function main(ns) {
 
 	while (true) {
 
-		while (bb.getCityChaos(gsle.getInformation(slvNo).city) > 1) {
-			ns.clearLog();
-			gsle.setToBladeburnerAction(slvNo, "Diplomacy");
-			ns.print('Sleeve ' + slvNo + ' is attempting diplomacy :' + bb.getCityChaos(gsle.getInformation(slvNo).city));
-			await ns.sleep(60000);
-		}
-
 		if (slvNo === 0) {
-			while (bb.getActionEstimatedSuccessChance("contract", "Retirement")[0] > .9 && bb.getActionCountRemaining("contract", "Retirement") > 10) {
-				ns.clearLog();
-				let rdelay = bb.getActionTime("contract", "Retirement");
-				bb.getActionEstimatedSuccessChance("contract", "Retirement")
+			ns.clearLog();
+			let sRChance = bb.getActionEstimatedSuccessChance("contract", "Retirement")[0];
+			let sBChance = bb.getActionEstimatedSuccessChance("contract", "Bounty Hunter")[0];
+			let sTChance = bb.getActionEstimatedSuccessChance("contract", "Tracking")[0];
+
+			let cRCount = bb.getActionCountRemaining("contract", "Retirement");
+			let cBCount = bb.getActionCountRemaining("contract", "Bounty Hunter");
+			let cTCount = bb.getActionCountRemaining("contract", "Tracking");
+
+			let sTask = ns.sleeve.getTask(slvNo).task;
+			let sTaskL = ns.sleeve.getTask(slvNo).location;
+			let sLoc = "This will generate additional contracts and operations";
+
+			ns.print(sRChance);
+			ns.print((sRChance > .9 && cRCount > 10))
+			ns.print((sTask === 'Idle' || sTaskL === sLoc))
+
+			ns.print((sRChance > .9 && cRCount > 10) && (sTask === 'Idle' || sTaskL === sLoc))
+			ns.print(sTask);
+
+			if ((sRChance > .9 && cRCount > 10) && (sTask === 'Idle' || sTaskL === sLoc)) {
+				//	ns.clearLog();
 				gsle.setToBladeburnerAction(slvNo, "Take on contracts", "Retirement");
-				ns.print(rdelay + 2000);
 				ns.print('Sleeve ' + slvNo + ' is performing Retirement.');
-				await ns.sleep(rdelay * 1.25);
-			}
-			while (bb.getActionEstimatedSuccessChance("contract", "Bounty Hunter")[0] > .9 && bb.getActionCountRemaining("contract", "Bounty Hunter") > 10) {
-				ns.clearLog();
-				let bhdelay = bb.getActionTime("contract", "Bounty Hunter");
-				bb.getActionEstimatedSuccessChance("contract", "Bounty Hunter")
+			} else if ((sBChance > .9 && cBCount > 10) && (sTask === "Idle" || sTaskL === sLoc)) {
+				//	ns.clearLog();
 				gsle.setToBladeburnerAction(slvNo, "Take on contracts", "Bounty Hunter");
 				ns.print('Sleeve ' + slvNo + ' is Bounty Hunting.');
-				await ns.sleep(bhdelay * 1.25);
-			}
-			while (bb.getActionEstimatedSuccessChance("contract", "Tracking")[0] > .9 && bb.getActionCountRemaining("contract", "Tracking") > 10) {
-				ns.clearLog();
-				let tdelay = bb.getActionTime("contract", "Tracking");
-				bb.getActionEstimatedSuccessChance("contract", "Tracking")
+			} else if ((sTChance > .9 && cTCount > 10) && (sTask === "Idle" || sTaskL === sLoc)) {
+				//	ns.clearLog();
 				gsle.setToBladeburnerAction(slvNo, "Take on contracts", "Tracking");
 				ns.print('Sleeve ' + slvNo + ' is Tracking.');
-				await ns.sleep(tdelay *1.25);
+			} else if (sTask === 'Idle') {
+				//	ns.clearLog();
+				gsle.setToBladeburnerAction(slvNo, "Infiltrate synthoids");
+				ns.print('Sleeve ' + slvNo + ' is infiltrating the Synthoids');
 			}
-			gsle.setToBladeburnerAction(slvNo, "Infiltrate synthoids");
-			ns.print('Sleeve ' + slvNo + ' is infiltrating the Synthoids');
-			await ns.sleep(30000);
 		}
 
-		if (slvNo === 1 || slvNo === 2 || slvNo === 3 || slvNo === 4 || slvNo === 5) {
+		if ((slvNo === 1 || slvNo === 2 || slvNo === 3 || slvNo === 4 || slvNo === 5) && ns.sleeve.getTask(slvNo) === "Idle") {
 			gsle.setToBladeburnerAction(slvNo, "Infiltrate synthoids");
 			ns.print('Sleeve ' + slvNo + ' is infiltrating the Synthoids');
-			await ns.sleep(30000);
 		}
 
-		if (slvNo === 6 || slvNo === 7) {
+		if ((slvNo === 6 || slvNo === 7) && ns.sleeve.getTask(slvNo) === "Idle") {
 			gsle.setToCommitCrime(slvNo, "Heist");
 			ns.print('Sleeve ' + slvNo + ' is commiting a Heist');
-			await ns.sleep(60000)
 		}
 		await ns.sleep(1000);
 	}

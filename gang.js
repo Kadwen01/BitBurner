@@ -99,15 +99,14 @@ export async function main(ns) {
 			}
 		}
 
-		if (!ns.gang.inGang()) {
-			if (!ns.getPlayer().factions.includes('NiteSec')) {
-				while (!ns.singularity.checkFactionInvitations().includes("NiteSec")) {
-					ns.clearLog();
-					ns.print('Waiting on NitSec invite');
-					await ns.sleep(5000);
-				}
+		if (!ns.gang.inGang() && !ns.getPlayer().factions.includes('NiteSec')) {
+			while (!ns.singularity.checkFactionInvitations().includes("NiteSec")) {
+				ns.clearLog();
+				ns.print('Waiting on NitSec invite');
+				await ns.sleep(5000);
 			}
 		}
+
 
 		if (!ns.gang.inGang() && ns.singularity.checkFactionInvitations().includes("NiteSec")) {
 			ns.clearLog();
@@ -115,15 +114,20 @@ export async function main(ns) {
 			ns.print('Joining NiteSec');
 		}
 
-		while (Math.floor(ns.heart.break()) > -54000 && !ns.gang.inGang()) {
-			if (!ns.gang.inGang()) {
-				ns.clearLog();
-				ns.print(Math.floor(ns.heart.break()));	
-				ns.gang.createGang("NiteSec");
-				ns.print('Need more Karam to create the gang with NiteSec');
-			}
+
+		while (Math.floor(ns.heart.break()) > -54000) {
+			ns.clearLog();
+			ns.print(Math.floor(ns.heart.break()) + '/-54,000');
+			ns.print('Need more Karam to create the gang with NiteSec');
 			await ns.sleep(1000);
 		}
+
+		while (Math.floor(ns.heart.break()) < -54000 && !ns.gang.inGang()) {
+			ns.gang.createGang('NiteSec');
+			ns.print('Joining NiteSec Gang');
+			await ns.sleep(1000);
+		}
+
 
 		ns.clearLog();
 

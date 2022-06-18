@@ -8,7 +8,8 @@ export async function main(ns) {
 	const charge = gstanek.chargeFragment;
 	let frags = ns.stanek.activeFragments();
 
-	while (ns.singularity.getFactionRep("Church of the Machine God") < 1e8) {
+	//while (ns.singularity.getFactionRep("Church of the Machine God") < 1e8) {
+	while (true) {
 		ns.clearLog();
 		ns.print(ns.singularity.getFactionRep("Church of the Machine God"));
 		for (let loc of frags) {

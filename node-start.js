@@ -7,7 +7,9 @@ export async function main(ns) {
 
 	const sing = ns.singularity;
 
-	const ovScript = "overview.js";  // Adds Karma to Overview Window
+	const ovStats = "ov-stats.js";  // Adds Stats to sidebar
+	const ovBB = "ov-bb.js"; // adds BB info to sidebar
+	const ovSlv = "ov-sleeve.js"; // adds sleeve info to sidebar
 	const infScript = "infultrate.js"; // Auto Infultrate companies
 	const gangScript = "gang.js"; // Gang manger Script
 	const corpScript = "corp-startup.js"; // Corporation Manager Script
@@ -19,21 +21,28 @@ export async function main(ns) {
 	const hacknetScript = "hash.js"; // auto purchase and upgrade Hacknet-Servers 
 	const spendHash = "sell-hash.js"; // spend hasd's
 	const bdFac = "bdFactions.js"; // install backdoors on the 4 faction servers
+	const hackScript = "gimme-more-money.js"; // main hacking script
 
 	const BASIC = [
-		ovScript,
+		ovStats,
+		ovBB,
+		ovSlv,
 		infScript,
 		gangScript,
 		corpScript,
 		bbScript,
 		csScript,
-		sleeveScript
+		sleeveScript,
+		bdFac
+
 	];
 
 	const INTERMEDIATE = [
+		bombScript,
 		pservScript,
 		hacknetScript,
-		spendHash
+		spendHash,
+		hackScript
 	];
 
 	const PROGRAMS = [
@@ -74,13 +83,14 @@ export async function main(ns) {
 	async function buyProgs(ns) {
 		for (let prog of PROGRAMS) {
 			while (!ns.fileExists(prog, 'home')) {
+				ns.clearLog();
 				if (ns.getPlayer().money > sing.getDarkwebProgramCost(prog)) {
 					sing.purchaseProgram(prog);
 					ns.print("Purchasing " + prog);
 				} else {
 					ns.print('Waiting to purchase ' + prog + ': ' + ns.nFormat(ns.getPlayer().money, '0.00a') + '/' + ns.nFormat(sing.getDarkwebProgramCost(prog), '0.00a'));
 				}
-				await ns.sleep(10000);
+				await ns.sleep(5);
 			}
 		}
 	};
@@ -88,15 +98,12 @@ export async function main(ns) {
 	launchBasicScripts(ns);
 	await buyTor(ns);
 	await buyProgs(ns);
-	ns.exec(bombScript, 'home');
-	ns.exec(bdFac, 'home');
 	launchSpendingScripts(ns);
-	ns.exec('gimme-more-money.js', 'home');
 
-	const availableRam = ns.getServerMaxRam('home') - ns.getServerUsedRam('home');
-	const script = "test.js";
-	const scriptRam = ns.getScriptRam(script);
-	var maxThreads = Math.floor(availableRam / scriptRam);
-	ns.exec("test.js", 'home', maxThreads - 4);
+
+	let availableRam = ns.getServerMaxRam('home') - ns.getServerUsedRam('home');
+	let scriptRam = ns.getScriptRam("stanek-charge.js");
+	let maxThreads = Math.floor(availableRam / scriptRam);
+	ns.exec("stanek-charge.js", 'home', maxThreads - 4);
 
 }

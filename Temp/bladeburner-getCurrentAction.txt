@@ -1,1 +1,1 @@
-{"type":"Contract","name":"Bounty Hunter"}
+{"type":"Operation","name":"Assassination"}

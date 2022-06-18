@@ -1,1 +1,1 @@
-{"Sector-12":65,"Aevum":85,"Volhaven":21,"Chongqing":111,"New Tokyo":87,"Ishima":29}
+{"Sector-12":21,"Aevum":37,"Volhaven":104,"Chongqing":52,"New Tokyo":34,"Ishima":80}
