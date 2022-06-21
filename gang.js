@@ -82,52 +82,44 @@ export async function main(ns) {
 	while (true) {
 
 		if (!ns.gang.inGang()) {
+
 			while (ns.getPlayer().hacking < ns.getServer('avmnite-02h').requiredHackingSkill) {
 				ns.clearLog();
 				ns.print('Hacking level to low for avmnite-02h');
 				ns.print(ns.getPlayer().hacking + '/' + ns.getServer('avmnite-02h').requiredHackingSkill)
 				await ns.sleep(60000);
 			}
-		}
 
-		if (!ns.gang.inGang() && !ns.getServer("avmnite-02h").backdoorInstalled) {
-			if (ns.getPlayer().hacking >= ns.getServer('avmnite-02h').requiredHackingSkill) {
-				ns.clearLog();
-				ns.exec('connect-server.js', 'home', 1, 'avmnite-02h');
-				ns.sleep(5000);
-				ns.singularity.connect('home');
+			ns.exec('connect-server.js', 'home', 1, 'avmnite-02h');
+			await ns.sleep(5000);
+			ns.singularity.connect('home');
+
+			if (!ns.getPlayer().factions.includes('NiteSec')) {
+				while (!ns.singularity.checkFactionInvitations().includes("NiteSec")) {
+
+					ns.clearLog();
+					ns.print('Waiting on NitSec invite');
+
+					await ns.sleep(5000);
+
+					if (ns.singularity.checkFactionInvitations().includes("NiteSec")) {
+						ns.clearLog();
+						ns.singularity.joinFaction("NiteSec");
+						ns.print('Joining NiteSec');
+					}
+				}
 			}
-		}
 
-		if (!ns.gang.inGang() && !ns.getPlayer().factions.includes('NiteSec')) {
-			while (!ns.singularity.checkFactionInvitations().includes("NiteSec")) {
+			while (Math.floor(ns.heart.break()) > -54000) {
 				ns.clearLog();
-				ns.print('Waiting on NitSec invite');
-				await ns.sleep(5000);
+				ns.print(Math.floor(ns.heart.break()) + '/-54,000');
+				ns.print('Need more Karam to create the gang with NiteSec');
+				await ns.sleep(1000);
 			}
-		}
 
-
-		if (!ns.gang.inGang() && ns.singularity.checkFactionInvitations().includes("NiteSec")) {
-			ns.clearLog();
-			ns.singularity.joinFaction("NiteSec");
-			ns.print('Joining NiteSec');
-		}
-
-
-		while (Math.floor(ns.heart.break()) > -54000) {
-			ns.clearLog();
-			ns.print(Math.floor(ns.heart.break()) + '/-54,000');
-			ns.print('Need more Karam to create the gang with NiteSec');
-			await ns.sleep(1000);
-		}
-
-		while (Math.floor(ns.heart.break()) < -54000 && !ns.gang.inGang()) {
 			ns.gang.createGang('NiteSec');
 			ns.print('Joining NiteSec Gang');
-			await ns.sleep(1000);
 		}
-
 
 		ns.clearLog();
 

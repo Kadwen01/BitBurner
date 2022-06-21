@@ -1,5 +1,6 @@
 /** @param {NS} ns */
 export async function main(ns) {
+
 	const servers = GetAllServers(ns);
 	const spacer = 1;
 	await GetSymbolAssociations(ns, servers);
@@ -50,78 +51,85 @@ export async function main(ns) {
 		let prefix = '';
 		let factions = ["CSEC", "avmnite-02h", "I.I.I.I", "run4theh111z"];
 		let endGame = ["The-Cave", "w0r1d_d43m0n"];
+		let pServ = "pserv-";
+		let hServ = "hacknet-";
 
+		if ((server.name.includes(pServ) || server.name.includes(hServ) || server.name === 'darkweb') && (ns.args[0] == 'npos')) {
+			continue;
+		} else if (!(server.name.includes(pServ) || server.name.includes(hServ) || server.name ==='home') && (ns.args[0] == 'pos')) {
+			continue;
+		} else {
 
-
-		for (let j = 1; j <= depth; j++) {
-			if (nextDepth >= depth && j == depth) {
-				if (i == lastRootChild) prefix += '└'.padEnd(spacer + 1, '─');
-				else prefix += '├'.padEnd(spacer + 1, '─');
+			for (let j = 1; j <= depth; j++) {
+				if (nextDepth >= depth && j == depth) {
+					if (i == lastRootChild) prefix += '└'.padEnd(spacer + 1, '─');
+					else prefix += '├'.padEnd(spacer + 1, '─');
+				}
+				else if (nextDepth < depth && j == depth) prefix += '└'.padEnd(spacer + 1, '─');
+				else if (i == servers.length - 1 && i != lastChildAtDepth(servers, i, j)) prefix += '└'.padEnd(spacer + 1, '─');
+				else if (j == depth) prefix += '│'.padEnd(spacer + 1, ' ');
+				else if (i != lastChildAtDepth(servers, i, j)) prefix += '│'.padEnd(spacer + 1, ' ');
+				else prefix += '  ';
 			}
-			else if (nextDepth < depth && j == depth) prefix += '└'.padEnd(spacer + 1, '─');
-			else if (i == servers.length - 1 && i != lastChildAtDepth(servers, i, j)) prefix += '└'.padEnd(spacer + 1, '─');
-			else if (j == depth) prefix += '│'.padEnd(spacer + 1, ' ');
-			else if (i != lastChildAtDepth(servers, i, j)) prefix += '│'.padEnd(spacer + 1, ' ');
-			else prefix += '  ';
+
+			let len = prefix.length + server.name.length;
+			let lineColor = i % 2 == 0 ? '#212121' : '#353535';
+
+			let maxRam = ns.getServerMaxRam(server.name);
+			let ramColor = maxRam > 0 ? 'white' : '#555555';
+			let ramString = maxRam > 0 ? ns.nFormat(maxRam * 1000000000, '0.0b') : '';
+			let freeRam = ns.getServerMaxRam(server.name) - ns.getServerUsedRam(server.name);
+			let freeRamColor = freeRam > 0 ? 'white' : '#555555';
+			let freeRamString = maxRam > 0 ? ns.nFormat(freeRam * 1000000000, '0.0b') : '';
+			//let ramPct = maxRam > 0 ? (freeRam / maxRam * 100).toFixed(0) + '%' : '';
+			freeRamColor = pctColor(freeRam / maxRam);
+
+			let money = ns.getServerMoneyAvailable(server.name);
+			let moneyMax = ns.getServerMaxMoney(server.name);
+			//let moneyPct = moneyMax > 0 ? (money / moneyMax * 100).toFixed(0) + '%' : '';
+			let moneyString = moneyMax > 0 ? ns.nFormat(money, '0.00a').padStart(8) : ''.padStart(8);
+			let moneyColor = pctColor(money / moneyMax);
+			let maxMoneyString = moneyMax > 0 ? ns.nFormat(moneyMax, '0.00a').padStart(8) : ''.padStart(8);
+			let maxMoneyColor = moneyMax > 0 ? 'white' : '#555555';
+
+			let so = ns.getServer(server.name);
+			let sec = so.hackDifficulty;
+			let minSec = so.minDifficulty;
+			let secPct = (sec - minSec) / (99 - minSec);
+			let secColor = pctColor(1 - secPct);
+
+			let phl = ns.getHackingLevel();
+			let mhl = ns.getServerRequiredHackingLevel(server.name).toString();
+			let mhlColor = mhl <= phl ? 'lime' : 'red';
+			let factionColor = factions.includes(server.name) ? 'yellow' : mhlColor;
+			let thePill = endGame.includes(server.name) ? 'orange' : factionColor;
+
+			let bd = so.backdoorInstalled;
+			let bdc = bd ? 'lime' : 'red';
+			let bdo = bd ? 'Yes' : 'No';
+
+			let isMoney = money === moneyMax;
+			let isSec = sec === minSec;
+			let prepped = isMoney && isSec ? 'Preped' : 'Preping';
+			let canPrep = mhl <= phl ? prepped : ''
+			let skipPrep = server.name.includes('pserv') || server.name.includes('hacknet') || server.name.includes('darkweb') || server.name.includes('home') || moneyMax < 1;
+			let myServ = skipPrep ? '' : canPrep;
+			let prepColor = isMoney && isSec ? 'lime' : 'red';
+			let canPrepColor = skipPrep ? '#555555' : prepColor;
+
+
+			ColorPrint(
+				'white', '│', 'gray', prefix, thePill, server.name, lineColor, ''.padEnd(47 - len, '─'),
+				'white', '│', freeRamColor, freeRamString.padStart(7), 'white', maxRam == 0 ? ' ' : '/', ramColor, ramString.padStart(7), //freeRamColor, ramPct.padStart(5),
+				'white', '│', moneyColor, moneyString, 'white', moneyMax > 0 ? '/' : ' ', maxMoneyColor, maxMoneyString, //moneyColor, moneyPct.padStart(5),
+				'white', '│', secColor, moneyMax > 0 ? (sec - minSec).toFixed(2).padStart(7) : ''.padEnd(7),
+				'white', '│', mhlColor, mhl.padStart(5),
+				'white', '|', bdc, bdo.padStart(5),
+				'white', '|', 'white', (server.sym.length != 0) ? server.sym.padStart(5) : ''.padStart(5),
+				'white', '|', canPrepColor, myServ.padStart(7),
+				'white', '|',
+			);
 		}
-
-		let len = prefix.length + server.name.length;
-		let lineColor = i % 2 == 0 ? '#212121' : '#353535';
-
-		let maxRam = ns.getServerMaxRam(server.name);
-		let ramColor = maxRam > 0 ? 'white' : '#555555';
-		let ramString = maxRam > 0 ? ns.nFormat(maxRam * 1000000000, '0.0b') : '';
-		let freeRam = ns.getServerMaxRam(server.name) - ns.getServerUsedRam(server.name);
-		let freeRamColor = freeRam > 0 ? 'white' : '#555555';
-		let freeRamString = maxRam > 0 ? ns.nFormat(freeRam * 1000000000, '0.0b') : '';
-		//let ramPct = maxRam > 0 ? (freeRam / maxRam * 100).toFixed(0) + '%' : '';
-		freeRamColor = pctColor(freeRam / maxRam);
-
-		let money = ns.getServerMoneyAvailable(server.name);
-		let moneyMax = ns.getServerMaxMoney(server.name);
-		//let moneyPct = moneyMax > 0 ? (money / moneyMax * 100).toFixed(0) + '%' : '';
-		let moneyString = moneyMax > 0 ? ns.nFormat(money, '0.00a').padStart(8) : ''.padStart(8);
-		let moneyColor = pctColor(money / moneyMax);
-		let maxMoneyString = moneyMax > 0 ? ns.nFormat(moneyMax, '0.00a').padStart(8) : ''.padStart(8);
-		let maxMoneyColor = moneyMax > 0 ? 'white' : '#555555';
-
-		let so = ns.getServer(server.name);
-		let sec = so.hackDifficulty;
-		let minSec = so.minDifficulty;
-		let secPct = (sec - minSec) / (99 - minSec);
-		let secColor = pctColor(1 - secPct);
-
-		let phl = ns.getHackingLevel();
-		let mhl = ns.getServerRequiredHackingLevel(server.name).toString();
-		let mhlColor = mhl <= phl ? 'lime' : 'red';
-		let factionColor = factions.includes(server.name) ? 'yellow' : mhlColor;
-		let thePill = endGame.includes(server.name) ? 'orange' : factionColor;
-
-		let bd = so.backdoorInstalled;
-		let bdc = bd ? 'lime' : 'red';
-		let bdo = bd ? 'Yes' : 'No';
-
-		let isMoney = money === moneyMax;
-		let isSec = sec === minSec;
-		let prepped = isMoney && isSec ? 'Preped' : 'Preping';
-		let canPrep = mhl <= phl ? prepped : ''
-		let skipPrep = server.name.includes('pserv') || server.name.includes('hacknet') || server.name.includes('darkweb') || server.name.includes('home') || moneyMax < 1;
-		let myServ = skipPrep ? '' : canPrep;
-		let prepColor = isMoney && isSec ? 'lime' : 'red';
-		let canPrepColor = skipPrep ? '#555555' : prepColor;
-
-
-		ColorPrint(
-			'white', '│', 'gray', prefix, thePill, server.name, lineColor, ''.padEnd(47 - len, '─'),
-			'white', '│', freeRamColor, freeRamString.padStart(7), 'white', maxRam == 0 ? ' ' : '/', ramColor, ramString.padStart(7), //freeRamColor, ramPct.padStart(5),
-			'white', '│', moneyColor, moneyString, 'white', moneyMax > 0 ? '/' : ' ', maxMoneyColor, maxMoneyString, //moneyColor, moneyPct.padStart(5),
-			'white', '│', secColor, moneyMax > 0 ? (sec - minSec).toFixed(2).padStart(7) : ''.padEnd(7),
-			'white', '│', mhlColor, mhl.padStart(5),
-			'white', '|', bdc, bdo.padStart(5),
-			'white', '|', 'white', (server.sym.length != 0) ? server.sym.padStart(5) : ''.padStart(5),
-			'white', '|', canPrepColor, myServ.padStart(7),
-			'white', '|',
-		);
 	}
 
 	ColorPrint(

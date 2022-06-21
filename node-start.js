@@ -22,11 +22,13 @@ export async function main(ns) {
 	const spendHash = "sell-hash.js"; // spend hasd's
 	const bdFac = "bdFactions.js"; // install backdoors on the 4 faction servers
 	const hackScript = "gimme-more-money.js"; // main hacking script
+	const ovButtons = "ov-button.js" //script buttons  in sidebar
 
 	const BASIC = [
 		ovStats,
 		ovBB,
 		ovSlv,
+		ovButtons,
 		infScript,
 		gangScript,
 		corpScript,
@@ -104,6 +106,6 @@ export async function main(ns) {
 	let availableRam = ns.getServerMaxRam('home') - ns.getServerUsedRam('home');
 	let scriptRam = ns.getScriptRam("stanek-charge.js");
 	let maxThreads = Math.floor(availableRam / scriptRam);
-	ns.exec("stanek-charge.js", 'home', maxThreads - 4);
+	ns.exec("stanek-charge.js", 'home', maxThreads - 10);
 
 }

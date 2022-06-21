@@ -30,7 +30,6 @@ export let main = async ns => {
 	let cmElement = document.getElementById("cm");
 	let cpElement = document.getElementById("cp");
 
-
 	while (doc.body.contains(item)) {
 
 		let scriptx = null;
@@ -65,4 +64,8 @@ export let main = async ns => {
 
 		await ns.sleep(1000);
 	}
+
+
+
+
 }

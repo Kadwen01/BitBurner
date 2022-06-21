@@ -1,1 +1,1 @@
-{"Operation Typhoon":[0.6090543474369606,0.6882314236391537]}
+{"Operation Vindictus":[1,1]}

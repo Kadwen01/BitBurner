@@ -1,1 +1,1 @@
-{"type":"Operation","name":"Assassination"}
+{"type":"BlackOp","name":"Operation Vindictus"}
