@@ -99,7 +99,7 @@ export async function main(ns) {
 			let secColor = pctColor(1 - secPct);
 
 			let phl = ns.getHackingLevel();
-			let mhl = ns.getServerRequiredHackingLevel(server.name).toString();
+			let mhl = Math.floor(ns.getServerRequiredHackingLevel(server.name)).toString();
 			let mhlColor = mhl <= phl ? 'lime' : 'red';
 			let factionColor = factions.includes(server.name) ? 'yellow' : mhlColor;
 			let thePill = endGame.includes(server.name) ? 'orange' : factionColor;

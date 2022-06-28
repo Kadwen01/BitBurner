@@ -1,12 +1,12 @@
 /** @param {NS} ns */
 
 import { createBox, createSidebarItem, confirm, prompt, select, alert } from "/box/box.js";
-import { formatNumberShort, formatMoney } from "/helper.js";
 
 export let main = async ns => {
 	ns.disableLog("sleep");
 	ns.tail(ns.getScriptName());
 	ns.clearLog();
+	ns.atExit(() => box.remove());
 
 	const doc = eval("document");
 
@@ -34,6 +34,10 @@ export let main = async ns => {
     		<td><span style="color:blue" id=corpFour></td>
     		<td><span id=corpFourJob></td>
   		</tr>
+		<tr>
+    		<td><span style="color:blue" id=corpFive></td>
+    		<td><span id=corpFiveJob></td>
+  		</tr>
 	</table>
 	</div>
 
@@ -52,6 +56,10 @@ export let main = async ns => {
 	let corpFourElement = document.getElementById("corpFour");
 	let corpFourJobElement = document.getElementById("corpFourJob");
 
+	let corpFiveElement = document.getElementById("corpFive");
+	let corpFiveJobElement = document.getElementById("corpFiveJob");
+
+
 	while (doc.body.contains(box)) {
 
 		var cJob = ns.getPlayer().jobs;
@@ -60,11 +68,14 @@ export let main = async ns => {
 		let corpTwo = Object.keys(cJob)[1];
 		let corpThree = Object.keys(cJob)[2];
 		let corpFour = Object.keys(cJob)[3];
+		let corpFive = Object.keys(cJob)[4];
 
 		let corpOneJob = cJob[Object.keys(cJob)[0]];
 		let corpTwoJob = cJob[Object.keys(cJob)[1]];
 		let corpThreeJob = cJob[Object.keys(cJob)[2]];
 		let corpFourJob = cJob[Object.keys(cJob)[3]];
+		let corpFiveJob = cJob[Object.keys(cJob)[4]];
+
 
 		corpOneElement.innerText = corpOne;
 		corpOneJobElement.innerText = corpOneJob;
@@ -78,10 +89,15 @@ export let main = async ns => {
 		corpFourElement.innerText = corpFour;
 		corpFourJobElement.innerText = corpFourJob;
 
+		corpFiveElement.innerText = corpFive;
+		corpFiveJobElement.innerText = corpFiveJob;
+
+		let recalcHeight = () => { box.style.height = ""; box.style.height = box.offsetHeight + "px" }
+
+		recalcHeight();
+
 		await ns.sleep(1000);
 	}
-
-
 
 
 }

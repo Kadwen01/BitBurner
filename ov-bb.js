@@ -6,6 +6,7 @@ export let main = async ns => {
 	ns.tail(ns.getScriptName());
 	ns.disableLog("sleep");
 	ns.clearLog();
+	ns.atExit(() => item.remove());
 
 	const gbb = ns.bladeburner;
 

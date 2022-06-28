@@ -96,18 +96,13 @@ export async function main(ns) {
 
 			if (!ns.getPlayer().factions.includes('NiteSec')) {
 				while (!ns.singularity.checkFactionInvitations().includes("NiteSec")) {
-
 					ns.clearLog();
 					ns.print('Waiting on NitSec invite');
-
 					await ns.sleep(5000);
-
-					if (ns.singularity.checkFactionInvitations().includes("NiteSec")) {
-						ns.clearLog();
-						ns.singularity.joinFaction("NiteSec");
-						ns.print('Joining NiteSec');
-					}
 				}
+				ns.clearLog();
+				ns.singularity.joinFaction("NiteSec");
+				ns.print('Joining NiteSec');
 			}
 
 			while (Math.floor(ns.heart.break()) > -54000) {

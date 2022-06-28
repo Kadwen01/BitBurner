@@ -7,6 +7,7 @@ export let main = async ns => {
 	ns.disableLog("sleep");
 	ns.tail(ns.getScriptName());
 	ns.clearLog();
+	ns.atExit(() => item.remove());
 
 	const doc = eval("document");
 	const ecorp = eval("ns.corporation");
@@ -19,6 +20,8 @@ export let main = async ns => {
 	<div style="font-size:16px">Gang Money:  <span id=ga>     </span></div>
 	<div style="font-size:16px">Corp Money:  <span id=cm>     </span></div>
 	<div style="font-size:16px">Corp Profit: <span id=cp>     </span></div>
+	<div style="font-size:16px">Stock Value: <span id=sv>     </span></div>
+
 	<div> --------------------  </div>
 	`);
 
@@ -29,10 +32,13 @@ export let main = async ns => {
 	let gaElement = document.getElementById("ga");
 	let cmElement = document.getElementById("cm");
 	let cpElement = document.getElementById("cp");
+	let svElement = document.getElementById("sv");
 
 	while (doc.body.contains(item)) {
 
+		let stockSym = ns.stock.getSymbols();
 		let scriptx = null;
+		var stockVal = 0;
 
 		if (Array.isArray(ns.getScriptExpGain())) {
 			scriptx = Math.floor(ns.getScriptExpGain()[0]).toString();
@@ -54,6 +60,20 @@ export let main = async ns => {
 			var gangMoney = 0;
 		}
 
+		for (let curVal in stockSym) {
+			let sym = stockSym[curVal];
+			let symLong = ns.stock.getPosition(sym)[0];
+			let symShort = ns.stock.getPosition(sym)[2];
+
+			if ((symLong + symShort) === 0) {
+				continue;
+			} else {
+				var longProf = ns.stock.getSaleGain(sym, symLong, "long");
+				var shortProf = ns.stock.getSaleGain(sym, symShort, "short");
+			}
+			stockVal = stockVal + longProf + shortProf;
+		}
+
 		hashElement.innerText = Math.floor(ns.hacknet.numHashes());
 		karmaElement.innerText = Math.floor(ns.heart.break());
 		siElement.innerText = formatMoney(Math.floor(ns.getScriptIncome()[0]).toString()) + '/s';
@@ -61,6 +81,8 @@ export let main = async ns => {
 		gaElement.innerText = formatMoney(gangMoney) + '/s';
 		cmElement.innerText = formatMoney(corpFunds);
 		cpElement.innerText = formatMoney(corpProfit);
+		svElement.innerText = formatMoney(stockVal);
+
 
 		await ns.sleep(1000);
 	}

@@ -6,6 +6,8 @@ export let main = async ns => {
 	ns.tail(ns.getScriptName());
 	ns.clearLog();
 	ns.disableLog("sleep");
+	ns.atExit(() => item.remove());
+
 	const gslv = ns.sleeve;
 
 	let doc = eval("document");

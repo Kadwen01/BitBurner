@@ -81,7 +81,11 @@ export async function main(ns) {
 
 	ns.tprintf(" ");
 
-
+	if (flags.install) {
+		ns.kill('aps-lite.js', 'home');
+		ns.kill('hash.js', 'home');
+		ns.exec('stonks.js', 'home', 1, 'l');
+	}
 
 
 	if (homeRam < 1073741824) {

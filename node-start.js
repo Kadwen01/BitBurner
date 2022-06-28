@@ -22,21 +22,23 @@ export async function main(ns) {
 	const spendHash = "sell-hash.js"; // spend hasd's
 	const bdFac = "bdFactions.js"; // install backdoors on the 4 faction servers
 	const hackScript = "gimme-more-money.js"; // main hacking script
-	const ovButtons = "ov-button.js" //script buttons  in sidebar
+	const ovButtons = "ov-button.js"; //script buttons  in sidebar
+	const ovJobs = "ov-jobs.js"; //current jobs in sidebar
+	const ov2 = "overview2.js"; // moves overview to sidebar
 
 	const BASIC = [
+		ov2,
 		ovStats,
 		ovBB,
 		ovSlv,
 		ovButtons,
+		ovJobs,
 		infScript,
 		gangScript,
 		corpScript,
 		bbScript,
 		csScript,
 		sleeveScript,
-		bdFac
-
 	];
 
 	const INTERMEDIATE = [
@@ -44,7 +46,8 @@ export async function main(ns) {
 		pservScript,
 		hacknetScript,
 		spendHash,
-		hackScript
+		hackScript,
+		bdFac
 	];
 
 	const PROGRAMS = [

@@ -1,10 +1,11 @@
 import { createSidebarItem, doc } from "box/box"
 export async function main(ns) {
+	ns.atExit(() => box.remove());
 
   let box = createSidebarItem("Scripts", `
-  <div style="font-size:16px"><button id=dash>Dashboard</button>  <button id=npos>npos</button>  <button id=pos>pos</button></div> 
-  <div style="font-size:16px"><button id=augs>Augs</button> <button id=augsBuy>buy</button></div>
-	<div style="font-size:16px"><button id=job>Jobs</button></div>
+  <div style="font-size:16px"><button id=dash>Dash</button>  <button id=npos>npos</button>  <button id=pos>pos</button></div> 
+  <div style="font-size:16px"><button id=augs>Augs</button>  <button id=augsBuy>buy</button> <button id=job>Jobs</button></div>
+	<div style="font-size:16px"><button id=pid>Pid</button>  <button id=ram>Ram</button> <button id=money>Max Money</button> </div> 
 
   `, "\ueb36");
 
@@ -16,6 +17,12 @@ export async function main(ns) {
   box.querySelector("#augsBuy").addEventListener("click", () => ns.run("augs.js",1 , "buy"));
 
   box.querySelector("#job").addEventListener("click", () => ns.run("job-software.js"));
+  box.querySelector("#pid").addEventListener("click", () => ns.run("mypid.js"));
+  box.querySelector("#ram").addEventListener("click", () => ns.run("ram.js"));
+  box.querySelector("#money").addEventListener("click", () => ns.run("find-money.js"));
+
+
+
 
   while (doc.body.contains(box)) await ns.asleep(1000);
 

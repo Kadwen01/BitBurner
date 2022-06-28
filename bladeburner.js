@@ -149,7 +149,7 @@ async function mainLoop(ns) {
             `You can destroy the Bitnode on the Bladeburner > BlackOps tab.`;
         log(ns, `SUCCESS: ${msg}`, true, 'success');
         ns.alert(msg);
-        lastBlackOpComplete = true;
+        lastBlackOpComplete = true;  
     }
 
     // Gather the count of available contracts / operations

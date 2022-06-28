@@ -53,6 +53,7 @@ export async function main(ns) {
     if (!hasBackdoor && phl >= mhl ){  
         await ns.singularity.installBackdoor();
         ns.tprintf("Backdoor installed on " + server);
+        ns.singularity.connect('home');
     }
 
 

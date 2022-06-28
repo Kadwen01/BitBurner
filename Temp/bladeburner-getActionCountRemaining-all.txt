@@ -1,1 +1,1 @@
-{"Assassination":12,"Stealth Retirement Operation":586,"Raid":647,"Sting Operation":57,"Undercover Operation":616,"Investigation":760}
+{"Assassination":505,"Stealth Retirement Operation":443,"Raid":634,"Sting Operation":475,"Undercover Operation":450,"Investigation":518}

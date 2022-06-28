@@ -15,14 +15,6 @@ export async function main(ns) {
 		await ns.sleep(60000);
 	}
 
-	//while (gsle.getSleeveStats(slvNo).sync < 100) {
-	//	ns.clearLog();
-	//	gsle.setToSynchronize(slvNo);
-	//	ns.print('Sleeve ' + slvNo + ' still syncing');
-	//	ns.print(gsle.getSleeveStats(slvNo).sync);
-	//	await ns.sleep(30000);
-	//}
-
 	while (Math.floor(ns.heart.break()) > -54000) {
 		ns.clearLog();
 		gsle.setToCommitCrime(slvNo, "Homicide");
@@ -32,6 +24,8 @@ export async function main(ns) {
 	}
 
 	while (true) {
+
+		let sTask = ns.sleeve.getTask(slvNo).task;
 
 		if (slvNo === 0) {
 			ns.clearLog();
@@ -43,16 +37,8 @@ export async function main(ns) {
 			let cBCount = bb.getActionCountRemaining("contract", "Bounty Hunter");
 			let cTCount = bb.getActionCountRemaining("contract", "Tracking");
 
-			let sTask = ns.sleeve.getTask(slvNo).task;
 			let sTaskL = ns.sleeve.getTask(slvNo).location;
 			let sLoc = "This will generate additional contracts and operations";
-
-			ns.print(sRChance);
-			ns.print((sRChance > .9 && cRCount > 10))
-			ns.print((sTask === 'Idle' || sTaskL === sLoc))
-
-			ns.print((sRChance > .9 && cRCount > 10) && (sTask === 'Idle' || sTaskL === sLoc))
-			ns.print(sTask);
 
 			if ((sRChance > .9 && cRCount > 10) && (sTask === 'Idle' || sTaskL === sLoc)) {
 				//	ns.clearLog();
@@ -73,12 +59,12 @@ export async function main(ns) {
 			}
 		}
 
-		if ((slvNo === 1 || slvNo === 2 || slvNo === 3 || slvNo === 4 || slvNo === 5) && ns.sleeve.getTask(slvNo) === "Idle") {
+		if ((slvNo === 1 || slvNo === 2 || slvNo === 3 || slvNo === 4 || slvNo === 5) && sTask === "Idle") {
 			gsle.setToBladeburnerAction(slvNo, "Infiltrate synthoids");
 			ns.print('Sleeve ' + slvNo + ' is infiltrating the Synthoids');
 		}
 
-		if ((slvNo === 6 || slvNo === 7) && ns.sleeve.getTask(slvNo) === "Idle") {
+		if ((slvNo === 6 || slvNo === 7) && sTask === "Idle") {
 			gsle.setToCommitCrime(slvNo, "Heist");
 			ns.print('Sleeve ' + slvNo + ' is commiting a Heist');
 		}
