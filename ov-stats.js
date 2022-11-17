@@ -40,10 +40,10 @@ export let main = async ns => {
 		let scriptx = null;
 		var stockVal = 0;
 
-		if (Array.isArray(ns.getScriptExpGain())) {
-			scriptx = Math.floor(ns.getScriptExpGain()[0]).toString();
+		if (Array.isArray(ns.getTotalScriptExpGain())) {
+			scriptx = Math.floor(ns.getTotalScriptExpGain()[0]).toString();
 		} else {
-			scriptx = Math.floor(ns.getScriptExpGain()).toString();
+			scriptx = Math.floor(ns.getTotalScriptExpGain()).toString();
 		}
 
 		if (ns.getPlayer().hasCorporation) {
@@ -76,7 +76,7 @@ export let main = async ns => {
 
 		hashElement.innerText = Math.floor(ns.hacknet.numHashes());
 		karmaElement.innerText = Math.floor(ns.heart.break());
-		siElement.innerText = formatMoney(Math.floor(ns.getScriptIncome()[0]).toString()) + '/s';
+		siElement.innerText = formatMoney(Math.floor(ns.getTotalScriptIncome()[0]).toString()) + '/s';
 		seElement.innerText = formatNumberShort(scriptx) + '/s';
 		gaElement.innerText = formatMoney(gangMoney) + '/s';
 		cmElement.innerText = formatMoney(corpFunds);

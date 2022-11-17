@@ -2,7 +2,7 @@
 export async function main(ns) {
 
 	ns.clearLog();
-	ns.tail(ns.getScriptName);
+	ns.tail(ns.getScriptName());
 
 	const gstanek = ns.stanek;
 	const charge = gstanek.chargeFragment;

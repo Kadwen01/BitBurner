@@ -1,0 +1,358 @@
+This file contains the list of potential API break. A pattern was used to look through all your files and note the spots where you might have a problem. Not everything here is broken./ns\.getScriptExpGain/g
+getScriptExpGain with 0 argument no longer returns the sum of all scripts. Use getTotalScriptExpGain
+
+	overview.js
+		Line 38 if (Array.isArray(ns.getScriptExpGain())) {
+		Line 39 scriptx = Math.floor(ns.getScriptExpGain()[0]).toString();
+		Line 41 scriptx = Math.floor(ns.getScriptExpGain()).toString();
+	ov-stats.js
+		Line 43 if (Array.isArray(ns.getScriptExpGain())) {
+		Line 44 scriptx = Math.floor(ns.getScriptExpGain()[0]).toString();
+		Line 46 scriptx = Math.floor(ns.getScriptExpGain()).toString();
+
+
+/ns\.getScriptExpGain/g
+getScriptIncome with 0 argument no longer returns the sum of all scripts. Use getTotalScriptIncome
+
+	overview.js
+		Line 38 if (Array.isArray(ns.getScriptExpGain())) {
+		Line 39 scriptx = Math.floor(ns.getScriptExpGain()[0]).toString();
+		Line 41 scriptx = Math.floor(ns.getScriptExpGain()).toString();
+	ov-stats.js
+		Line 43 if (Array.isArray(ns.getScriptExpGain())) {
+		Line 44 scriptx = Math.floor(ns.getScriptExpGain()[0]).toString();
+		Line 46 scriptx = Math.floor(ns.getScriptExpGain()).toString();
+
+
+/ns\.scp/g
+scp arguments were switch, it is now scp(files, destination, optionally_source). If you were using 2 argument (not 3) this doesn't affect you.
+
+	deploy.js
+		Line 36 await ns.scp("exp-max.js", host);
+		Line 37 await ns.scp(script, host);
+	grow_stop.js
+		Line 34 //await ns.scp(script, ns.getHostname(), server);
+	/archive/auto_hack.js
+		Line 24 await ns.scp(virus, server);
+	/archive/auto-purchase-servers.js
+		Line 26 await ns.scp('share-max.js', server);
+		Line 27 await ns.scp('share.js', server);
+	nfHack.js
+		Line 129 await ns.scp(scriptName, server);
+	/archive/autohack.js
+		Line 24 await ns.scp(virus, server);
+	/archive/book-keeper.js
+		Line 46 await ns.scp(virus, serv);
+	/archive/gimme-more-money.js
+		Line 195 await ns.scp(viruses, servName); // copy viruses over
+	/archive/auto-deploy.js
+		Line 24 await ns.scp(virus, server);
+	/archive/launch-fleets.js
+		Line 56 await ns.scp(virus, serv);
+	gimme-more-money.js
+		Line 219 await ns.scp(viruses, servName); // copy viruses over
+	prep.js
+		Line 196 await ns.scp(scriptName, server);
+
+
+/ns\.stock\.buy/g
+buy is a very common word so in order to avoid ram costs it was renamed ns.stock.buyStock
+
+	/archive/auto_trade.js
+		Line 96 const price = ns.stock.buy(stock.sym, numShares);
+	/archive/diamond-hands.js
+		Line 80 if (ns.stock.buy(stock.sym, sharesToBuy) > 0) {
+	stonks.js
+		Line 436 let buyStockWrapper = async (ns, sym, numShares) => await transactStock(ns, sym, numShares, 'buy'); // ns.stock.buy(sym, numShares);
+	/Temp/stock-buy.txt.js
+		Line 2 ns.stock.buy(ns.args[0], ns.args[1])
+	zoe-stock.js
+		Line 210 ns.stock.buy(stock.name, buyAmount);
+
+
+/ns\.stock\.sell/g
+sell is a very common word so in order to avoid ram costs it was renamed ns.stock.sellStock
+
+	/archive/auto_trade.js
+		Line 112 ns.stock.sell(stock.sym, numShares);
+	gtfo.js
+		Line 23 const salePrice = ns.stock.sell(stock.sym, stock.longShares);
+		Line 27 const salePrice = ns.stock.sell(stock.sym, stock.shortShares);
+	/archive/diamond-hands.js
+		Line 54 const salePrice = ns.stock.sell(stock.sym, stock.longShares);
+	stonks.js
+		Line 438 let sellStockWrapper = async (ns, sym, numShares) => await transactStock(ns, sym, numShares, 'sell'); // ns.stock.sell(sym, numShares);
+		Line 439 let sellShortWrapper = async (ns, sym, numShares) => await transactStock(ns, sym, numShares, 'sellShort'); // ns.stock.sellShort(sym, numShares);
+	/Temp/stock-sell.txt.js
+		Line 2 ns.stock.sell(ns.args[0], ns.args[1])
+	/Temp/stock-sellShort.txt.js
+		Line 2 ns.stock.sellShort(ns.args[0], ns.args[1])
+	zoe-stock.js
+		Line 167 ns.stock.sell(s.name, s.bought);
+		Line 170 ns.stock.sellShort(s.name, Math.abs(s.bought));
+
+
+/ns\.stock\.short/g
+short is a very common word so in order to avoid ram costs it was renamed ns.stock.buyShort
+
+	stonks.js
+		Line 437 let buyShortWrapper = async (ns, sym, numShares) => await transactStock(ns, sym, numShares, 'short'); // ns.stock.short(sym, numShares);
+	/Temp/stock-short.txt.js
+		Line 2 ns.stock.short(ns.args[0], ns.args[1])
+	zoe-stock.js
+		Line 226 ns.stock.short(stock.name, buyAmount);
+
+
+/ns.getAugmentationsFromFaction/g
+ns.getAugmentationsFromFaction was moved to ns.singularity.getAugmentationsFromFaction
+
+	augs.js
+		Line 107 let augs = ns.getAugmentationsFromFaction(faction);
+
+
+/ns.getOwnedAugmentations/g
+ns.getOwnedAugmentations was moved to ns.singularity.getOwnedAugmentations
+
+	bladeburner.js
+		Line 112 await getNsDataThroughFile(ns, `ns.getOwnedAugmentations().includes("${simulacrumAugName}")`, '/Temp/bladeburner-hasSimulacrum.txt');
+	/Temp/bladeburner-hasSimulacrum.txt.js
+		Line 2 ns.getOwnedAugmentations().includes("The Blade's Simulacrum")
+
+
+/ns.getOwnedSourceFiles/g
+ns.getOwnedSourceFiles was moved to ns.singularity.getOwnedSourceFiles
+
+	helper.js
+		Line 366 dictSourceFiles = await fnGetNsDataThroughFile(ns, `Object.fromEntries(ns.getOwnedSourceFiles().map(sf => [sf.n, sf.lvl]))`, '/Temp/owned-source-files.txt');
+	/Temp/owned-source-files.txt.js
+		Line 2 Object.fromEntries(ns.getOwnedSourceFiles().map(sf => [sf.n, sf.lvl]))
+
+
+/ns.installBackdoor/g
+ns.installBackdoor was moved to ns.singularity.installBackdoor
+
+	bomb.js
+		Line 16 //try {ns.installBackdoor(server)} catch{}
+
+
+/ns.isBusy/g
+ns.isBusy was moved to ns.singularity.isBusy
+
+	bladeburner.js
+		Line 409 const busy = await getNsDataThroughFile(ns, 'ns.isBusy()', '/Temp/isBusy.txt');
+	/Temp/isBusy.txt.js
+		Line 2 ns.isBusy()
+
+
+/hacking_grow_mult/g
+ns.getPlayer().hacking_grow_mult was moved to ns.getPlayer().mults.hacking_grow
+
+	metrics.js
+		Line 623 const multiplier = ns.getPlayer().hacking_grow_mult;
+
+
+/hacknet_node_money_mult/g
+ns.getPlayer().hacknet_node_money_mult was moved to ns.getPlayer().mults.hacknet_node_money
+
+	/archive/hash-v1.js
+		Line 54 let nodeMult = ns.getPlayer()['hacknet_node_money_mult'];
+
+
+/hacking/g
+The work system is completely reworked and ns.getPlayer().hacking no longer exists. This data is likely available inside ns.getPlayer().currentWork, skills, exp, or hp
+
+	/archive/find-target.js
+		Line 36 var hackChance = ns.formulas.hacking.hackChance(server, player);
+	nfHack.js
+		Line 69 // Server is ripe for hacking
+		Line 70 ns.print('INFO: Server is ripe for hacking, full hack would require ' + thack + ' threads');
+	/archive/strategist.js
+		Line 35 var wTime = ns.formulas.hacking.weakenTime(server, player);
+		Line 36 var gTime = ns.formulas.hacking.growTime(server, player);
+		Line 37 var hTime = ns.formulas.hacking.hackTime(server, player);
+		Line 142 const hackChance = ns.formulas.hacking.hackChance(server, player);
+	/archive/gimme-more-money.js
+		Line 217 const hackChance = ns.formulas.hacking.hackChance(server, player);
+		Line 296 const wTime = ns.formulas.hacking.weakenTime(server, player);
+		Line 297 const gTime = ns.formulas.hacking.growTime(server, player);
+		Line 298 const hTime = ns.formulas.hacking.hackTime(server, player);
+	/archive/launch-fleets.js
+		Line 77 var wTime = ns.formulas.hacking.weakenTime(server, player);
+		Line 78 var gTime = ns.formulas.hacking.growTime(server, player);
+		Line 79 var hTime = ns.formulas.hacking.hackTime(server, player);
+	infultrate.js
+		Line 657 * Is this cheating? Or is it real hacking? Don't care, as long
+	singtest.js
+		Line 30 const hackingAugs = [
+		Line 159 if (augs.includes(hackingAugs)) {
+	sleeve.js
+		Line 113 while (ns.getPlayer().hacking < 2500 && ns.getPlayer().money > 1e9){
+	gang.js
+		Line 86 while (ns.getPlayer().hacking < ns.getServer('avmnite-02h').requiredHackingSkill) {
+		Line 89 ns.print(ns.getPlayer().hacking + '/' + ns.getServer('avmnite-02h').requiredHackingSkill)
+	gimme-more-money.js
+		Line 241 const hackChance = ns.formulas.hacking.hackChance(server, player);
+		Line 320 const wTime = ns.formulas.hacking.weakenTime(server, player);
+		Line 321 const gTime = ns.formulas.hacking.growTime(server, player);
+		Line 322 const hTime = ns.formulas.hacking.hackTime(server, player);
+	node-start.js
+		Line 24 const hackScript = "gimme-more-money.js"; // main hacking script
+	bdFactions.js
+		Line 16 ns.print('Waiting to backdoor ' + server + " : " + ns.getPlayer().hacking + '/' + ns.getServer(server).requiredHackingSkill);
+		Line 17 if (ns.getPlayer().hacking > ns.getServer(server).requiredHackingSkill) {
+	job-software.js
+		Line 14 if (ns.getPlayer().hacking > 249) {
+	prep.js
+		Line 73 ns.print('INFO: Server is ripe for hacking, starting ' + threads + ' threads to hack it');
+	metrics.js
+		Line 351 this.currentStateWeakenTime = ns.formulas.hacking.weakenTime(so, player);
+		Line 358 this.times[H] = ns.formulas.hacking.hackTime(so, player);
+		Line 359 this.times[W1] = ns.formulas.hacking.weakenTime(so, player);
+		Line 360 this.times[G] = ns.formulas.hacking.growTime(so, player);
+		Line 361 this.times[W2] = ns.formulas.hacking.weakenTime(so, player);
+		Line 364 const hackPctThread = ns.formulas.hacking.hackPercent(so, player);
+		Line 399 //this.threads[G] = Math.ceil(Math.log(growFactor) / Math.log(ns.formulas.hacking.growPercent(so, 1, player, this.cores)/* / mults.ServerGrowthRate)*/));
+		Line 400 this.debugThreadsG = Math.ceil(Math.log(growFactor) / Math.log(ns.formulas.hacking.growPercent(so, 1, player, this.cores)/* / mults.ServerGrowthRate)*/));
+		Line 414 // 	let growPct = ns.formulas.hacking.growPercent(so, growThreads, player, this.cores);
+		Line 484 this.hackChance = ns.formulas.hacking.hackChance(so, player);
+		Line 524 this.times[H] = ns.formulas.hacking.hackTime(so, player);
+		Line 525 this.times[W1] = ns.formulas.hacking.weakenTime(so, player);
+		Line 526 this.times[G] = ns.formulas.hacking.growTime(so, player);
+		Line 527 this.times[W2] = ns.formulas.hacking.weakenTime(so, player);
+		Line 574 let serverGrowth = ns.formulas.hacking.growPercent(serverObject, threads, playerObject, cores);
+		Line 623 const multiplier = ns.getPlayer().hacking_grow_mult;
+
+
+/strength/g
+The work system is completely reworked and ns.getPlayer().strength no longer exists. This data is likely available inside ns.getPlayer().currentWork, skills, exp, or hp
+
+	sleeve.js
+		Line 34 while (ns.getPlayer().strength < 850 && ns.getPlayer().money > 1e9){
+		Line 38 ns.print(gsle.getSleeveStats(slvNo).strength);
+		Line 74 while (ns.getPlayer().strength < 850 && ns.getPlayer().money > 1e9){
+		Line 78 ns.print(gsle.getSleeveStats(slvNo).strength);
+	bladeburner.js
+		Line 423 if (player.strength < 100 || player.defense < 100 || player.dexterity < 100 || player.agility < 100)
+		Line 425 `(Currently Str: ${player.strength}, Def: ${player.defense}, Dex: ${player.dexterity}, Agi: ${player.agility})`);
+
+
+/defense/g
+The work system is completely reworked and ns.getPlayer().defense no longer exists. This data is likely available inside ns.getPlayer().currentWork, skills, exp, or hp
+
+	sleeve.js
+		Line 44 while (ns.getPlayer().defense < 850 && ns.getPlayer().money > 1e9){
+		Line 48 ns.print(gsle.getSleeveStats(slvNo).defense);
+		Line 84 while (ns.getPlayer().defense < 850 && ns.getPlayer().money > 1e9){
+		Line 88 ns.print(gsle.getSleeveStats(slvNo).defense);
+	bladeburner.js
+		Line 423 if (player.strength < 100 || player.defense < 100 || player.dexterity < 100 || player.agility < 100)
+		Line 425 `(Currently Str: ${player.strength}, Def: ${player.defense}, Dex: ${player.dexterity}, Agi: ${player.agility})`);
+
+
+/dexterity/g
+The work system is completely reworked and ns.getPlayer().dexterity no longer exists. This data is likely available inside ns.getPlayer().currentWork, skills, exp, or hp
+
+	sleeve.js
+		Line 54 while (ns.getPlayer().dexterity < 850 && ns.getPlayer().money > 1e9){
+		Line 58 ns.print(gsle.getSleeveStats(slvNo).dexterity);
+		Line 94 while (ns.getPlayer().dexterity < 850 && ns.getPlayer().money > 1e9){
+		Line 98 ns.print(gsle.getSleeveStats(slvNo).dexterity);
+	bladeburner.js
+		Line 423 if (player.strength < 100 || player.defense < 100 || player.dexterity < 100 || player.agility < 100)
+		Line 425 `(Currently Str: ${player.strength}, Def: ${player.defense}, Dex: ${player.dexterity}, Agi: ${player.agility})`);
+
+
+/agility/g
+The work system is completely reworked and ns.getPlayer().agility no longer exists. This data is likely available inside ns.getPlayer().currentWork, skills, exp, or hp
+
+	sleeve.js
+		Line 64 while (ns.getPlayer().agility < 850 && ns.getPlayer().money > 1e9){
+		Line 68 ns.print(gsle.getSleeveStats(slvNo).agility);
+		Line 104 while (ns.getPlayer().agility < 850 && ns.getPlayer().money > 1e9){
+		Line 108 ns.print(gsle.getSleeveStats(slvNo).agility);
+	bladeburner.js
+		Line 423 if (player.strength < 100 || player.defense < 100 || player.dexterity < 100 || player.agility < 100)
+		Line 425 `(Currently Str: ${player.strength}, Def: ${player.defense}, Dex: ${player.dexterity}, Agi: ${player.agility})`);
+
+
+/charisma/g
+The work system is completely reworked and ns.getPlayer().charisma no longer exists. This data is likely available inside ns.getPlayer().currentWork, skills, exp, or hp
+
+	augs.js
+		Line 166 // Remove Physical, charisma, company, shit
+		Line 229 if (keys.find(s => s.startsWith('charisma'))) return 'Charisma';
+
+
+/hp/g
+The work system is completely reworked and ns.getPlayer().hp no longer exists. This data is likely available inside ns.getPlayer().currentWork, skills, exp, or hp
+
+	/archive/port-utils.js
+		Line 58 // Look at https://www.w3resource.com/javascript-exercises/javascript-math-exercise-23.php
+	/box/box.js
+		Line 1 let css=`body{--prilt:#fd0;--pri:#fd0;--pridk:#fd0;--successlt:#ce5;--success:#ce5;--successdk:#ce5;--errlt:#c04;--err:#c04;--errdk:#c04;--seclt:#28c;--sec:#28c;--secdk:#28c;--warnlt:#f70;--warn:#f70;--warndk:#f70;--infolt:#3ef;--info:#3ef;--infodk:#3ef;--welllt:#146;--well:#222;--white:#fff;--black:#000;--hp:#c04;--money:#fc7;--hack:#ce5;--combat:#f70;--cha:#b8f;--int:#3ef;--rep:#b8f;--disabled:#888;--bgpri:#000;--bgsec:#111;--button:#146;--ff:"Lucida Console";overflow:hidden;display:flex}#root{flex:1 1 calc(100vw - 248px);overflow:scroll}.sb{font:12px var(--ff);color:var(--pri);background:var(--bgsec);overflow:hidden scroll;width:247px;min-height:100%;border-left:1px solid var(--welllt)}.sb *{vertical-align:middle;margin:0;font:inherit}.sb.c{width:45px}.sb.t, .sb.t>div{transition:height 200ms, width 200ms, color 200ms}.sbitem,.box{overflow:hidden;min-height:28px;max-height:90%}.sbitem{border-top:1px solid var(--welllt);resize:vertical;width:unset !important}.sbitem.c{color:var(--sec)}.box{position:fixed;width:min-content;min-width:min-content;resize:both;background:var(--bgsec)}.box.c{height:unset !important;width:unset !important;background:none}.head{display:flex;white-space:pre;font-weight:bold;user-select:none;height:28px;align-items:center}:is(.sb,.sbitem)>.head{direction:rtl;cursor:pointer;padding:3px 0px}.box>.head{background:var(--pri);color:var(--bgpri);padding:0px 3px;cursor:move}.body{font-size:12px;flex-direction:column;height:calc(100% - 31px)}.flex,:not(.noflex)>.body{display:flex}.flex>*,.body>*{flex:1 1 auto}.box>.body{border:1px solid var(--welllt)}.sb .title{margin:0 auto;font-size:14px;line-height:}.sbitem .close{display:none}.c:not(.sb),.c>.sbitem{height:28px !important;resize:none}.box.c>.body{display:none}.box.prompt{box-shadow:0 0 0 10000px #0007;min-width:400px}.box.prompt>.head>.icon{display:none}.sb .contextMenu{opacity:0.95;resize:none;background:var(--bgpri)}.sb .contextMenu .head{display:none}.sb .contextMenu .body{height:unset;border-radius:5px}.sb .icon{cursor:pointer;font:25px "codicon";line-height:0.9;display:flex;align-items:center}.sb .icon span{display:inline-block;font:25px -ff;width:25px;text-align:center}.sb .icon svg{height:21px;width:21px;margin:2px}:is(.sb,.sbitem)>.head>.icon{padding:0px 10px}.c>.head>.collapser{transform:rotate(180deg)}.sb :is(input,select,button,textarea){color:var(--pri);outline:none;border:none;white-space:pre}.sb :is(textarea,.log){white-space:pre-wrap;background:none;padding:0px;overflow-y:scroll}.sb :is(input,select){padding:3px;background:var(--well);border-bottom:1px solid var(--prilt);transition:border-bottom 250ms}.sb input:hover{border-bottom:1px solid var(--black)}.sb input:focus{border-bottom:1px solid var(--prilt)}.sb :is(button,input[type=checkbox]){background:var(--button);transition:background 250ms;border:1px solid var(--well)}.sb :is(button,input[type=checkbox]):hover{background:var(--bgsec)}.sb :is(button,input[type=checkbox]):focus, .sb select{border:1px solid var(--sec)}.sb button{padding:3px 6px;user-select:none}.sb .ts{color:var(--infolt)}.sb input[type=checkbox]{appearance:none;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px}.sb input[type=checkbox]:checked::after{font:22px codicon;content:""}.g2{display:grid;grid:auto-flow auto / auto auto;gap:6px;margin:5px;place-items:center}.g2>.l{justify-self:start}.g2>.r{justify-self:end}.g2>.f{grid-column:1 / span 2;text-align:center}.hidden, .tooltip{display:none}*:hover>.tooltip{display:block;position:absolute;left:-5px;bottom:calc(100% + 5px);border:1px solid var(--welllt);background:var(--bgsec);color:var(--pri);font:14px var(--ff);padding:5px;white-space:pre}.nogrow{flex:0 1 auto !important}`;
+	/box/box-sidebarless.js
+		Line 1 let css=`body{--prilt:#FFF;--pri:#F8F8F2;--pridk:#FAFAEB;--successlt:#ADE146;--success:#A6E22E;--successdk:#98E104;--errlt:#FF69A0;--err:#F92672;--errdk:#D10F56;--seclt:#AAA;--sec:#888;--secdk:#666;--warnlt:#E1D992;--warn:#E6DB74;--warndk:#EDDD54;--infolt:#92E1F1;--info:#66D9EF;--infodk:#31CDED;--welllt:#444;--well:#222;--white:#fff;--black:#000;--hp:#F92672;--money:#E6DB74;--hack:#A6E22E;--combat:#75715E;--cha:#AE81FF;--int:#66D9EF;--rep:#E69F66;--disabled:#66cfbc;--bgpri:#272822;--bgsec:#1B1C18;--button:#333;--ff:"Lucida Console"}.box{position:fixed;border:1px solid var(--welllt);width:min-content;font:14px var(--ff);color:var(--pri);background:var(--bgsec)}.box *{vertical-align:middle;margin:0;font:inherit}.box>.head{display:flex;white-space:pre;user-select:none;background:var(--bgpri);padding:2px;cursor:move;border-bottom:1px solid var(--welllt)}.box>.body{padding:2px}.box .title{margin:0 auto 0 10px}.box.c>.body{display:none}.box.prompt{box-shadow:0 0 0 10000px #0007;min-width:400px}.box.prompt>.head>.icon{display:none}.icon{cursor:pointer;font:25px "codicon";line-height:0.9}.icon.ud::after{content:""}.box.c .icon.ud::after{content:""}.box :is(input,select,button,textarea){color:var(--pri);outline:none;border:none;white-space:pre}.box :is(textarea,.log){width:100%;white-space:pre-wrap;font-size:12px;background:none;padding:0px;height:100%;overflow-y:scroll}.box :is(input,select){padding:3px;background:var(--well);border-bottom:1px solid var(--prilt);transition:border-bottom 250ms}.box input:hover{border-bottom:1px solid var(--black)}.box input:focus{border-bottom:1px solid var(--prilt)}.box :is(button,input[type=checkbox]){background:var(--button);transition:background 250ms;border:1px solid var(--well)}.box :is(button,input[type=checkbox]):hover{background:var(--bgsec)}.box :is(button,input[type=checkbox]):focus, select{border:1px solid var(--secdk)}.box button{padding:6px 8px;user-select:none}.box input[type=checkbox]{appearance:none;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px}.box input[type=checkbox]:checked::after{font:22px codicon;content:""}.g2{display:grid;grid:auto-flow auto / auto auto;gap:6px;margin:5px;place-items:center}.g2>.l{justify-self:start}.g2>.r{justify-self:end}.g2>.f{grid-column:1 / span 2;text-align:center}.resizer{width:100%;min-width:99%;resize:both;overflow:hidden}.ts{color:var(--infolt)}.hidden, .tooltip{display:none}*:hover>.tooltip{display:block;position:absolute;left:-5px;bottom:calc(100% + 5px);border:1px solid var(--welllt);background:var(--bgsec);color:var(--pri);font:14px var(--ff);padding:5px;white-space:pre}`;
+	overview2.js
+		Line 2 let focusFn, saveBtn = doc.querySelector('button[aria-label="save game"]'), saveFn = saveBtn[Object.keys(saveBtn)[1]].onClick, stats = ["hp", "money", "hack", "str", "def", "dex", "agi", "cha", "int"];
+		Line 30 if (defaultOverview && defaultOverview.hp) {
+	Batcher.js
+		Line 87 //pids = pids.concat(b.hpids);
+		Line 89 for (let pid of b.hpids) {
+		Line 119 pids = pids.concat(batch.hpids);
+		Line 316 ret.hpids = await RunScript(ns, 'hack-once.js', server, metrics.threads[H], metrics.delays[H], metrics.times[H], batchNumber, logColor, false, false);
+		Line 320 ret.hpids = [];
+
+
+/hasWseAccount/g
+The work system is completely reworked and ns.getPlayer().hasWseAccount no longer exists. This data is likely available inside ns.getPlayer().currentWork, skills, exp, or hp
+
+	/archive/auto-starter.js
+		Line 53 if (player.hasWseAccount && player.hasTixApiAccess && player.has4SData && player.has4SDataTixApi === true){
+	stonks.js
+		Line 587 const totalCost = (playerStats.hasWseAccount ? 0 : costWseAccount) + costTixApi;
+		Line 589 if (!playerStats.hasWseAccount) {
+
+
+/hasTixApiAccess/g
+The work system is completely reworked and ns.getPlayer().hasTixApiAccess no longer exists. This data is likely available inside ns.getPlayer().currentWork, skills, exp, or hp
+
+	/archive/auto-starter.js
+		Line 53 if (player.hasWseAccount && player.hasTixApiAccess && player.has4SData && player.has4SDataTixApi === true){
+	stonks.js
+		Line 78 if (!player.hasTixApiAccess) return log(ns, 'ERROR: Cannot liquidate stocks because we do not have Tix Api Access', true, 'error');
+		Line 109 if (!player.hasTixApiAccess) { // You cannot use the stockmaster until you have API access
+		Line 584 if (playerStats.hasTixApiAccess) return true; // Already have access
+	helper.js
+		Line 419 if (!(player || await getNsDataThroughFile(ns, 'ns.getPlayer()', '/Temp/getPlayer.txt')).hasTixApiAccess) return 0;
+
+
+/has4SData/g
+The work system is completely reworked and ns.getPlayer().has4SData no longer exists. This data is likely available inside ns.getPlayer().currentWork, skills, exp, or hp
+
+	/archive/auto-starter.js
+		Line 53 if (player.hasWseAccount && player.hasTixApiAccess && player.has4SData && player.has4SDataTixApi === true){
+	stonks.js
+		Line 157 const pre4s = !playerStats.has4SDataTixApi;
+		Line 158 const holdings = await refresh(ns, playerStats.has4SDataTixApi, allStocks, myStocks); // Returns total stock value
+		Line 552 if (playerStats.has4SDataTixApi) return false; // Only return true if we just bought it
+		Line 555 const totalCost = (playerStats.has4SData ? 0 : cost4sData) + cost4sApi;
+		Line 561 if (!playerStats.has4SData) {
+	zoe-stock.js
+		Line 22 let hasAccess = ns.getPlayer().has4SDataTixApi;
+		Line 54 hasAccess = ns.getPlayer().has4SDataTixApi;
+
+
+/has4SDataTixApi/g
+The work system is completely reworked and ns.getPlayer().has4SDataTixApi no longer exists. This data is likely available inside ns.getPlayer().currentWork, skills, exp, or hp
+
+	/archive/auto-starter.js
+		Line 53 if (player.hasWseAccount && player.hasTixApiAccess && player.has4SData && player.has4SDataTixApi === true){
+	stonks.js
+		Line 157 const pre4s = !playerStats.has4SDataTixApi;
+		Line 158 const holdings = await refresh(ns, playerStats.has4SDataTixApi, allStocks, myStocks); // Returns total stock value
+		Line 552 if (playerStats.has4SDataTixApi) return false; // Only return true if we just bought it
+	zoe-stock.js
+		Line 22 let hasAccess = ns.getPlayer().has4SDataTixApi;
+		Line 54 hasAccess = ns.getPlayer().has4SDataTixApi;
+
+

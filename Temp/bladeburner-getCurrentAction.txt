@@ -1,1 +1,1 @@
-{"type":"BlackOp","name":"Operation Deckard"}
+{"type":"Operation","name":"Assassination"}

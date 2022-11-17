@@ -9,9 +9,9 @@ export async function main(ns) {
 
   `, "\ueb36");
 
-  box.querySelector("#dash").addEventListener("click", () => ns.run("dash.js"));
-  box.querySelector("#npos").addEventListener("click", () => ns.run("dash.js", 1, "npos"));
-  box.querySelector("#pos").addEventListener("click", () => ns.run("dash.js", 1, "pos"));
+  box.querySelector("#dash").addEventListener("click", () => ns.run("xtree.js"));
+  box.querySelector("#npos").addEventListener("click", () => ns.run("xtree.js", 1, "npos"));
+  box.querySelector("#pos").addEventListener("click", () => ns.run("xtree.js", 1, "pos"));
 
   box.querySelector("#augs").addEventListener("click", () => ns.run("augs.js"));
   box.querySelector("#augsBuy").addEventListener("click", () => ns.run("augs.js",1 , "buy"));
