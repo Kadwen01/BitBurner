@@ -45,7 +45,7 @@ export async function main(ns) {
 
 async function hireEmployees(ns, division, productCity = "Sector-12") {
 	const ecorp = eval("ns.corporation");
-	var employees = ecorp.getOffice(division.name, productCity).employees.length;
+	var employees = ecorp.getOffice(division.name, productCity).employees;
 	while (ecorp.getCorporation().funds > (cities.length * ecorp.getOfficeSizeUpgradeCost(division.name, productCity, 3))) {
 		// upgrade all cities + 3 employees if sufficient funds
 		ns.print(division.name + " Upgrade office size");
@@ -57,10 +57,10 @@ async function hireEmployees(ns, division, productCity = "Sector-12") {
 		}
 		await ns.sleep(5);
 	}
-	if (ecorp.getOffice(division.name, productCity).employees.length > employees) {
+	if (ecorp.getOffice(division.name, productCity).employees > employees) {
 		// set jobs after hiring people just in case we hire lots of people at once and setting jobs is slow
 		for (const city of cities) {
-			employees = ecorp.getOffice(division.name, city).employees.length;
+			employees = ecorp.getOffice(division.name, city).employees;
 			if (ecorp.hasResearched(division.name, "Market-TA.II")) {
 				// TODO: Simplify here. ProductCity config can always be used
 				if (city == productCity) {
@@ -142,7 +142,7 @@ function upgradeCorp(ns) {
 
 async function trickInvest(ns, division, productCity = "Sector-12") {
 	const ecorp = eval("ns.corporation");
-	
+
 	ns.print("Prepare to trick investors")
 	for (var product of division.products) {
 		// stop selling products
@@ -150,8 +150,8 @@ async function trickInvest(ns, division, productCity = "Sector-12") {
 	}
 
 	for (const city of cities) {
-		// put all employees into production to produce as fast as possible 
-		const employees = ecorp.getOffice(division.name, city).employees.length;
+		// put all employees into production to produce as fast as possible
+		const employees = ecorp.getOffice(division.name, city).employees;
 
 		await ecorp.setAutoJobAssignment(division.name, city, "Engineer", 0);
 		await ecorp.setAutoJobAssignment(division.name, city, "Management", 0);
@@ -179,8 +179,8 @@ async function trickInvest(ns, division, productCity = "Sector-12") {
 	var initialInvestFunds = ecorp.getInvestmentOffer().funds;
 	ns.print("Initial investmant offer: " + ns.nFormat(initialInvestFunds, "0.0a"));
 	for (const city of cities) {
-		// put all employees into business to sell as much as possible 
-		const employees = ecorp.getOffice(division.name, city).employees.length;
+		// put all employees into business to sell as much as possible
+		const employees = ecorp.getOffice(division.name, city).employees;
 		await ecorp.setAutoJobAssignment(division.name, city, "Operations", 0);
 		await ecorp.setAutoJobAssignment(division.name, city, "Business", employees - 2); // workaround for bug
 		await ecorp.setAutoJobAssignment(division.name, city, "Business", employees - 1); // workaround for bug
@@ -205,7 +205,7 @@ async function trickInvest(ns, division, productCity = "Sector-12") {
 
 	for (const city of cities) {
 		// set employees back to normal operation
-		const employees = ecorp.getOffice(division.name, city).employees.length;
+		const employees = ecorp.getOffice(division.name, city).employees;
 		await ecorp.setAutoJobAssignment(division.name, city, "Business", 0);
 		if (city == productCity) {
 			await ecorp.setAutoJobAssignment(division.name, city, "Operations", 1);
@@ -303,7 +303,7 @@ function newProduct(ns, division) {
 		ecorp.discontinueProduct(division.name, division.products[0]);
 	}
 
-	// get the product number of the latest product and increase it by 1 for the mext product. Product names must be unique. 
+	// get the product number of the latest product and increase it by 1 for the mext product. Product names must be unique.
 	var newProductNumber = 0;
 	if (productNumbers.length > 0) {
 		newProductNumber = parseInt(productNumbers[productNumbers.length - 1]) + 1;
@@ -337,7 +337,7 @@ async function initCities(ns, division, productCity = "Sector-12") {
 			ecorp.purchaseWarehouse(division.name, city);
 		}
 
-		ecorp.setSmartSupply(division.name, city, true); 
+		ecorp.setSmartSupply(division.name, city, true);
 
 		if (city != productCity) {
 			// setup employees
