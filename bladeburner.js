@@ -12,11 +12,10 @@ const costAdjustments = {
     "Reaper": 1.2, // Combat boost. Early effect is paltry (because stats are so low), will get plenty of points late game
     "Evasive Systems": 1.2, // Dex/Agi boost. Mildly deprioritized for same reasoning as above.
     "Cloak": 1.5, // Cheap, and stealth ends up with plenty of boost, so we don't need to invest in Cloak as much.
-    "Hyperdrive": 0.9, // Improves stats gained, but not Rank gained. Less useful if training outside of BB
+    "Hyperdrive": 2, // Improves stats gained, but not Rank gained. Less useful if training outside of BB
     "Tracer": 2, // Only boosts Contract success chance, which are relatively easy to begin with. 
     "Cyber's Edge": 5, // Boosts stamina, but contract counts are much more limiting than stamina, so isn't really needed
-    "Hands of Midas": 0.9, // Improves money gain. It is assumed that Bladeburner will *not* be a main source of income
-    "Datamancer": 2 // Each level of this skill increases your effectiveness in synthoid population analysis and investigation by 5%.
+    "Hands of Midas": 10 // Improves money gain. It is assumed that Bladeburner will *not* be a main source of income
 };
 
 // Some bladeburner info gathered at startup and cached
@@ -28,9 +27,9 @@ const argsSchema = [
     ['success-threshold', 0.99], // Attempt the best action whose minimum chance of success exceeds this threshold
     ['chaos-recovery-threshold', 50], // Prefer to do "Stealth Retirement" operations to reduce chaos when it reaches this number
     ['max-chaos', 100], // If chaos exceeds this amount in every city, we will reluctantly resort to diplomacy to reduce it.
-    ['toast-upgrades', true], // Set to true to toast each time a skill is upgraded
+    ['toast-upgrades', false], // Set to true to toast each time a skill is upgraded
     ['toast-operations', false], // Set to true to toast each time we switch operations
-    ['toast-relocations', true], // Set to true to toast each time we change cities
+    ['toast-relocations', false], // Set to true to toast each time we change cities
     ['low-stamina-pct', 0.5], // Switch to no-stamina actions when we drop below this stamina percent
     ['high-stamina-pct', 0.6], // Switch back to stamina-consuming actions when we rise above this stamina percent
     ['training-limit', 50], // Don't bother training more than this many times, since Training is slow and earns no rank
@@ -38,7 +37,7 @@ const argsSchema = [
     ['ignore-busy-status', false], // If set to true, we will attempt to do bladeburner tasks even if we are currently busy and don't have The Blade's Simulacrum
     ['allow-raiding-highest-pop-city', false], // Set to true, we will allow Raid to be used even in our highest-population city (disabled by default)
     ['reserved-action-count', 200], // Some operation types are "reserved" for chaos reduction / population estimate increase. Start by reserving this many, reduced automatically as we approach maxRankNeeded
-    ['disable-spending-hashes', true], // Set to true to not spawn spend-hacknet-hashes.js to spend hashes on bladeburner
+    ['disable-spending-hashes', false], // Set to true to not spawn spend-hacknet-hashes.js to spend hashes on bladeburner
 ];
 export function autocomplete(data, _) {
     data.flags(argsSchema);
@@ -47,7 +46,6 @@ export function autocomplete(data, _) {
 
 /** @param {NS} ns */
 export async function main(ns) {
-    ns.toast("msg", "info", 30000);
     const runOptions = getConfiguration(ns, argsSchema);
     if (!runOptions || await instanceCount(ns) > 1) return; // Prevent multiple instances of this script from being started, even with different args.
     options = runOptions; // We don't set the global "options" until we're sure this is the only running instance
@@ -109,7 +107,7 @@ async function gatherBladeburnerInfo(ns) {
     maxRankNeeded = blackOpsRanks[remainingBlackOpsNames[remainingBlackOpsNames.length - 1]];
     // Check if we have the aug that lets us do bladeburner while otherwise busy
     haveSimulacrum = !(4 in ownedSourceFiles) ? true : // If player doesn't have SF4, we cannot check, so hope for the best.
-        await getNsDataThroughFile(ns, `ns.getOwnedAugmentations().includes("${simulacrumAugName}")`, '/Temp/bladeburner-hasSimulacrum.txt');
+        await getNsDataThroughFile(ns, `ns.singularity.getOwnedAugmentations().includes("${simulacrumAugName}")`, '/Temp/bladeburner-hasSimulacrum.txt');
     // Initialize some flags that may change over time
     lastAssignedTask = null;
     lastBlackOpComplete = false; // Flag will track whether we've notified the user that the last black-op is ready
@@ -149,7 +147,7 @@ async function mainLoop(ns) {
             `You can destroy the Bitnode on the Bladeburner > BlackOps tab.`;
         log(ns, `SUCCESS: ${msg}`, true, 'success');
         ns.alert(msg);
-        lastBlackOpComplete = true;  
+        lastBlackOpComplete = true;
     }
 
     // Gather the count of available contracts / operations
@@ -406,7 +404,7 @@ let lastCanWorkCheckIdle = true;
 async function canDoBladeburnerWork(ns) {
     if (options['ignore-busy-status'] || haveSimulacrum) return true;
     // Check if the player is busy doing something else
-    const busy = await getNsDataThroughFile(ns, 'ns.isBusy()', '/Temp/isBusy.txt');
+    const busy = await getNsDataThroughFile(ns, 'ns.singularity.isBusy()', '/Temp/isBusy.txt');
     if (!busy) return lastCanWorkCheckIdle = true;
     if (lastCanWorkCheckIdle)
         log(ns, `WARNING: Cannot perform Bladeburner actions because the player is busy ` +
@@ -420,9 +418,9 @@ async function beingInBladeburner(ns) {
     // Ensure we're in the Bladeburner division. If not, wait until we've joined it.
     while (!player.inBladeburner) {
         try {
-            if (player.strength < 100 || player.defense < 100 || player.dexterity < 100 || player.agility < 100)
+            if (player.skills.strength < 100 || player.skills.defense < 100 || player.skills.dexterity < 100 || player.skills.agility < 100)
                 log(ns, `Waiting for physical stats >100 to join bladeburner ` +
-                    `(Currently Str: ${player.strength}, Def: ${player.defense}, Dex: ${player.dexterity}, Agi: ${player.agility})`);
+                    `(Currently Str: ${player.skills.strength}, Def: ${player.skills.defense}, Dex: ${player.skills.dexterity}, Agi: ${player.skills.agility})`);
             else if (await getBBInfo(ns, 'joinBladeburnerDivision()')) {
                 let message = `SUCCESS: Joined Bladeburner (At ${formatDuration(player.playtimeSinceLastBitnode)} into BitNode)`;
                 if (9 in ownedSourceFiles && options['disable-spending-hashes'])

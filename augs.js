@@ -104,7 +104,7 @@ export async function main(ns) {
 function GetMasterList(ns) {
 	const masterlist = [];
 	for (const faction of Object.values(FactionNames)) {
-		let augs = ns.getAugmentationsFromFaction(faction);
+		let augs = ns.singularity.getAugmentationsFromFaction(faction);
 		for (const aug of augs) {
 			let match = masterlist.find(s => s.name == aug);
 			if (!match) {
