@@ -79,49 +79,7 @@ export async function main(ns) {
 		"Forest"
 	];
 
-	while (true) {
-
-		if (!ns.gang.inGang()) {
-
-			while (ns.getPlayer().hacking < ns.getServer('avmnite-02h').requiredHackingSkill) {
-				ns.clearLog();
-				ns.print('Hacking level to low for avmnite-02h');
-				ns.print(ns.getPlayer().hacking + '/' + ns.getServer('avmnite-02h').requiredHackingSkill)
-				await ns.sleep(60000);
-			}
-
-			ns.exec('connect-server.js', 'home', 1, 'avmnite-02h');
-			await ns.sleep(5000);
-			ns.singularity.connect('home');
-
-			if (!ns.getPlayer().factions.includes('NiteSec')) {
-				while (!ns.singularity.checkFactionInvitations().includes("NiteSec")) {
-					ns.clearLog();
-					ns.print('Waiting on NitSec invite');
-					await ns.sleep(5000);
-				}
-				ns.clearLog();
-				ns.singularity.joinFaction("NiteSec");
-				ns.print('Joining NiteSec');
-			}
-
-			while (Math.floor(ns.heart.break()) > -54000) {
-				ns.clearLog();
-				ns.print(Math.floor(ns.heart.break()) + '/-54,000');
-				ns.print('Need more Karam to create the gang with NiteSec');
-				await ns.sleep(1000);
-			}
-
-			ns.gang.createGang('NiteSec');
-			ns.print('Joining NiteSec Gang');
-		}
-
-		ns.clearLog();
-
-		const gangType = ns.gang.getGangInformation().isHacking;
-		const fact = ns.gang.getGangInformation().faction;
-		const { augList, availEquip, rj, cj, tj } = LISTS(gangType);
-
+	function recruitMembers(ns) {
 		if (ns.gang.canRecruitMember()) {
 			for (let gmName in nameList) {
 				if (ns.gang.getMemberNames().includes(nameList[gmName])) {
@@ -133,6 +91,71 @@ export async function main(ns) {
 				}
 			}
 		}
+	}
+
+	function CalculateAscendTreshold(ns, member) {
+		let metric = gangType ? 'hack_asc_mult' : 'str_asc_mult';
+		let mult = ns.gang.getMemberInformation(member)[metric];
+		if (mult < 1.632) return 1.6326;
+		if (mult < 2.336) return 1.4315;
+		if (mult < 2.999) return 1.284;
+		if (mult < 3.363) return 1.2125;
+		if (mult < 4.253) return 1.1698;
+		if (mult < 4.860) return 1.1428;
+		if (mult < 5.455) return 1.1225;
+		if (mult < 5.977) return 1.0957;
+		if (mult < 6.496) return 1.0869;
+		if (mult < 7.008) return 1.0789;
+		if (mult < 7.519) return 1.073;
+		if (mult < 8.025) return 1.0673;
+		if (mult < 8.513) return 1.0631;
+		return 1.0591;
+	}
+
+
+	if (!ns.gang.inGang()) {
+		while (ns.getPlayer().hacking < ns.getServer('avmnite-02h').requiredHackingSkill) {
+			ns.clearLog();
+			ns.print('Hacking level to low for avmnite-02h');
+			ns.print(ns.getPlayer().hacking + '/' + ns.getServer('avmnite-02h').requiredHackingSkill)
+			await ns.sleep(60000);
+		}
+
+		ns.exec('connect-server.js', 'home', 1, 'avmnite-02h');
+		await ns.sleep(5000);
+		ns.singularity.connect('home');
+
+		if (!ns.getPlayer().factions.includes('NiteSec')) {
+			while (!ns.singularity.checkFactionInvitations().includes("NiteSec")) {
+				ns.clearLog();
+				ns.print('Waiting on NitSec invite');
+				await ns.sleep(5000);
+			}
+			ns.clearLog();
+			ns.singularity.joinFaction("NiteSec");
+			ns.print('Joining NiteSec');
+		}
+
+		while (Math.floor(ns.heart.break()) > -54000) {
+			ns.clearLog();
+			ns.print(Math.floor(ns.heart.break()) + '/-54,000');
+			ns.print('Need more Karam to create the gang with NiteSec');
+			await ns.sleep(1000);
+		}
+
+		ns.gang.createGang('NiteSec');
+		ns.print('Joining NiteSec Gang');
+	}
+
+	ns.clearLog();
+
+	while (true) {
+
+		const gangType = ns.gang.getGangInformation().isHacking;
+		const fact = ns.gang.getGangInformation().faction;
+		const { augList, availEquip, rj, cj, tj } = LISTS(gangType);
+
+		recruitMembers(ns);
 
 		var memberList = ns.gang.getMemberNames();
 
@@ -212,25 +235,6 @@ export async function main(ns) {
 					}
 
 				if (ns.gang.getMemberInformation(memberList[key])?.hack > 100 || ns.gang.getMemberInformation(memberList[key])?.str > 100) {
-
-					function CalculateAscendTreshold(ns, member) {
-						let metric = gangType ? 'hack_asc_mult' : 'str_asc_mult';
-						let mult = ns.gang.getMemberInformation(member)[metric];
-						if (mult < 1.632) return 1.6326;
-						if (mult < 2.336) return 1.4315;
-						if (mult < 2.999) return 1.284;
-						if (mult < 3.363) return 1.2125;
-						if (mult < 4.253) return 1.1698;
-						if (mult < 4.860) return 1.1428;
-						if (mult < 5.455) return 1.1225;
-						if (mult < 5.977) return 1.0957;
-						if (mult < 6.496) return 1.0869;
-						if (mult < 7.008) return 1.0789;
-						if (mult < 7.519) return 1.073;
-						if (mult < 8.025) return 1.0673;
-						if (mult < 8.513) return 1.0631;
-						return 1.0591;
-					}
 
 					const ascensionResult = ns.gang.getAscensionResult(memberList[key]);
 
