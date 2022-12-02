@@ -3,21 +3,21 @@ export async function main(ns) {
 
 	ns.disableLog("sleep");
 
-	const gsle = ns.sleeve;
+	const gslv = eval("ns.sleeve");	
 	const slvNo = ns.args[0];
-	const bb = ns.bladeburner;
+	const bb = eval("ns.bladeburner");
 
-	while (gsle.getSleeveStats(slvNo).shock > 20 && ns.sleeve.getTask(slvNo) === "Idle") {
+	while (gslv.getSleeveStats(slvNo).shock > 20 && gslv.getTask(slvNo) === "Idle") {
 		ns.clearLog();
-		gsle.setToShockRecovery(slvNo);
+		gslv.setToShockRecovery(slvNo);
 		ns.print('Sleeve ' + slvNo + ' still in recovery');
-		ns.print(gsle.getSleeveStats(slvNo).shock);
+		ns.print(gslv.getSleeveStats(slvNo).shock);
 		await ns.sleep(60000);
 	}
 
 	while (Math.floor(ns.heart.break()) > -54000) {
 		ns.clearLog();
-		gsle.setToCommitCrime(slvNo, "Homicide");
+		gslv.setToCommitCrime(slvNo, "Homicide");
 		ns.print('Sleeve ' + slvNo + ' is commiting a homicide');
 		ns.print('Karma: ' + Math.floor(ns.heart.break()));
 		await ns.sleep(60000);
@@ -25,47 +25,66 @@ export async function main(ns) {
 
 	while (true) {
 
-		let sTask = ns.sleeve.getTask(slvNo).task;
+		let sTask = gslv.getTask(slvNo);
 
 		if (slvNo === 0) {
-			ns.clearLog();
-			let sRChance = bb.getActionEstimatedSuccessChance("contract", "Retirement")[0];
-			let sBChance = bb.getActionEstimatedSuccessChance("contract", "Bounty Hunter")[0];
-			let sTChance = bb.getActionEstimatedSuccessChance("contract", "Tracking")[0];
 
-			let cRCount = bb.getActionCountRemaining("contract", "Retirement");
-			let cBCount = bb.getActionCountRemaining("contract", "Bounty Hunter");
+			ns.clearLog();
+			let sTChance = bb.getActionEstimatedSuccessChance("contract", "Tracking")[0];
 			let cTCount = bb.getActionCountRemaining("contract", "Tracking");
 
-			let sTaskL = ns.sleeve.getTask(slvNo).location;
-			let sLoc = "This will generate additional contracts and operations";
-
-			if ((sRChance > .9 && cRCount > 10) && (sTask === 'Idle' || sTaskL === sLoc)) {
+			if ( (sTChance > .9 && cTCount > 100) && (sTask == null) )  {
 				//	ns.clearLog();
-				gsle.setToBladeburnerAction(slvNo, "Take on contracts", "Retirement");
-				ns.print('Sleeve ' + slvNo + ' is performing Retirement.');
-			} else if ((sBChance > .9 && cBCount > 10) && (sTask === "Idle" || sTaskL === sLoc)) {
-				//	ns.clearLog();
-				gsle.setToBladeburnerAction(slvNo, "Take on contracts", "Bounty Hunter");
-				ns.print('Sleeve ' + slvNo + ' is Bounty Hunting.');
-			} else if ((sTChance > .9 && cTCount > 10) && (sTask === "Idle" || sTaskL === sLoc)) {
-				//	ns.clearLog();
-				gsle.setToBladeburnerAction(slvNo, "Take on contracts", "Tracking");
+				gslv.setToBladeburnerAction(slvNo, "Take on contracts", "Tracking");
 				ns.print('Sleeve ' + slvNo + ' is Tracking.');
-			} else if (sTask === 'Idle') {
+			} else if (sTask == null) {
 				//	ns.clearLog();
-				gsle.setToBladeburnerAction(slvNo, "Infiltrate synthoids");
+				gslv.setToBladeburnerAction(slvNo, "Infiltrate synthoids");
 				ns.print('Sleeve ' + slvNo + ' is infiltrating the Synthoids');
 			}
 		}
 
-		if ((slvNo === 1 || slvNo === 2 || slvNo === 3 || slvNo === 4 || slvNo === 5) && sTask === "Idle") {
-			gsle.setToBladeburnerAction(slvNo, "Infiltrate synthoids");
+		if (slvNo === 1) {
+
+			ns.clearLog();
+			let sBChance = bb.getActionEstimatedSuccessChance("contract", "Bounty Hunter")[1];
+			let cBCount = bb.getActionCountRemaining("contract", "Bounty Hunter");
+
+			if ( (sBChance > .9 && cBCount > 100) && (sTask == null) ) {
+				//	ns.clearLog();
+				gslv.setToBladeburnerAction(slvNo, "Take on contracts", "Bounty Hunter");
+				ns.print('Sleeve ' + slvNo + ' is Bounty Hunting.');
+			} else if (sTask == null) {
+				//	ns.clearLog();
+				gslv.setToBladeburnerAction(slvNo, "Infiltrate synthoids");
+				ns.print('Sleeve ' + slvNo + ' is infiltrating the Synthoids');
+			}
+		}
+
+		if (slvNo === 1) {
+
+			ns.clearLog();
+			let sRChance = bb.getActionEstimatedSuccessChance("contract", "Retirement")[2];
+			let cRCount = bb.getActionCountRemaining("contract", "Retirement");
+
+			if ((sRChance > .9 && cRCount > 100) && (sTask == null)) {
+				//	ns.clearLog();
+				gslv.setToBladeburnerAction(slvNo, "Take on contracts", "Retirement");
+				ns.print('Sleeve ' + slvNo + ' is performing Retirement.');
+			} else if (sTask == null) {
+				//	ns.clearLog();
+				gslv.setToBladeburnerAction(slvNo, "Infiltrate synthoids");
+				ns.print('Sleeve ' + slvNo + ' is infiltrating the Synthoids');
+			}
+		}
+
+		if ((slvNo === 3 || slvNo === 4 || slvNo === 5) && sTask == null) {
+			gslv.setToBladeburnerAction(slvNo, "Infiltrate synthoids");
 			ns.print('Sleeve ' + slvNo + ' is infiltrating the Synthoids');
 		}
 
-		if ((slvNo === 6 || slvNo === 7) && sTask === "Idle") {
-			gsle.setToCommitCrime(slvNo, "Heist");
+		if ((slvNo === 6 || slvNo === 7) && sTask == null) {
+			gslv.setToCommitCrime(slvNo, "Heist");
 			ns.print('Sleeve ' + slvNo + ' is commiting a Heist');
 		}
 		await ns.sleep(1000);

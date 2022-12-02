@@ -1,1 +1,0 @@
-export async function main(ns) { ns.ps().filter(proc => proc.filename == 'stonks.js' && !proc.args.includes('-l') && !proc.args.includes('--liquidate')).forEach(proc => ns.kill(proc.pid)) }
