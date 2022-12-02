@@ -42,7 +42,7 @@ export let main = async ns => {
 
 		if (ns.sleeve.getTask(0) == null) {
 			sleeve0.innerText = 'Idle';
-		} else if ((ns.sleeve.getTask(0).type == 'INFILTRATE') || (ns.sleeve.getTask(0).type == 'RECOVERY')) {
+		} else if ((ns.sleeve.getTask(0).type == 'INFILTRATE') || (ns.sleeve.getTask(0).type == 'RECOVERY') || (ns.sleeve.getTask(0).type == 'SUPPORT')) {
 			sleeve0.innerText = ns.sleeve.getTask(0).type;
 		} else if (ns.sleeve.getTask(0).type == 'COMPANY') {
 			sleeve0.innerText = ns.sleeve.getTask(0).companyName;
@@ -50,13 +50,15 @@ export let main = async ns => {
 			sleeve0.innerText = ns.sleeve.getTask(0).actionName;
 		} else if (ns.sleeve.getTask(0).actionType == 'Contracts') {
 			sleeve0.innerText = ns.sleeve.getTask(0).actionName;
+		} else if (ns.sleeve.getTask(0).actionType == 'CRIME') {
+			sleeve0.innerText = ns.sleeve.getTask(0).actionname;
 		} else {
 			sleeve0.innerText = ns.sleeve.getTask(0);
 		}
 
 		if (ns.sleeve.getTask(1) == null) {
 			sleeve1.innerText = 'Idle';
-		} else if ((ns.sleeve.getTask(1).type == 'INFILTRATE') || (ns.sleeve.getTask(1).type == 'RECOVERY')) {
+		} else if ((ns.sleeve.getTask(1).type == 'INFILTRATE') || (ns.sleeve.getTask(1).type == 'RECOVERY') || (ns.sleeve.getTask(1).type == 'SUPPORT')) {
 			sleeve1.innerText = ns.sleeve.getTask(1).type;
 		} else if (ns.sleeve.getTask(1).type == 'COMPANY') {
 			sleeve1.innerText = ns.sleeve.getTask(1).companyName;
@@ -64,13 +66,15 @@ export let main = async ns => {
 			sleeve1.innerText = ns.sleeve.getTask(1).actionName;
 		} else if (ns.sleeve.getTask(1).actionType == 'Contracts') {
 			sleeve1.innerText = ns.sleeve.getTask(1).actionName;
+		} else if (ns.sleeve.getTask(1).type == 'CRIME') {
+			sleeve1.innerText = ns.sleeve.getTask(1).crimeType;
 		} else {
 			sleeve1.innerText = ns.sleeve.getTask(1);
 		}
 
 		if (ns.sleeve.getTask(2) == null) {
 			sleeve2.innerText = 'Idle';
-		} else if ((ns.sleeve.getTask(2).type == 'INFILTRATE') || (ns.sleeve.getTask(2).type == 'RECOVERY')) {
+		} else if ((ns.sleeve.getTask(2).type == 'INFILTRATE') || (ns.sleeve.getTask(2).type == 'RECOVERY') || (ns.sleeve.getTask(2).type == 'SUPPORT')) {
 			sleeve2.innerText = ns.sleeve.getTask(2).type;
 		} else if (ns.sleeve.getTask(2).type == 'COMPANY') {
 			sleeve2.innerText = ns.sleeve.getTask(2).companyName;
@@ -78,13 +82,15 @@ export let main = async ns => {
 			sleeve2.innerText = ns.sleeve.getTask(2).actionName;
 		} else if (ns.sleeve.getTask(2).actionType == 'Contracts') {
 			sleeve2.innerText = ns.sleeve.getTask(2).actionName;
+		} else if (ns.sleeve.getTask(2).type == 'CRIME') {
+			sleeve2.innerText = ns.sleeve.getTask(2).crimeType;
 		} else {
 			sleeve2.innerText = ns.sleeve.getTask(2);
 		}
 
 		if (ns.sleeve.getTask(3) == null) {
 			sleeve3.innerText = 'Idle';
-		} else if ((ns.sleeve.getTask(3).type == 'INFILTRATE') || (ns.sleeve.getTask(3).type == 'RECOVERY')) {
+		} else if ((ns.sleeve.getTask(3).type == 'INFILTRATE') || (ns.sleeve.getTask(3).type == 'RECOVERY') || (ns.sleeve.getTask(3).type == 'SUPPORT')) {
 			sleeve3.innerText = ns.sleeve.getTask(3).type;
 		} else if (ns.sleeve.getTask(3).type == 'COMPANY') {
 			sleeve3.innerText = ns.sleeve.getTask(3).companyName;
@@ -92,13 +98,15 @@ export let main = async ns => {
 			sleeve3.innerText = ns.sleeve.getTask(3).actionName;
 		} else if (ns.sleeve.getTask(3).actionType == 'Contracts') {
 			sleeve3.innerText = ns.sleeve.getTask(3).actionName;
+		} else if (ns.sleeve.getTask(3).type == 'CRIME') {
+			sleeve3.innerText = ns.sleeve.getTask(3).crimeType;
 		} else {
 			sleeve3.innerText = ns.sleeve.getTask(3);
 		}
 
 		if (ns.sleeve.getTask(4) == null) {
 			sleeve4.innerText = 'Idle';
-		} else if ((ns.sleeve.getTask(4).type == 'INFILTRATE') || (ns.sleeve.getTask(4).type == 'RECOVERY')) {
+		} else if ((ns.sleeve.getTask(4).type == 'INFILTRATE') || (ns.sleeve.getTask(4).type == 'RECOVERY') || (ns.sleeve.getTask(4).type == 'SUPPORT')) {
 			sleeve4.innerText = ns.sleeve.getTask(4).type;
 		} else if (ns.sleeve.getTask(4).type == 'COMPANY') {
 			sleeve4.innerText = ns.sleeve.getTask(4).companyName;
@@ -106,13 +114,15 @@ export let main = async ns => {
 			sleeve4.innerText = ns.sleeve.getTask(4).actionName;
 		} else if (ns.sleeve.getTask(4).actionType == 'Contracts') {
 			sleeve4.innerText = ns.sleeve.getTask(4).actionName;
+		} else if (ns.sleeve.getTask(4).type == 'CRIME') {
+			sleeve4.innerText = ns.sleeve.getTask(4).crimeType;
 		} else {
 			sleeve4.innerText = ns.sleeve.getTask(4);
 		}
 
 		if (ns.sleeve.getTask(5) == null) {
 			sleeve5.innerText = 'Idle';
-		} else if ((ns.sleeve.getTask(5).type == 'INFILTRATE') || (ns.sleeve.getTask(5).type == 'RECOVERY')) {
+		} else if ((ns.sleeve.getTask(5).type == 'INFILTRATE') || (ns.sleeve.getTask(5).type == 'RECOVERY') || (ns.sleeve.getTask(5).type == 'SUPPORT')) {
 			sleeve5.innerText = ns.sleeve.getTask(5).type;
 		} else if (ns.sleeve.getTask(5).type == 'COMPANY') {
 			sleeve5.innerText = ns.sleeve.getTask(5).companyName;
@@ -120,13 +130,15 @@ export let main = async ns => {
 			sleeve5.innerText = ns.sleeve.getTask(5).actionName;
 		} else if (ns.sleeve.getTask(5).actionType == 'Contracts') {
 			sleeve5.innerText = ns.sleeve.getTask(5).actionName;
+		} else if (ns.sleeve.getTask(5).type == 'CRIME') {
+			sleeve5.innerText = ns.sleeve.getTask(5).crimeType;
 		} else {
 			sleeve5.innerText = ns.sleeve.getTask(5);
 		}
 
 		if (ns.sleeve.getTask(6) == null) {
 			sleeve6.innerText = 'Idle';
-		} else if ((ns.sleeve.getTask(6).type == 'INFILTRATE') || (ns.sleeve.getTask(6).type == 'RECOVERY')) {
+		} else if ((ns.sleeve.getTask(6).type == 'INFILTRATE') || (ns.sleeve.getTask(6).type == 'RECOVERY') || (ns.sleeve.getTask(6).type == 'SUPPORT')) {
 			sleeve6.innerText = ns.sleeve.getTask(6).type;
 		} else if (ns.sleeve.getTask(6).type == 'COMPANY') {
 			sleeve6.innerText = ns.sleeve.getTask(6).companyName;
@@ -134,13 +146,15 @@ export let main = async ns => {
 			sleeve6.innerText = ns.sleeve.getTask(6).actionName;
 		} else if (ns.sleeve.getTask(6).actionType == 'Contracts') {
 			sleeve6.innerText = ns.sleeve.getTask(6).actionName;
+		} else if (ns.sleeve.getTask(6).type == 'CRIME') {
+			sleeve6.innerText = ns.sleeve.getTask(6).crimeType;
 		} else {
 			sleeve6.innerText = ns.sleeve.getTask(6);
 		}
 
 		if (ns.sleeve.getTask(7) == null) {
 			sleeve7.innerText = 'Idle';
-		} else if ((ns.sleeve.getTask(7).type == 'INFILTRATE') || (ns.sleeve.getTask(7).type == 'RECOVERY')) {
+		} else if ((ns.sleeve.getTask(7).type == 'INFILTRATE') || (ns.sleeve.getTask(7).type == 'RECOVERY') || (ns.sleeve.getTask(7).type == 'SUPPORT')) {
 			sleeve7.innerText = ns.sleeve.getTask(7).type;
 		} else if (ns.sleeve.getTask(7).type == 'COMPANY') {
 			sleeve7.innerText = ns.sleeve.getTask(7).companyName;
@@ -148,9 +162,12 @@ export let main = async ns => {
 			sleeve7.innerText = ns.sleeve.getTask(7).actionName;
 		} else if (ns.sleeve.getTask(7).actionType == 'Contracts') {
 			sleeve7.innerText = ns.sleeve.getTask(7).actionName;
+		} else if (ns.sleeve.getTask(7).type == 'CRIME') {
+			sleeve7.innerText = ns.sleeve.getTask(7).crimeType;
 		} else {
 			sleeve7.innerText = ns.sleeve.getTask(7);
 		}
+
 
 		await ns.sleep(1000);
 	}
