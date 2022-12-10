@@ -112,6 +112,106 @@ export async function main(ns) {
 		return 1.0591;
 	}
 
+	function inWar (ns) {
+		ns.print('Preparing for war');
+		var otherGangs = ns.gang.getOtherGangInformation();
+
+		for (let gangName in otherGangs) {
+			if (gangName === fact || otherGangs[gangName].territory === 0) {
+				continue
+			} else {
+				ns.print(gangName + ': power: ' + otherGangs[gangName].power + ' territory: ' + otherGangs[gangName].territory);
+			}
+		}
+
+		for (let key in memberList) {
+			if (ns.gang.getMemberInformation(memberList[key]).task === "Territory Warfare") {
+				continue;
+			} else {
+				ns.gang.setMemberTask(memberList[key], "Territory Warfare");
+			}
+		}
+
+		let slumSnakes = ns.gang.getChanceToWinClash("Slum Snakes");
+		let tetrads = ns.gang.getChanceToWinClash("Tetrads");
+		let theSyndicate = ns.gang.getChanceToWinClash("The Syndicate");
+		let theDarkArmy = ns.gang.getChanceToWinClash("The Dark Army");
+		let speakersfortheDead = ns.gang.getChanceToWinClash("Speakers for the Dead");
+		let theBlackHand = ns.gang.getChanceToWinClash("The Black Hand");
+
+		let gangWarChance = slumSnakes > .85 && tetrads > .85 && theSyndicate > .85 && theDarkArmy > .85 && speakersfortheDead > .85 && theBlackHand > .85;
+
+		if (gangWarChance) {
+			ns.print("Gearing Up...")
+			ns.gang.setTerritoryWarfare(true);
+		}
+	}
+
+	async function doBusiness(ns) {
+		ns.gang.setTerritoryWarfare(false);
+		for (let key in memberList) {
+			if (ns.gang.getMemberInformation(memberList[key]).task === "Territory Warfare" || ns.gang.getMemberInformation(memberList[key]).task === "Train Hacking" || ns.gang.getMemberInformation(memberList[key]).task === "Train Combat" || ns.gang.getMemberInformation(memberList[key]).task === "Unassigned") {
+				if (ns.gang.getMemberInformation(memberList[key]).name === "Wedge") {
+					if (ns.gang.getMemberInformation(memberList[key]).hack > 4000 || ns.gang.getMemberInformation(memberList[key]).str > 4000) {
+						ns.gang.setMemberTask(memberList[key], rj);
+					} else {
+						ns.gang.setMemberTask(memberList[key], tj);
+					}
+				} else {
+					if (ns.gang.getMemberInformation(memberList[key]).hack > 4000 || ns.gang.getMemberInformation(memberList[key]).str > 4000) {
+						ns.gang.setMemberTask(memberList[key], cj);
+					} else {
+						ns.gang.setMemberTask(memberList[key], tj);
+					}
+				}
+			}
+
+			let currentUpgrades = ns.gang.getMemberInformation(memberList[key]).upgrades;
+			let currentAugments = ns.gang.getMemberInformation(memberList[key]).augmentations;
+
+			let curCCL = (ns.gang.getMemberInformation(memberList[key]).str + ns.gang.getMemberInformation(memberList[key]).agi + ns.gang.getMemberInformation(memberList[key]).dex + ns.gang.getMemberInformation(memberList[key]).dex) / 4;
+
+			ns.print(memberList[key] + ': Task: ' + ns.gang.getMemberInformation(memberList[key]).task + ' | CHL: ' + ns.nFormat(ns.gang.getMemberInformation(memberList[key]).hack, "0.00a") + ' | CCL: ' + ns.nFormat(curCCL, "0.00a"));
+
+			if (ns.getPlayer().money > 3e8 && currentUpgrades.length < 16) {
+				for (let gear in availEquip) {
+					if (availEquip[gear].includes(currentUpgrades)) {
+						ns.gang.purchaseEquipment(memberList[key], availEquip[gear]);
+					}
+				}
+			}
+
+			if (ns.getPlayer().money > 16e9 && currentAugments < 8)
+				for (let augs in augList) {
+					if (augList[augs].includes(currentUpgrades)) {
+						ns.gang.purchaseEquipment(memberList[key], augList[augs]);
+					}
+				}
+
+			if (ns.gang.getMemberInformation(memberList[key])?.hack > 100 || ns.gang.getMemberInformation(memberList[key])?.str > 100) {
+
+				const ascensionResult = ns.gang.getAscensionResult(memberList[key]);
+
+				if (memberList.length > 11) {
+					let threshold = CalculateAscendTreshold(ns, memberList[key]);
+					ns.print(ascensionResult?.hack + '/' + threshold);
+					if (gangType && ascensionResult?.hack >= threshold ||
+						(!gangType && (ascensionResult?.agi >= threshold || ascensionResult?.str >= threshold || ascensionResult?.def >= threshold || ascensionResult?.dex >= threshold))) {
+						ns.gang.ascendMember(memberList[key]);
+						ns.print(`Ascending ${memberList[key]}!`);
+					}
+				} else {
+					ns.print(ascensionResult?.hack + '/2');
+
+					if (ascensionResult?.hack > 2 || ascensionResult?.str > 2) {
+						ns.gang.ascendMember(memberList[key]);
+						await ns.sleep(50);
+					}
+				}
+			}
+			ns.print(" ");
+		}
+	}
 
 	if (!ns.gang.inGang()) {
 		while (ns.getPlayer().hacking < ns.getServer('avmnite-02h').requiredHackingSkill) {
@@ -160,103 +260,9 @@ export async function main(ns) {
 		var memberList = ns.gang.getMemberNames();
 
 		if (memberList.length === 12 && ns.gang.getGangInformation().territory < 0.99) {
-			ns.print('Preparing for war');
-			var otherGangs = ns.gang.getOtherGangInformation();
-
-			for (let gangName in otherGangs) {
-				if (gangName === fact || otherGangs[gangName].territory === 0) {
-					continue
-				} else {
-					ns.print(gangName + ': power: ' + otherGangs[gangName].power + ' territory: ' + otherGangs[gangName].territory);
-				}
-			}
-
-			for (let key in memberList) {
-				if (ns.gang.getMemberInformation(memberList[key]).task === "Territory Warfare") {
-					continue;
-				} else {
-					ns.gang.setMemberTask(memberList[key], "Territory Warfare");
-				}
-			}
-
-			let slumSnakes = ns.gang.getChanceToWinClash("Slum Snakes");
-			let tetrads = ns.gang.getChanceToWinClash("Tetrads");
-			let theSyndicate = ns.gang.getChanceToWinClash("The Syndicate");
-			let theDarkArmy = ns.gang.getChanceToWinClash("The Dark Army");
-			let speakersfortheDead = ns.gang.getChanceToWinClash("Speakers for the Dead");
-			let theBlackHand = ns.gang.getChanceToWinClash("The Black Hand");
-
-			let gangWarChance = slumSnakes > .85 && tetrads > .85 && theSyndicate > .85 && theDarkArmy > .85 && speakersfortheDead > .85 && theBlackHand > .85;
-
-			if (gangWarChance) {
-				ns.print("Gearing Up...")
-				ns.gang.setTerritoryWarfare(true);
-			}
-
+			inWar(ns);
 		} else {
-			ns.gang.setTerritoryWarfare(false);
-			for (let key in memberList) {
-				if (ns.gang.getMemberInformation(memberList[key]).task === "Territory Warfare" || ns.gang.getMemberInformation(memberList[key]).task === "Train Hacking" || ns.gang.getMemberInformation(memberList[key]).task === "Train Combat" || ns.gang.getMemberInformation(memberList[key]).task === "Unassigned") {
-					if (ns.gang.getMemberInformation(memberList[key]).name === "Wedge") {
-						if (ns.gang.getMemberInformation(memberList[key]).hack > 4000 || ns.gang.getMemberInformation(memberList[key]).str > 4000) {
-							ns.gang.setMemberTask(memberList[key], rj);
-						} else {
-							ns.gang.setMemberTask(memberList[key], tj);
-						}
-					} else {
-						if (ns.gang.getMemberInformation(memberList[key]).hack > 4000 || ns.gang.getMemberInformation(memberList[key]).str > 4000) {
-							ns.gang.setMemberTask(memberList[key], cj);
-						} else {
-							ns.gang.setMemberTask(memberList[key], tj);
-						}
-					}
-				}
-
-				let currentUpgrades = ns.gang.getMemberInformation(memberList[key]).upgrades;
-				let currentAugments = ns.gang.getMemberInformation(memberList[key]).augmentations;
-
-				let curCCL = (ns.gang.getMemberInformation(memberList[key]).str + ns.gang.getMemberInformation(memberList[key]).agi + ns.gang.getMemberInformation(memberList[key]).dex + ns.gang.getMemberInformation(memberList[key]).dex) / 4;
-
-				ns.print(memberList[key] + ': Task: ' + ns.gang.getMemberInformation(memberList[key]).task + ' | CHL: ' + ns.nFormat(ns.gang.getMemberInformation(memberList[key]).hack, "0.00a") + ' | CCL: ' + ns.nFormat(curCCL, "0.00a"));
-
-				if (ns.getPlayer().money > 3e8 && currentUpgrades.length < 16) {
-					for (let gear in availEquip) {
-						if (availEquip[gear].includes(currentUpgrades)) {
-							ns.gang.purchaseEquipment(memberList[key], availEquip[gear]);
-						}
-					}
-				}
-
-				if (ns.getPlayer().money > 16e9 && currentAugments < 8)
-					for (let augs in augList) {
-						if (augList[augs].includes(currentUpgrades)) {
-							ns.gang.purchaseEquipment(memberList[key], augList[augs]);
-						}
-					}
-
-				if (ns.gang.getMemberInformation(memberList[key])?.hack > 100 || ns.gang.getMemberInformation(memberList[key])?.str > 100) {
-
-					const ascensionResult = ns.gang.getAscensionResult(memberList[key]);
-
-					if (memberList.length > 11) {
-						let threshold = CalculateAscendTreshold(ns, memberList[key]);
-						ns.print(ascensionResult?.hack + '/' + threshold);
-						if (gangType && ascensionResult?.hack >= threshold ||
-							(!gangType && (ascensionResult?.agi >= threshold || ascensionResult?.str >= threshold || ascensionResult?.def >= threshold || ascensionResult?.dex >= threshold))) {
-							ns.gang.ascendMember(memberList[key]);
-							ns.print(`Ascending ${memberList[key]}!`);
-						}
-					} else {
-						ns.print(ascensionResult?.hack + '/2');
-
-						if (ascensionResult?.hack > 2 || ascensionResult?.str > 2) {
-							ns.gang.ascendMember(memberList[key]);
-							await ns.sleep(50);
-						}
-					}
-				}
-				ns.print(" ");
-			}
+			doBusiness(ns);
 		}
 		await ns.sleep(500)
 	}
