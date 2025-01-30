@@ -65,17 +65,17 @@ export async function main(ns) {
 	}
 
 	const nameList = [
-		"Wedge",
-		"Biggs",
+		"Vric",
+		"Rye",
 		"Kadwen",
 		"NuNu",
 		"Shepard",
-		"Rand",
-		"Matt",
-		"Perin",
-		"Jeb",
-		"Obi-Wan",
-		"Stoogie",
+		"Jerim",
+		"Ur-sin",
+		"Phantom",
+		"Erkar",
+		"Felix",
+		"BigB",
 		"Forest"
 	];
 
