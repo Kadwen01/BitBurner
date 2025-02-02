@@ -5,62 +5,24 @@ export async function main(ns) {
 	function LISTS(gangType) {
 		let availEquip, augList, rj, cj, tj;
 
-		if (gangType) {
+		augList = [
+			"BitWire",
+			"Neuralstimulator",
+			"DataJack"
+		];
 
-			augList = [
-				"BitWire",
-				"Neuralstimulator",
-				"DataJack"
-			];
+		availEquip = [
+			"NUKE Rootkit",
+			"Soulstealer Rootkit",
+			"Demon Rootkit",
+			"Hmap Node",
+			"Jack the Ripper"
+		];
 
-			availEquip = [
-				"NUKE Rootkit",
-				"Soulstealer Rootkit",
-				"Demon Rootkit",
-				"Hmap Node",
-				"Jack the Ripper"
-			];
+		rj = "Ethical Hacking";
+		cj = "Money Laundering";
+		tj = "Train Hacking";
 
-			rj = "Ethical Hacking";
-			cj = "Money Laundering";
-			tj = "Train Hacking";
-
-		} else {
-
-			augList = [
-				"Bionic Arms",
-				"Bionic Legs",
-				"Bionic Spine",
-				"BrachiBlades",
-				"Nanofiber Weave",
-				"Synthetic Heart",
-				"Synfibril Muscle",
-				"Graphene Bone Lacings"
-			];
-
-			availEquip = [
-				"Baseball Bat",
-				"Katana",
-				"Glock 18C",
-				"P90C",
-				"Steyr AUG",
-				"AK-47",
-				"M15A10 Assault Rifle",
-				"AWM Sniper Rifle",
-				"Bulletproof Vest",
-				"Full Body Armor",
-				"Liquid Body Armor",
-				"Graphene Plating Armor",
-				"Ford Flex V20",
-				"ATX1070 Superbike",
-				"Mercedes-Benz S9001",
-				"White Ferrari"
-			];
-
-			rj = "Vigilante Justice";
-			cj = "Traffick Illegal Arms";
-			tj = "Train Combat";
-		}
 		return { augList, availEquip, rj, cj, tj };
 	}
 
@@ -79,7 +41,7 @@ export async function main(ns) {
 		"Forest"
 	];
 
-	function recruitMembers(ns) {
+	function recruitMembers(ns, augList, availEquip, rj, cj, tj ) {
 		if (ns.gang.canRecruitMember()) {
 			for (let gmName in nameList) {
 				if (ns.gang.getMemberNames().includes(nameList[gmName])) {
@@ -147,11 +109,11 @@ export async function main(ns) {
 		}
 	}
 
-	async function doBusiness(ns) {
+	async function doBusiness(ns, augList, availEquip, rj, cj, tj) {
 		ns.gang.setTerritoryWarfare(false);
 		for (let key in memberList) {
 			if (ns.gang.getMemberInformation(memberList[key]).task === "Territory Warfare" || ns.gang.getMemberInformation(memberList[key]).task === "Train Hacking" || ns.gang.getMemberInformation(memberList[key]).task === "Train Combat" || ns.gang.getMemberInformation(memberList[key]).task === "Unassigned") {
-				if (ns.gang.getMemberInformation(memberList[key]).name === "Wedge") {
+				if (ns.gang.getMemberInformation(memberList[key]).name === "Kadwen") {
 					if (ns.gang.getMemberInformation(memberList[key]).hack > 4000 || ns.gang.getMemberInformation(memberList[key]).str > 4000) {
 						ns.gang.setMemberTask(memberList[key], rj);
 					} else {
@@ -255,14 +217,14 @@ export async function main(ns) {
 		const fact = ns.gang.getGangInformation().faction;
 		const { augList, availEquip, rj, cj, tj } = LISTS(gangType);
 
-		recruitMembers(ns);
+		recruitMembers(ns, augList, availEquip, rj, cj, tj);
 
 		var memberList = ns.gang.getMemberNames();
 
 		if (memberList.length === 12 && ns.gang.getGangInformation().territory < 0.99) {
 			inWar(ns);
 		} else {
-			doBusiness(ns);
+			await doBusiness(ns, augList, availEquip, rj, cj, tj);
 		}
 		await ns.sleep(500)
 	}
