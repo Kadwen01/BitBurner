@@ -1,5 +1,4 @@
 import { AnalyzeAllServers } from 'metrics.js'
-import { FormatMoney } from 'utils.js'
 import { IsPrepped } from 'prep.js'
 import { PrintTable, DefaultStyle } from 'tables.js'
 
@@ -180,24 +179,6 @@ export class QuarterMaster {
 
 		PrintTable(this.ns, tableData, columns, DefaultStyle(), this.ns.print);
 
-		// Display report
-		// this.ns.print('INFO: Server name'.padEnd(30) +
-		// 	'$'.padEnd(15) +
-		// 	'Security'.padEnd(25) +
-		// 	'State'.padEnd(15));
-
-		// for (let metrics of this.topServers) {
-		// 	let so = this.ns.getServer(metrics.server);
-
-		// 	let prefix = 'WARN: ';
-		// 	if (!IsPrepped(this.ns, metrics.server) && metrics.state != 'BATCHING')
-		// 		prefix = 'FAIL: ';
-
-		// 	this.ns.print((prefix + metrics.server).padEnd(30) +
-		// 		(Math.round(so.moneyAvailable / so.moneyMax * 100).toString()).padEnd(15) +
-		// 		(Math.round(so.hackDifficulty - so.minDifficulty).toString()).padEnd(25) +
-		// 		metrics.state);
-		// }
 	}
 
 	IsProcRunning(scriptName, argument = undefined) {
@@ -207,26 +188,5 @@ export class QuarterMaster {
 	async GetTopServers(ns, count = QmConfig.ListMaxServers, maxNetworkRamPct = 0.5) {
 		var data = await AnalyzeAllServers(ns, maxNetworkRamPct, false);
 		return data.slice(0, Math.max(count, 0));
-		// const data = new Array();
-		// const servers = GetAllServers(this.ns).filter(s => this.ns.getServer(s).hasAdminRights && this.ns.getServer(s).moneyMax > 0);;
-		// for (let server of servers) {
-		// 	let subData = new Array();
-		// 	for (let pct = 0.05; pct <= 0.95; pct += 0.05) {
-		// 		const metrics = new Metrics(this.ns, server, Math.min(pct, 0.99), BATCH_SPACER, 1, maxNetworkRamPct)
-		// 		// Skip stuff we can't hack
-		// 		//if (metrics.hackChance >= 0.50)
-		// 		if (metrics.cashPerSecond == undefined) continue;
-		// 		subData.push(metrics);
-		// 		await this.ns.sleep(0);
-		// 	}
-
-		// 	if (subData.length > 0) {
-		// 		subData = subData.sort((a, b) => b.cashPerSecond - a.cashPerSecond);
-		// 		data.push(subData[0]);
-		// 	}
-		// }
-
-		// let sorted = data.sort((a, b) => b.cashPerSecond - a.cashPerSecond);
-		// return sorted.slice(0, count);
 	}
 }
