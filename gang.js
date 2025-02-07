@@ -55,7 +55,7 @@ export async function main(ns) {
 		}
 	}
 
-	function CalculateAscendTreshold(ns, member) {
+	function CalculateAscendTreshold(ns, member, gangType) {
 		let metric = gangType ? 'hack_asc_mult' : 'str_asc_mult';
 		let mult = ns.gang.getMemberInformation(member)[metric];
 		if (mult < 1.632) return 1.6326;
@@ -109,7 +109,7 @@ export async function main(ns) {
 		}
 	}
 
-	async function doBusiness(ns, augList, availEquip, rj, cj, tj) {
+	async function doBusiness(ns, augList, availEquip, rj, cj, tj, gangType) {
 		ns.gang.setTerritoryWarfare(false);
 		for (let key in memberList) {
 			if (ns.gang.getMemberInformation(memberList[key]).task === "Territory Warfare" || ns.gang.getMemberInformation(memberList[key]).task === "Train Hacking" || ns.gang.getMemberInformation(memberList[key]).task === "Train Combat" || ns.gang.getMemberInformation(memberList[key]).task === "Unassigned") {
