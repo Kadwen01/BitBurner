@@ -799,6 +799,17 @@ solvers["Encryption II: Vigenère Cipher"] = (_data) => {
   return result;
 }
 
+solvers["Encryption I: Caesar Cipher"] = (_data) => {
+  const result = [..._data[0]]
+    .map((a) => {
+      return a === " "
+        ? a
+        : String.fromCharCode(((a.charCodeAt(0) - 65 - _data[1] + 26) % 26) + 65);
+    })
+    .join("");
+  return result;
+};
+
 solvers["Square Root"] = (_data) => {
   const result = heronsMethodSqrt(BigInt(_data)).toString();
   return result;
