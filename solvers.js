@@ -799,6 +799,35 @@ solvers["Encryption II: Vigenère Cipher"] = (_data) => {
   return result;
 }
 
+solvers["Square Root"] = (_data) => {
+  const result = heronsMethodSqrt(BigInt(_data)).toString();
+  return result;
+};
+
+function heronsMethodSqrt(n) {
+  const maxIterations = 400;
+  let iterations = 0;
+  let x = 1n;
+
+  while (!(x ** 2n <= n && (x + 1n) ** 2n > n)) {
+    x = (x + n / x) / 2n;
+    if (++iterations > maxIterations) return -1n;
+  }
+
+  return closerToRoot(n, x);
+}
+
+function closerToRoot(n, x) {
+  return abs(n - x ** 2n) > abs(n - (x + 1n) ** 2n) ? x + 1n : x;
+}
+
+function abs(n) {
+  return n < 0n ? -n : n;
+}
+
+
+
+
 
 function convert2DArrayToString(arr) {
   const components = [];
