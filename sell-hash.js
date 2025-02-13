@@ -65,10 +65,18 @@ export async function main(ns) {
 
 		var curHash = hnet.numHashes();
 		var maxHash = hnet.hashCapacity();
+    var prodHash = 0;
+    var numHacknetServers = hnet.numNodes();
+    
+    for (let i = 0; i < numHacknetServers; i++) {
+      prodHash += hnet.getNodeStats(i).production;
+    }
 
 		ns.disableLog("sleep");
 		ns.clearLog();
-		ns.print('Current Hashes: ' + ns.nFormat(curHash, "0.00a") + '/' + ns.nFormat(maxHash, "0.00a"));
+    ns.print('Current Number of Nodes: ' + numHacknetServers);
+    ns.print('Current Hash gain rate: ' + ns.formatNumber(prodHash,3) + '/s');
+		ns.print('Current Hashes: ' + ns.formatNumber(curHash, 3) + '/' + ns.formatNumber(maxHash, 2));
 
 		if (ns.getPlayer().inBladeburner) {
 			await sellForBB(ns);
