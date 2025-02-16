@@ -11,7 +11,7 @@ export async function main(ns) {
   ns.print('Current number of sleeves: ' + sleeveCount);
   ns.tail(ns.getScriptName());
 
-  function callSleeves() {
+  function callSleevesOld() {
     for (var i = 0; i < sleeveCount; i++) {
       if (ns.getPlayer().inBladeburner) {
         ns.exec("sleeve-bb.js", 'home', 1, i);
@@ -21,52 +21,61 @@ export async function main(ns) {
     }
   }
 
-  function sleeveActvity(slvNo) {
-    let task = ns.sleeve.getTask(slvNo).type;
+  function callSleeves() {
+    for (let i = 0; i < sleeveCount; i++) {
+      ns.kill("sleeve-bb.js", "home", i);
+      ns.kill("sleeve.js", "home", i);
+      ns.print(`Restarting sleeve script for ${i}`);
 
-
-    if (task === "RECOVERY"){
-      let shockValue = ns.sleeve.getSleeve(slvNo).shock.toFixed(2);
-      ns.print(task + ': Shock Value ' + shockValue + '%');
-    }
-
-    if (task === 'CRIME') {
-      let activity = ns.sleeve.getTask(slvNo).crimeType;
-      ns.print(task + ": " + activity);
-    }
-
-    if (task === 'FACTION') {
-      let activity = ns.sleeve.getTask(slvNo).factionWorkType;
-      let faction = ns.sleeve.getTask(slvNo).factionName;
-      ns.print(activity + ' for ' + faction);
-    }
-
-    if (task === 'CLASS') {
-      let activity = ns.sleeve.getTask(slvNo).classType;
-      let location = ns.sleeve.getTask(slvNo).location;
-      ns.print(location + ':  ' + activity);
-    }
-
-    if (task === 'COMPANY') {
-      let location = ns.sleeve.getTask(slvNo).companyName;
-      ns.print(task + ':  ' + location);
+      if (ns.getPlayer().inBladeburner) {
+        ns.exec("sleeve-bb.js", 'home', 1, i);
+      } else {
+        ns.exec("sleeve.js", 'home', 1, i);
+      }
     }
   }
 
   callSleeves();
 
-  while (true) {
+  async function manage(ns, gsle) {
     ns.clearLog();
-    for (var slvNo = 0; slvNo < sleeveCount; slvNo++) {
 
-      const availAugs = gsle.getSleevePurchasableAugs(slvNo);
+    let tableData = [];
+
+    const columns = [
+      { header: 'Sleeve #', width: 8 },
+      { header: 'Task', width: 14 },
+      { header: 'Sync', width: 6 },
+      { header: 'Shock', width: 6 }
+    ];
+
+    for (let slvNo = 0; slvNo < sleeveCount; slvNo++) {
+
+      let availAugs = gsle.getSleevePurchasableAugs(slvNo);
       let syncValue = gsle.getSleeve(slvNo).sync.toFixed(2);
+      let shockValue = ns.sleeve.getSleeve(slvNo).shock.toFixed(2);
 
-      ns.print("Sleeve No: " + slvNo);
-      sleeveActvity(slvNo);
-      ns.print('Sync %: ' + syncValue);
-      ns.print('Available Augments to install: ' + availAugs.length);
-      ns.print(" ");
+      let taskInfo = ns.sleeve.getTask(slvNo) || {};
+      let activity = "IDLE";
+
+      if (taskInfo.type === 'CRIME') {
+        activity = taskInfo.crimeType;
+      } else if (taskInfo.type === 'FACTION') {
+        activity = taskInfo.factionName;
+      } else if (taskInfo.type === 'CLASS') {
+        activity = taskInfo.classType;
+      } else if (taskInfo.type === 'COMPANY') {
+        activity = taskInfo.companyName;
+      } else if (taskInfo.type === 'RECOVERY' || taskInfo.type === 'SYNCHRO') {
+        activity = taskInfo.type;
+      }
+
+      tableData.push([
+        { color: 'white', text: String(slvNo) },
+        { color: 'cyan', text: String(activity) },
+        { color: 'yellow', text: String(syncValue) },
+        { color: 'red', text: String(shockValue) }
+      ]);
 
       if (gsle.getSleeve(slvNo).shock > 0) {
         continue;
@@ -87,6 +96,12 @@ export async function main(ns) {
       callSleeves();
     }
 
+    PrintTable(ns, tableData, columns, DefaultStyle(), ns.print);
+  }
+
+  while (true) {
+    await manage(ns, gsle);
     await ns.sleep(60000);
   }
+
 }
