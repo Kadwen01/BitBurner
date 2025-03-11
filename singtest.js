@@ -10,11 +10,11 @@ export async function main(ns) {
 	const corp = eval("ns.corporation");
 	const factionInvites = sing.checkFactionInvitations();
 	let playerMoney = ns.getPlayer().money;
-	let playerMoneyFormated = ns.nFormat(playerMoney, "0.00a");
+	let playerMoneyFormated = ns.formantNumber(playerMoney, 2);
 	let ramUpCost = sing.getUpgradeHomeRamCost();
-	let ramUpCostFormated = ns.nFormat(ramUpCost, "0.00a");
+	let ramUpCostFormated = ns.formantNumber(ramUpCost, 2);
 	let homeRam = ns.getServerMaxRam("home");
-	let homeRamFormated = ns.nFormat(homeRam * 1e9, "0.00b");
+	let homeRamFormated = ns.formantNumber(homeRam * 1e9, 2);
 
 	const FACTIONS = [
 		"Sector-12",
