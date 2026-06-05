@@ -3,8 +3,7 @@ export async function main(ns) {
 
 	const servers = GetAllServers(ns);
 	const spacer = 1;
-	await GetSymbolAssociations(ns, servers);
-
+	
 	ColorPrint(
 		'white', '┌'.padEnd(48, '─') + '┬',
 		'white', ''.padEnd(15, '─') + '┬',
@@ -77,19 +76,19 @@ export async function main(ns) {
 
 			let maxRam = ns.getServerMaxRam(server.name);
 			let ramColor = maxRam > 0 ? 'white' : '#555555';
-			let ramString = maxRam > 0 ? ns.nFormat(maxRam * 1000000000, '0.0b') : '';
+			let ramString = maxRam > 0 ? ns.format.ram(maxRam, '0.0b') : '';
 			let freeRam = ns.getServerMaxRam(server.name) - ns.getServerUsedRam(server.name);
 			let freeRamColor = freeRam > 0 ? 'white' : '#555555';
-			let freeRamString = maxRam > 0 ? ns.nFormat(freeRam * 1000000000, '0.0b') : '';
+			let freeRamString = maxRam > 0 ? ns.format.ram(freeRam, '0.0b') : '';
 			//let ramPct = maxRam > 0 ? (freeRam / maxRam * 100).toFixed(0) + '%' : '';
 			freeRamColor = pctColor(freeRam / maxRam);
 
 			let money = ns.getServerMoneyAvailable(server.name);
 			let moneyMax = ns.getServerMaxMoney(server.name);
 			//let moneyPct = moneyMax > 0 ? (money / moneyMax * 100).toFixed(0) + '%' : '';
-			let moneyString = moneyMax > 0 ? ns.nFormat(money, '0.00a').padStart(8) : ''.padStart(8);
+			let moneyString = moneyMax > 0 ? ns.format.number(money, '0.00a').padStart(8) : ''.padStart(8);
 			let moneyColor = pctColor(money / moneyMax);
-			let maxMoneyString = moneyMax > 0 ? ns.nFormat(moneyMax, '0.00a').padStart(8) : ''.padStart(8);
+			let maxMoneyString = moneyMax > 0 ? ns.format.number(moneyMax, '0.00a').padStart(8) : ''.padStart(8);
 			let maxMoneyColor = moneyMax > 0 ? 'white' : '#555555';
 
 			let so = ns.getServer(server.name);
@@ -216,84 +215,4 @@ function ColorPrint() {
 		term.printRaw(out);
 	}
 	catch { }
-}
-
-export async function GetSymbolAssociations(ns, servers) {
-	let data = [];
-
-	// Load symbols if we already have them
-	const filename = 'symbol-servers.txt';
-	if (ns.fileExists(filename)) {
-		data = JSON.parse(await ns.read(filename));
-	}
-
-	if (data.length == 0) {
-		// Get source code enum data
-		await ns.wget('https://raw.githubusercontent.com/danielyxie/bitburner/master/src/Locations/data/LocationNames.ts', 'locations.txt');;
-		await ns.wget('https://raw.githubusercontent.com/danielyxie/bitburner/master/src/StockMarket/data/StockSymbols.ts', 'stocksymbols.txt');
-
-		let location = "";
-		let company = "";
-		let locations = ns.read('locations.txt');
-		let locationMap = {};
-		for (let line of locations.split("\n")) {
-			if (line.includes('=')) {
-				location = line.split(" = ")[0];
-				company = line.split(" = ")[1];
-				while (company.includes('"')) { company = company.replace('"', '').replace(",", ""); }
-				while (location.includes(' ')) { location = location.replace(' ', ''); }
-			}
-			locationMap[location] = company;
-		}
-
-		let companies = ns.read('stocksymbols.txt');
-		for (let line of companies.split("\n")) {
-			let location;
-			let sym;
-			let serverName;
-
-			if (line.includes("LocationName")) {
-				for (let line2 of Object.keys(locationMap)) {
-					if (line2.length > 3 && line.includes(line2)) {
-						location = locationMap[line2];
-						sym = line.split("=")[1].replace(";", "").replace('\"', '').replace('\"', '').replace(' ', '');
-					}
-				}
-			} else {
-				if (line.includes("StockSymbols") && !line.includes("LocationName") && !line.includes("export")) {
-					location = line.substring(14, line.indexOf(']') - 1);
-					sym = line.substring(line.indexOf('=') + 3, line.length - 2);
-				}
-			}
-
-			for (let server of servers) {
-				let so = ns.getServer(server.name);
-				if (so.organizationName == location)
-					serverName = server.name;
-			}
-
-			if (location != undefined && serverName != undefined) {
-				data.push({ location: location, sym: sym, server: serverName });
-			}
-		}
-
-		// Remove temporary files
-		ns.rm('locations.txt');
-		ns.rm('stocksymbols.txt');
-
-		// Save data to a file so we don't need to fetch every time
-		await ns.write(filename, JSON.stringify(data));
-	}
-
-	// Assign symbols to our server list
-	for (let server of servers) {
-		let match = data.find(s => s.server == server.name);
-		if (match != undefined)
-			server.sym = match.sym;
-		else
-			server.sym = '';
-	}
-
-	// Future use maybe?
-	return data;
 }
