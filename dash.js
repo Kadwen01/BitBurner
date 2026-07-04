@@ -11,7 +11,6 @@ export async function main(ns) {
 		'white', ''.padEnd(7, '─') + '┬',
 		'white', ''.padEnd(5, '─') + '┬',
 		'white', ''.padEnd(5, '─') + '┬',
-		'white', ''.padEnd(5, '─') + '┬',
 		'white', ''.padEnd(7, '─') + '┬',
 
 	);
@@ -22,7 +21,6 @@ export async function main(ns) {
 		'white', padCenter('SEC', 7) + '│', // 99/99 100%
 		'white', padCenter('MHL', 5) + '│',
 		'white', padCenter('BD', 5) + '│',
-		'white', padCenter('SYM', 5) + '|',
 		'white', padCenter('PREP', 7) + '|',
 
 	);
@@ -31,7 +29,6 @@ export async function main(ns) {
 		'white', ''.padEnd(15, '─') + '┼',
 		'white', ''.padEnd(17, '─') + '┼',
 		'white', ''.padEnd(7, '─') + '┼',
-		'white', ''.padEnd(5, '─') + '┼',
 		'white', ''.padEnd(5, '─') + '┼',
 		'white', ''.padEnd(5, '─') + '┼',
 		'white', ''.padEnd(7, '─') + '┼',
@@ -124,7 +121,6 @@ export async function main(ns) {
 				'white', '│', secColor, moneyMax > 0 ? (sec - minSec).toFixed(2).padStart(7) : ''.padEnd(7),
 				'white', '│', mhlColor, mhl.padStart(5),
 				'white', '|', bdc, bdo.padStart(5),
-				'white', '|', 'white', (server.sym.length != 0) ? server.sym.padStart(5) : ''.padStart(5),
 				'white', '|', canPrepColor, myServ.padStart(7),
 				'white', '|',
 			);
@@ -136,7 +132,6 @@ export async function main(ns) {
 		'white', ''.padEnd(15, '─') + '┴',
 		'white', ''.padEnd(17, '─') + '┴',
 		'white', ''.padEnd(7, '─') + '┴',
-		'white', ''.padEnd(5, '─') + '┴',
 		'white', ''.padEnd(5, '─') + '┴',
 		'white', ''.padEnd(5, '─') + '┴',
 		'white', ''.padEnd(7, '─') + '┴',
